@@ -44,7 +44,7 @@ Babylon.js の公式日本語チュートリアル本
 | 2-03 | メッシュを設置 | ○ | `position`／`scaling`（ObservableVec3）✅ |
 | 2-04 | 基本的な家 | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
 | 2-05 | テクスチャを貼る | ○ | 2D テクスチャ✅、UV スケール/オフセット✅ |
-| 2-06 | マテリアル（面ごと/faceUV） | △ | **box の faceUV は未確認**（faceUV は cylinder/polyhedron の生成器にはあるが box 生成器は `size` のみ）。マルチマテリアル or 面ごとの別プレーンで代替 |
+| 2-06 | マテリアル（面ごと/faceUV） | △ | **box の faceUV/wrap/width は `createBox` 非対応**（`size` 数値のみ）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
 | 2-07 | リファクタリング（関数化） | ○ | 純粋な JS 設計、エンジン非依存 |
 | 2-08 | メッシュを結合 | △ | **`Mesh.MergeMeshes` 相当は無し**（コード検索 0 件）。`CSG2` union／thin instances／手動頂点結合で代替 |
 | 2-09 | メッシュをコピー | ○ | Thin Instances✅／`cloneTransformNode`✅。※BJS `InstancedMesh` API は🚫→thin instance で代替 |
