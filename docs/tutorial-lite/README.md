@@ -87,7 +87,8 @@ main().catch((err) => console.error(err));
 | `MeshBuilder.CreateBox/Sphere/Ground` | `createBox/createSphere/createGround(engine, opts)` |
 | `new StandardMaterial` / `PBRMaterial` | `createStandardMaterial()` / `createPbrMaterial()` |
 | `new Texture(url)` | `await loadTexture2D(engine, url)` |
-| `SceneLoader.ImportMeshAsync` | `addToScene(scene, await loadGltf(engine, url))` |
+| `SceneLoader.ImportMeshAsync`（.glb） | `addToScene(scene, await loadGltf(engine, url))` |
+| `SceneLoader.ImportMeshAsync`（.babylon） | `addToScene(scene, await loadBabylon(engine, url))`（静的モデル） |
 | `mesh.createInstance()` | `setThinInstances(mesh, matrices, count)` |
 | `scene.onBeforeRenderObservable.add` | `onBeforeRender(scene, cb)` |
 | `AnimationGroup.play()` / `.stop()` | `playAnimation(group)` / `stopAnimation(group)` |

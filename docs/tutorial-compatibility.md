@@ -31,7 +31,7 @@ Babylon.js の公式日本語チュートリアル本
 | 1-00 | 最初 (Firsts) | — | 導入 |
 | 1-01 | ハローワールド！最初のシーンとモデル | ○ | `createEngine`／`createSceneContext`／`createArcRotateCamera`／`createHemisphericLight`／`createSphere`／`createGround` すべて✅ |
 | 1-02 | Web サイトをかっこよくしよう | △ | Babylon Viewer の `<babylon-viewer>` Web コンポーネントは無し。canvas＋`loadGltf`＋`createDefaultCamera`（auto-framing✅）で同等の見せ方は可 |
-| 1-03 | モデルを扱う | ○ | `loadGltf`（glTF/GLB✅）＋`attachControl` で読込・操作可。※`.babylon` は変換要 |
+| 1-03 | モデルを扱う | ○ | `loadGltf`（glTF/GLB✅）／`loadBabylon`（.babylon△）。素直な `.babylon` は可だが、絶対URLテクスチャ・`geometries` 参照型は前処理要、アニメ付きは glTF 変換要 |
 | 1-04 | 最初の Web アプリのセットアップ | ○ | TypeScript／Vite ネイティブ✅。`@babylonjs/lite` でアプリ構築可（手順は異なる） |
 
 ### 第2部：村の構築
@@ -106,7 +106,8 @@ Babylon.js の公式日本語チュートリアル本
 | Babylon.js | Babylon Lite |
 |---|---|
 | `new ArcRotateCamera(...)` ／ `camera.attachControl` | `createArcRotateCamera(...)` ／ `attachControl(camera, canvas, scene)` |
-| `SceneLoader.ImportMeshAsync(".babylon")` | `loadGltf(engine, ".glb")` → `addToScene` ※`.babylon` は glTF 変換 |
+| `SceneLoader.ImportMeshAsync(".glb")` | `loadGltf(engine, ".glb")` → `addToScene` |
+| `SceneLoader.ImportMeshAsync(".babylon")` | `loadBabylon(engine, url)` → `addToScene`（静的モデル）※アニメ付きは glTF 変換 |
 | `skeleton.beginAnimation("walk")` | `AnimationGroup`（`loadGltf` が自動生成、既定 loop 再生） |
 | `mesh.createInstance()` | Thin Instances（`InstancedMesh` は🚫） |
 | `Mesh.MergeMeshes([...])` | 非対応 → `CSG2` union ／ 手動結合 |
