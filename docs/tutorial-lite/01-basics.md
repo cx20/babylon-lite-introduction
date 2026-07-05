@@ -14,7 +14,7 @@
 
 **目的**：シーン・カメラ・ライト・球・地面を作る。
 
-追加 import：`createArcRotateCamera, attachControl, createHemisphericLight, createSphere, createGround`
+追加 import：`createArcRotateCamera, attachControl, createHemisphericLight, createSphere, createGround, createStandardMaterial`
 
 ```typescript
 // カメラ（キャラ後方視点に合わせて alpha = -π/2）
@@ -25,16 +25,28 @@ attachControl(camera, canvas, scene);
 // ライト
 addToScene(scene, createHemisphericLight([0, 1, 0], 1.0));
 
-// 球
+// 球 —— ★マテリアルの明示割り当てが必須（無いと描画されない）
 const sphere = createSphere(engine, { diameter: 2, segments: 16 });
 sphere.position.y = 1;
+const sphereMat = createStandardMaterial();
+sphereMat.diffuseColor = [0.8, 0.8, 0.8];   // 色は [r, g, b] 配列
+sphere.material = sphereMat;
 addToScene(scene, sphere);
 
-// 地面
+// 地面 —— 同様にマテリアルを割り当て
 const ground = createGround(engine, { width: 6, height: 6 });
+const groundMat = createStandardMaterial();
+groundMat.diffuseColor = [0.5, 0.55, 0.5];
+ground.material = groundMat;
 addToScene(scene, ground);
 ```
 
+> ⚠️ **マテリアル必須**：Lite にはデフォルトマテリアルが無く、`material` 未設定のメッシュは
+> `addToScene` されても**描画されません（エラーも出ません）**。プリミティブには必ず
+> `createStandardMaterial()` / `createPbrMaterial()` を割り当ててください（→ [README の落とし穴](./README.md#重要な落とし穴共通)）。
+>
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/0
+>
 > `position` などは `ObservableVec3`。**成分（`.x/.y/.z`）で代入**します（丸ごと別オブジェクトを代入すると dirty 追跡が切れます）。
 
 ---

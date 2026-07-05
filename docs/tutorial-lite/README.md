@@ -49,6 +49,24 @@ async function main(): Promise<void> {
 main().catch((err) => console.error(err));
 ```
 
+## 重要な落とし穴（共通）
+
+> ⚠️ **メッシュには必ずマテリアルを割り当てる。**
+> Lite には**デフォルトマテリアルが存在しません**。`material` 未設定のメッシュは
+> `addToScene` に登録はされても **renderable が生成されず、一切描画されません（エラーも出ません）**。
+> プリミティブ（`createBox` / `createSphere` / `createGround` など）を作ったら、
+> 必ず `createStandardMaterial()` か `createPbrMaterial()` を割り当ててください。
+>
+> ```typescript
+> const sphere = createSphere(engine, { diameter: 2 });
+> const mat = createStandardMaterial();
+> mat.diffuseColor = [0.8, 0.8, 0.8]; // 色は [r, g, b] 配列
+> sphere.material = mat;              // ← これが無いと表示されない
+> addToScene(scene, sphere);
+> ```
+>
+> `loadGltf` で読み込んだモデルは glTF 側のマテリアルが付くため、この対応は不要です。
+
 ## 凡例
 
 - **○** … Lite の標準機能で再現可能
