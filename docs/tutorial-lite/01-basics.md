@@ -76,20 +76,64 @@ addToScene(scene, createHemisphericLight([0, 1, 0], 1.0));
 
 ## 1-03 モデルを扱う — ○
 
-**目的**：外部 3D モデルを読み込んで操作する。
+**目的**：外部 3D モデルを読み込んで操作する。Lite は **glTF / GLB** と **.babylon** の両方に対応します。
 
-追加 import：`createDefaultCamera, attachControl, createHemisphericLight, loadGltf`
+追加 import：`createDefaultCamera, attachControl, createHemisphericLight, loadGltf, loadBabylon`
+
+### A. glTF / GLB を読み込む（`loadGltf`）
 
 ```typescript
 addToScene(scene, await loadGltf(engine, "https://playground.babylonjs.com/scenes/BoomBox.glb"));
 
-const camera = createDefaultCamera(scene);   // auto-framing
+const camera = createDefaultCamera(scene);   // 読み込んだモデルを自動フレーミング
 attachControl(camera, canvas, scene);
 addToScene(scene, createHemisphericLight([0, 1, 0], 1.0));
 ```
 
-- `loadGltf` は **glTF / GLB** を読み込み `AssetContainer` を返す → `addToScene` で登録。
-- Babylon.js チュートリアルの `.babylon`（例：Dude.babylon）は **スキン/アニメ非対応**なので、アニメ付きモデルは **glTF に変換**するか glTF モデル（例：`Xbot.glb`）を使います（→ [3-06](./03-animation.md)）。
+`loadGltf` は glTF/GLB を読み込み、メッシュ・マテリアルに加え **スキン・モーフ・アニメーション**まで対応します。
+
+### B. .babylon を読み込む（`loadBabylon`）
+
+`.babylon` 形式は **`loadBabylon`** で読み込めます。Babylon.js の `SceneLoader.ImportMeshAsync` に相当します。
+BJS が `rootUrl` と `filename` を分けるのに対し、Lite は **1 つの URL** にまとめて渡します。
+
+```typescript
+// BJS: SceneLoader.ImportMeshAsync("semi_house", "https://assets.babylonjs.com/meshes/", "both_houses_scene.babylon")
+addToScene(scene, await loadBabylon(engine, "https://assets.babylonjs.com/meshes/both_houses_scene.babylon"));
+
+const camera = createDefaultCamera(scene);
+attachControl(camera, canvas, scene);
+addToScene(scene, createHemisphericLight([0, 1, 0], 1.0));
+```
+
+`loadBabylon` は **メッシュ・標準マテリアル・ライト・カメラ・シーン設定**（submesh / multiMaterial 含む）を読み込みます。
+
+### C. 複数モデル・特定メッシュだけ読み込む
+
+BJS はメッシュ名の配列で読み込むメッシュを選べます。Lite の `loadBabylon` はファイル全体を読み込むので、
+**読み込み後に `entities` を名前で絞って** `addToScene` します。
+
+```typescript
+// BJS: ImportMeshAsync(["ground", "semi_house"], ".../", "both_houses_scene.babylon")
+const container = await loadBabylon(engine, "https://assets.babylonjs.com/meshes/both_houses_scene.babylon");
+
+const wanted = ["ground", "semi_house"];
+for (const e of container.entities) {
+  if (wanted.includes((e as any).name)) addToScene(scene, e);   // 必要なメッシュだけ登録
+}
+// ・ファイル全体を登録するなら addToScene(scene, container) でOK
+// ・読み込むメッシュ数を制限したいだけなら loadBabylon(engine, url, { maxMeshes: 2 })
+```
+
+### 使い分けと制約
+
+| 形式 | 関数 | メッシュ/マテリアル | スキン/アニメ |
+|---|---|:--:|:--:|
+| glTF / GLB | `loadGltf` | ○ | **○** |
+| .babylon | `loadBabylon` | ○ | **✕**（`animationGroups` は常に空） |
+
+- **アニメーションを伴わない `.babylon`**（例：`both_houses_scene.babylon` などの静的モデル）は `loadBabylon` でそのまま表示できます。
+- **アニメーション付き `.babylon`**（例：`Dude.babylon` のスケルタルアニメ）は Lite では再生できないため、**glTF に変換**するか glTF モデル（例：`Xbot.glb`）を使います（→ [3-06](./03-animation.md)）。
 
 ---
 
