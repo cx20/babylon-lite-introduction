@@ -136,7 +136,8 @@ for (const e of container.entities) {
 | (1) | テクスチャ `name` が**絶対URL** | `baseUrl + name` の無条件連結で壊れた URL になり `createImageBitmap` が `InvalidStateError` | `loadTextures: false` ＋ `loadTexture2D` で手動割り当て |
 | (2) | 頂点データが inline でなく **`geometries` 参照型**（`mesh.geometryId` → `geometries.vertexData[]`） | ローダーが `geometryId` を処理せず全メッシュが無言でスキップ → 紫背景だけ | JSON を fetch して `vertexData` をメッシュに inline 化し、Blob URL で渡す |
 
-`both_houses_scene.babylon` は **両方**を踏むため、次の完全版で表示できます（実機で確認済み）。
+`both_houses_scene.babylon` は **両方**を踏むため、次の完全版で表示できます。
+動作確認済み（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/1
 
 ```typescript
 // 追加 import: createStandardMaterial, loadTexture2D, getContainerMeshes
