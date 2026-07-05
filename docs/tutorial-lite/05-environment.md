@@ -23,8 +23,11 @@ const hills = await createGroundFromHeightMap(
   "https://playground.babylonjs.com/textures/heightMap.png",
   { width: 100, height: 100, subdivisions: 100, minHeight: 0, maxHeight: 10 }
 );
+hills.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
 addToScene(scene, hills);
 ```
+
+> 追加 import に `createStandardMaterial` も必要です。
 
 > 機能比較表では「Ground from Heightmap ✅」。ただし関数シグネチャ（`engine` 引数の有無、返り値のアップロード手順）は Lite のバージョンで差異が出ることがあるため、Playground の IntelliSense で確認してください。
 
