@@ -189,34 +189,135 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 
 ## 3-02 車を組み立てる (Building the Car) — ○
 
-**目的**：ボディ＋4 輪を組み立てる。Babylon.js の `ExtrudePolygon`（多角形フィル）はボックスで代用。
+**目的**：本家どおり、車体輪郭を厚み付き多角形メッシュにして、4 輪を複製で組み立てる。
 
-追加 import：`createBox, createCylinder, createStandardMaterial`
+Lite には `ExtrudePolygon` が無く、earcut 相当の多角形三角形分割も公開 API にありません。
+このサンプルの輪郭は **凸多角形** なので、`createMeshFromData` で
+**上下キャップ＋側面クアッド** を直接組み立てます。
+
+追加 import：`createCylinder, createMeshFromData, cloneTransformNode, createStandardMaterial`（＋型 `Mesh, SceneNode`）
 
 ```typescript
-// ボディ（★マテリアル必須。色/テクスチャは 3-03 で付け直す）
-// createBox は一辺の長さ（数値）のみ指定可。非一様なサイズは scaling で伸縮する
-const body = createBox(engine, 1);
-body.scaling.x = 2; body.scaling.y = 0.5; body.scaling.z = 1;
-body.position.y = 0.5;
-body.material = createStandardMaterial();
-addToScene(scene, body);
+type OutlinePoint = readonly [number, number];
 
-// 車輪（シリンダーを寝かせる：Z 軸まわり 90°）
-const makeWheel = (x: number, z: number) => {
-  const w = createCylinder(engine, { diameter: 0.6, height: 0.3, tessellation: 24 });
-  w.rotationQuaternion.z = Math.sin(Math.PI / 4);   // 90° 傾けて車軸を横向きに
-  w.rotationQuaternion.w = Math.cos(Math.PI / 4);
-  w.position.x = x; w.position.y = 0.3; w.position.z = z;
-  w.material = createStandardMaterial();            // ★マテリアル必須
-  w.parent = body;                                  // ボディの子にする
-  addToScene(scene, w);
-  return w;
-};
-const wheels = [makeWheel(-0.7, 0.55), makeWheel(0.7, 0.55), makeWheel(-0.7, -0.55), makeWheel(0.7, -0.55)];
+// 本家 MeshBuilder.ExtrudePolygon({ shape, depth }) 相当（凸多角形限定）
+function extrudePolygonXoZ(engine: EngineContext, name: string, outline: OutlinePoint[], depth: number): Mesh {
+  const n = outline.length;
+  const capTris = n - 2;
+
+  const edges: [number, number][] = [];
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    const [ax, az] = outline[i]!;
+    const [bx, bz] = outline[j]!;
+    if (Math.hypot(bx - ax, bz - az) > 1e-9) edges.push([i, j]);
+  }
+
+  const vertCount = n * 2 + edges.length * 4;
+  const positions = new Float32Array(vertCount * 3);
+  const normals = new Float32Array(vertCount * 3);
+  const uvs = new Float32Array(vertCount * 2);
+  const indices = new Uint32Array(capTris * 2 * 3 + edges.length * 6);
+
+  for (let i = 0; i < n; i++) {
+    const [x, z] = outline[i]!;
+    positions.set([x, 0, z], i * 3);
+    normals.set([0, 1, 0], i * 3);
+    uvs.set([x + 0.5, z + 0.5], i * 2);
+
+    positions.set([x, -depth, z], (n + i) * 3);
+    normals.set([0, -1, 0], (n + i) * 3);
+    uvs.set([x + 0.5, z + 0.5], (n + i) * 2);
+  }
+
+  let idx = 0;
+  for (let i = 1; i < n - 1; i++) {
+    indices.set([0, i, i + 1], idx);
+    indices.set([n, n + i + 1, n + i], idx + 3);
+    idx += 6;
+  }
+
+  let v = n * 2;
+  for (const [i, j] of edges) {
+    const [ax, az] = outline[i]!;
+    const [bx, bz] = outline[j]!;
+    const dx = bx - ax;
+    const dz = bz - az;
+    const len = Math.hypot(dx, dz);
+    const nx = dz / len;
+    const nz = -dx / len;
+
+    positions.set([
+      ax, -depth, az,
+      bx, -depth, bz,
+      bx, 0, bz,
+      ax, 0, az,
+    ], v * 3);
+    for (let k = 0; k < 4; k++) normals.set([nx, 0, nz], (v + k) * 3);
+    uvs.set([0, 0, len, 0, len, 1, 0, 1], v * 2);
+    indices.set([v, v + 1, v + 2, v, v + 2, v + 3], idx);
+    v += 4;
+    idx += 6;
+  }
+
+  return createMeshFromData(engine, name, positions, normals, indices, uvs);
+}
+
+function attachToParent(child: SceneNode, parent: SceneNode): void {
+  child.parent = parent;
+  parent.children.push(child);
+}
+
+function buildCar(engine: EngineContext): Mesh {
+  const outline: OutlinePoint[] = [
+    [-0.3, -0.1],
+    [0.2, -0.1],
+  ];
+
+  for (let i = 0; i < 20; i++) {
+    outline.push([0.2 * Math.cos((i * Math.PI) / 40), 0.2 * Math.sin((i * Math.PI) / 40) - 0.1]);
+  }
+
+  outline.push([0, 0.1]);
+  outline.push([-0.3, 0.1]);
+
+  const car = extrudePolygonXoZ(engine, "car", outline, 0.2);
+  car.material = createStandardMaterial();
+  return car;
+}
+
+const car = buildCar(engine);
+
+const wheelRB = createCylinder(engine, { diameter: 0.125, height: 0.05 });
+wheelRB.material = createStandardMaterial();
+attachToParent(wheelRB, car);
+wheelRB.position.x = -0.2;
+wheelRB.position.y = 0.035;
+wheelRB.position.z = -0.1;
+
+const wheelRF = cloneTransformNode(wheelRB) as Mesh;
+attachToParent(wheelRF, car);
+wheelRF.position.x = 0.1;
+
+const wheelLB = cloneTransformNode(wheelRB) as Mesh;
+attachToParent(wheelLB, car);
+wheelLB.position.y = -0.2 - 0.035;
+
+const wheelLF = cloneTransformNode(wheelRF) as Mesh;
+attachToParent(wheelLF, car);
+wheelLF.position.y = -0.2 - 0.035;
+
+const wheels = [wheelRB, wheelRF, wheelLB, wheelLF];
+
+addToScene(scene, car);   // 4 輪も再帰的に追加される
 ```
 
-> `createCylinder` は `diameterTop/diameterBottom` 指定で円錐/角柱にもできます。
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/1
+>
+> ポイントは 3 つです。
+> 1. **`ExtrudePolygon` の代替**として、凸輪郭なら `createMeshFromData` で直接組み立てられる
+> 2. **`cloneTransformNode`** は transform / material を複製し、メッシュは GPU バッファ共有の shallow clone になる
+> 3. 本家の `wheel.parent = car` は **素の親子付け**なので、Lite では `setParent` ではなく `attachToParent` を使う
 
 ---
 
@@ -227,7 +328,7 @@ const wheels = [makeWheel(-0.7, 0.55), makeWheel(0.7, 0.55), makeWheel(-0.7, -0.
 ```typescript
 const bodyMat = createStandardMaterial();
 bodyMat.diffuseColor = [0.8, 0.1, 0.1];       // 赤いボディ
-body.material = bodyMat;
+car.material = bodyMat;
 
 // 車輪ロゴ：cylinder は faceUV に対応しているので端面にテクスチャを貼れる
 const wheelMat = createStandardMaterial();
@@ -274,7 +375,7 @@ onBeforeRender(scene, () => {
 let t = 0;
 onBeforeRender(scene, () => {
   t += 0.02;
-  body.position.z = Math.sin(t) * 5;   // 前後に往復
+  car.position.z = Math.sin(t) * 5;   // 前後に往復
 });
 ```
 
