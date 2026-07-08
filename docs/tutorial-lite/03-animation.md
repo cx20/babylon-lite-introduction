@@ -934,9 +934,16 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 
 ### 村の中を走らせる
 
-次は `village.glb` と `car.glb` を読み込み、村の道路上で車を走らせます。`car.glb` には車輪回転アニメーションが埋め込まれているため、それを `AnimationManager` へ登録し、車体の前進だけをコード側の `position.z` アニメーションで追加します。
+次は `village.glb` と `car.glb` を読み込み、村の道路上で車を走らせます。
 
-追加 import：`addAnimationGroups, loadGltf`（＋型 `AnimationGroup, AssetContainer, SceneNode`）
+> **訂正**：以前この節では「`car.glb` には車輪回転アニメーションが埋め込まれている」と説明していましたが、これは誤りでした。`car.glb` の glTF `animations` は空で、車輪回転は含まれていません。本家チュートリアルも *"car.glb has no built-in wheel animation, so we create one"* としてコード側で作成しています。そのため、**車輪回転もコード側で作成**し、車体の前進とあわせて `AnimationManager` に登録します。
+
+- **車輪**：`rotation.y` を frame 0→30（1 秒）で `-2π` 回すクリップを 4 輪それぞれのノードへ割り当て、ループ再生します。
+- **車体**：`position.z` のプロパティアニメーションで前進させます。
+
+> **補足（`rotationQuaternion = null` は不要）**：本家では毎フレームの `rotation.y` 書き込みで劣化しないよう `wheel.rotationQuaternion = null` にしますが、Lite では不要です。Lite の `node.rotation` は quaternion 上の Euler プロキシで、書き込みは直接 quaternion に反映されます。プロキシは Euler 状態をキャッシュし、外部で quaternion が変更されない限り再抽出しないため、毎フレーム書き込んでもジンバル問題は起きません（`car.glb` の車輪ノードはレスト回転なしのため、初期姿勢も本家の null 化後と一致します）。
+
+追加 import：`loadGltf`（＋型 `AssetContainer, PropertyAnimationClip, SceneNode`）
 
 ```typescript
 function findNodeByName(container: AssetContainer, name: string): SceneNode {
@@ -969,17 +976,33 @@ function addContainerEntitiesToScene(scene: SceneContext, container: AssetContai
   }
 }
 
-function addGltfAnimations(manager: AnimationManager, container: AssetContainer): void {
-  const groups = container.animationGroups ?? [];
+// car.glb には車輪アニメーションが埋め込まれていないため、
+// 本家チュートリアルと同様にコード側で作成する（4 輪でクリップを共有）。
+function addWheelAnimations(manager: AnimationManager, container: AssetContainer): void {
+  const wheelClip: PropertyAnimationClip = createPropertyAnimationClip(
+    "wheelAnimation",
+    [{
+      path: "rotation.y",
+      frameRate: 30,
+      interpolation: "linear",
+      keys: [
+        { frame: 0, value: 0 },
+        { frame: 30, value: -2 * Math.PI },
+      ],
+    }],
+    { frameRate: 30 },
+  );
 
-  for (const group of groups) {
-    group.loopAnimation = true;
-    group.isPlaying = true;
-    group.currentTime = 0;
-    group.speedRatio = 1;
+  const wheelNames = ["wheelRB", "wheelRF", "wheelLB", "wheelLF"] as const;
+  for (const name of wheelNames) {
+    const wheel = findNodeByName(container, name);
+    createPropertyAnimationGroup(manager, wheel, wheelClip, {
+      fromFrame: 0,
+      toFrame: 30,
+      loop: true,
+      speedRatio: 1,
+    });
   }
-
-  addAnimationGroups(manager, groups);
 }
 
 function addCarMovementAnimation(manager: AnimationManager, car: SceneNode): void {
@@ -1027,7 +1050,7 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   car.position.set(-3, 0.16, 8);
 
   const animationManager = createAnimationManager({ engine });
-  addGltfAnimations(animationManager, carContainer);   // car.glb 内蔵の車輪回転
+  addWheelAnimations(animationManager, carContainer);  // 4 輪の回転（コード側で作成）
   addCarMovementAnimation(animationManager, car);      // 村の中を Z 方向へ走行
 
   onBeforeRender(scene, (deltaMs: number) => {
@@ -1038,9 +1061,9 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 }
 ```
 
-> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/7
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/8
 >
-> `car.glb` の描画メッシュ名は `gltf_mesh_0` などになるため、`getContainerMeshes()` ではなく `AssetContainer.entities` のノード階層から glTF ノード名 `"car"` を探します。車体移動は `frame 0 = position.z: 8`、`frame 150 = -7`、`frame 200 = -7` で、5 秒走行して約 1.67 秒停止してからループします。
+> `car.glb` の描画メッシュ名は `gltf_mesh_0` などになるため、`getContainerMeshes()` ではなく `AssetContainer.entities` のノード階層から glTF ノード名 `"car"` / `"wheelRB"` 等を探します。車輪は `frame 0 = rotation.y: 0`、`frame 30 = -2π` なので 1 秒で 1 回転します。車体移動は `frame 0 = position.z: 8`、`frame 150 = -7`、`frame 200 = -7` で、5 秒走行して約 1.67 秒停止してからループします。
 
 ---
 
