@@ -69,7 +69,7 @@ Babylon.js の公式日本語チュートリアル本
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
 | 4-00 | コリジョン回避 | — | 導入 |
-| 4-01 | 車の衝突事故を回避する | △ | `intersectsMesh` ヘルパーは未確認。`boundMin`／`boundMax` の AABB 判定や Ray Casting/Picking（✅）で自作。物理は Havok V2 サブセット（⚡） |
+| 4-01 | 車の衝突事故を回避する | △ | **`intersectsMesh` は—**（AABB の重なり判定を自作）。**`material.wireframe` も—**（line-list 非対応 → 12 辺を細円柱で描画）。歩行キャラは `Xbot.glb` に置換。`loadGltf` は glTF ルートに x スケール `-1` を入れるため、判定はローカル座標へ揃える。Ray Casting/Picking（✅）でより厳密な判定も可。物理は Havok V2 サブセット（⚡） |
 
 ### 第5部：環境改善
 
