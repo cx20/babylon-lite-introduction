@@ -1375,7 +1375,13 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 }
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/DZDR5Q/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 村を歩き回る Xbot"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DZDR5Q/v/1
+> （上のプレビューは [GitHub Pages 版](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation.html#村を歩かせる) でのみ表示されます）
 >
 > Xbot が持つクリップは `idle` / `agree` / `run` / `sad_pose` / `walk` / `sneak_pose` / `headShake` です。
 > `stopAnimation` で全停止してから `walk` だけを再生しないと、`idle` が重なって足が動きません。
