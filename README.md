@@ -1,0 +1,52 @@
+# Babylon Lite 入門 — Babylon.js チュートリアル移植集
+
+[Babylon.js チュートリアル日本語版（chomado）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja) の全 33 章を、
+**[Babylon Lite](https://doc.babylonjs.com/lite/)（WebGPU 専用の軽量 3D エンジン）** で再現できるか検証し、
+再現できたものを章別のサンプル集としてまとめたものです。
+
+最終的に「**Xbot が村の道を歩く三人称シーン**」に到達します。
+
+## 読む
+
+**→ [章別サンプル集を読む](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/)**（GitHub Pages 版）
+
+各章には **Lite Playground の実行プレビュー（iframe）を埋め込んで**あります。
+プレビューが表示されるのは Pages 版だけです — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、
+併記したスニペットのリンクから Playground を開いてください。
+
+| パート | 内容 | GitHub で読む | プレビュー付き |
+|---|---|---|---|
+| 第1部 | 基礎（Hello World / モデル読込 / セットアップ） | [01-basics.md](./docs/tutorial-lite/01-basics.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/01-basics.html) |
+| 第2部 | 村の構築（地面 / メッシュ / テクスチャ / コピー） | [02-village.md](./docs/tutorial-lite/02-village.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/02-village.html) |
+| 第3部 | アニメーション（親子 / 車 / キャラ歩行） | [03-animation.md](./docs/tutorial-lite/03-animation.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation.html) |
+| 第4部 | 衝突回避 | [04-collisions.md](./docs/tutorial-lite/04-collisions.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions.html) |
+| 第5部 | 環境（丘 / 空 / スプライトの木） | [05-environment.md](./docs/tutorial-lite/05-environment.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment.html) |
+| 第6部 | パーティクル効果 | [06-particles.md](./docs/tutorial-lite/06-particles.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles.html) |
+| ゴール | 完成版（村を歩く Xbot） | [99-goal-final.md](./docs/tutorial-lite/99-goal-final.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/99-goal-final.html) |
+
+対応可否の全体像は **[tutorial-compatibility.md](./docs/tutorial-compatibility.md)**
+（[プレビュー付き](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-compatibility.html)）にまとめています。
+
+## 対応可否のまとめ
+
+導入章 5 つを除く 28 章の内訳です。
+
+| 判定 | 章数 | 割合 | 主な内容 |
+|---|:--:|:--:|---|
+| ○ 対応可 | 19 | 68% | 造形・変換・マテリアル・ライト・カメラ・親子関係・スケルタルアニメ・地形・スカイボックス |
+| △ 条件付き | 6 | 21% | `MergeMeshes` / `FollowCamera` / `movePOV` / box の `faceUV` などのヘルパー欠如を自作で回避 |
+| ✕ 未対応 | 3 | 11% | サウンド（2-02）とパーティクル（6-00 / 6-01） |
+
+村チュートリアルの中核はほぼ再現できます。詰まる 3 章は音声とパーティクルに集約されます。
+
+## 動作環境
+
+- **WebGPU 対応ブラウザ**（Chrome / Edge 113+ など）
+- 実行は [Babylon Lite Playground](https://liteplayground.babylonjs.com) が最速（インストール不要）
+- アセットは Playground の相対パスでは解決しないため、すべて `https://` 絶対 URL で参照します
+
+## ライセンス・出典
+
+- 原典：[Babylon.js チュートリアル日本語版](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)（chomado）／[Babylon.js Getting Started](https://doc.babylonjs.com/features/introductionToFeatures)
+- 移植先：[Babylon Lite](https://github.com/BabylonJS/Babylon-Lite)
+- アセットは `assets.babylonjs.com` / `playground.babylonjs.com` のものを参照しています
