@@ -62,7 +62,7 @@ Babylon.js の公式日本語チュートリアル本
 | 3-04 | 車輪のアニメーション | ○ | `createPropertyAnimationClip`（rotation キーフレーム）✅、またはレンダーループで回転 |
 | 3-05 | 車のアニメーション | ○ | プロパティアニメ（position キーフレーム、LINEAR/STEP/CUBICSPLINE）✅ |
 | 3-06 | キャラクターのアニメーション | ○※ | **Skeletal Animation✅＋Animation Groups✅**。ただし **Dude.babylon そのままは不可**（`.babylon` はスキン/アニメ非対応）→ **glTF（例：Xbot.glb）に置換で歩行/走行まで検証済み対応** |
-| 3-07 | 村を歩き回る | △ | **`FollowCamera` は—**。`ArcRotateCamera`／`FreeCamera`＋毎フレーム target 追従で自作 |
+| 3-07 | 村を歩き回る | △ | **`mesh.movePOV`／`mesh.rotate` は—**（ヨー角スカラーを保持して `position`／`rotationQuaternion` を自前更新）。**`FollowCamera` も—**（`ArcRotateCamera`＋毎フレーム target 追従、または `camera.parent` で自作）。線の軌道は `CreateLines` が無いため細円柱＋無照明マテリアルで代替。歩行キャラは 3-06 と同じく **`Dude.babylon` 不可 → `Xbot.glb` に置換** |
 
 ### 第4部：衝突回避
 
