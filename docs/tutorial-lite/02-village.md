@@ -69,6 +69,11 @@ ground.material = createStandardMaterial();
 addToScene(scene, ground);
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/2?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-03 メッシュを設置 / A. 位置を指定しない場合（めり込む）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/2
 
 ### B. 地面の上に載せる（`position.y` を指定）
@@ -88,6 +93,11 @@ const ground = createGround(engine, { width: 10, height: 10 });
 ground.material = createStandardMaterial();
 addToScene(scene, ground);
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/3?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-03 メッシュを設置 / B. 地面の上に載せる（position.y を指定）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/3
 >
@@ -134,6 +144,11 @@ ground.material = createStandardMaterial();
 addToScene(scene, ground);
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/4?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-04 基本的な家"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/4
 >
 > `createCylinder` はオプションオブジェクト（`{ diameter, height, tessellation }`）をそのまま渡せます（`tessellation` は最小 3 にクランプ）。
@@ -172,6 +187,11 @@ const houseMat = createStandardMaterial();
 houseMat.diffuseTexture = floorTex;
 house.material = houseMat;
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/5?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-05 テクスチャを貼る"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/5
 >
@@ -283,6 +303,11 @@ roof.position.y = 1.22;
 addToScene(scene, roof);
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/6?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-06 マテリアル（面ごと/faceUV） / A. 一軒家"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/6
 
 ### B. Semi Detached House（2 戸 1 棟）— `semihouse.png`
@@ -319,6 +344,11 @@ roof.rotation.z = Math.PI / 2;
 roof.position.y = 1.22;
 addToScene(scene, roof);
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/7?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-06 マテリアル（面ごと/faceUV） / B. Semi Detached House（2 戸 1 棟）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/7
 
@@ -569,6 +599,11 @@ function buildGround(engine: EngineContext): Mesh {
 }
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/9?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-09 メッシュをコピー"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/9
 >
 > **コピーするには** `cloneTransformNode(house)` を使います（ノードツリーは deep-clone、メッシュは GPU バッファ共有の
@@ -682,6 +717,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/10?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-09 メッシュをコピー / 村を配置する"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/10
 >

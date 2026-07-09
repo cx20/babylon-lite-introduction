@@ -41,6 +41,11 @@ ground.material = groundMat;
 addToScene(scene, ground);
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 1-01 ハローワールド！最初のシーンとモデル"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > ⚠️ **マテリアル必須**：Lite にはデフォルトマテリアルが無く、`material` 未設定のメッシュは
 > `addToScene` されても**描画されません（エラーも出ません）**。プリミティブには必ず
 > `createStandardMaterial()` / `createPbrMaterial()` を割り当ててください（→ [README の落とし穴](./README.md#重要な落とし穴共通)）。
@@ -137,6 +142,7 @@ for (const e of container.entities) {
 | (2) | 頂点データが inline でなく **`geometries` 参照型**（`mesh.geometryId` → `geometries.vertexData[]`） | ローダーが `geometryId` を処理せず全メッシュが無言でスキップ → 紫背景だけ | JSON を fetch して `vertexData` をメッシュに inline 化し、Blob URL で渡す |
 
 `both_houses_scene.babylon` は **両方**を踏むため、次の完全版で表示できます。
+
 動作確認済み（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/1
 
 ```typescript
@@ -179,6 +185,11 @@ for (const mesh of getContainerMeshes(container)) {
 }
 addToScene(scene, container);
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 1-03 モデルを扱う / D. 既知の制約と回避策（.babylon ローダー）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > `getContainerMeshes(container)` は AssetContainer からメッシュを取り出すヘルパーです。
 > `loadBabylon` のオプションには `loadTextures` / `loadCamera` / `maxMeshes` があります。
