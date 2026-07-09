@@ -174,6 +174,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 }
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-01 メッシュの親子関係 / 応用：親子ボックス＋ローカル/ワールド座標軸ビューア"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/0
 >
 > **省略した補助関数**（完全版は Playground 参照）：
@@ -311,6 +316,11 @@ const wheels = [wheelRB, wheelRF, wheelLB, wheelLF];
 
 addToScene(scene, car);   // 4 輪も再帰的に追加される
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-02 車を組み立てる"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/1
 >
@@ -481,6 +491,11 @@ car.material = carMat;
 addToScene(scene, car);
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/2?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-03 車のマテリアル / 車体に画像を張っていく"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/2
 >
 > `wrap: true` の側面 UV は、各辺ごとに同じ画像を繰り返すのではなく、累積周長を全周長で正規化して `faceUV[1]` の範囲へ割り当てます。輪郭中の重複点は長さ 0 の辺として累積長に影響しないため、ジオメトリ生成ではスキップして構いません。
@@ -640,6 +655,11 @@ const wheels = [wheelRB, wheelRF, wheelLB, wheelLF];
 car.rotation.x = -Math.PI / 2; // 押し出し方向を車幅方向へ向ける
 ```
 
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/3?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-03 車のマテリアル / 車輪に画像を張っていく"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/3
 >
 > `wheelFaceUV[1] = [0, 0.5, 0, 0.5]` は u/v の範囲を持たないため、側面の全頂点が `wheel.png` 上の同一点を参照します。これによりタイヤ外周は画像を引き伸ばさず、黒い帯として見せられます。
@@ -706,6 +726,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/4?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-04 車輪のアニメーション"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/4
 >
@@ -795,6 +820,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/5?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-04 車輪のアニメーション / 他の車輪も回す"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/5
 >
@@ -925,6 +955,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/6?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-05 車のアニメーション"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/6
 >
@@ -1060,6 +1095,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/BY4KF1/v/8?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-05 車のアニメーション / 村の中を走らせる"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/8
 >
@@ -1213,6 +1253,11 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   return scene;
 }
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DZDR5Q/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 3-07 村を歩き回る / 移動と回転"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DZDR5Q/v/0
 >
@@ -1381,7 +1426,6 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
         style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DZDR5Q/v/1
-> （上のプレビューは [GitHub Pages 版](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation.html#村を歩かせる) でのみ表示されます）
 >
 > Xbot が持つクリップは `idle` / `agree` / `run` / `sad_pose` / `walk` / `sneak_pose` / `headShake` です。
 > `stopAnimation` で全停止してから `walk` だけを再生しないと、`idle` が重なって足が動きません。

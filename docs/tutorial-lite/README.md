@@ -23,6 +23,11 @@
 - 実行は [Babylon Lite Playground](https://liteplayground.babylonjs.com) が最速（インストール不要）
 - アセットは Playground 相対パスでは解決しないため、すべて `https://` 絶対 URL で参照します
 
+> 各章のサンプルには、[Lite Playground の embed 機能](https://doc.babylonjs.com/lite/04-playground)（`?embed=runner`）による
+> **実行プレビューを埋め込んでいます**。プレビューが見えるのは
+> [GitHub Pages 版](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/README.html) だけです
+> — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、併記したスニペットのリンクから開いてください。
+
 ## 共通テンプレート
 
 各章のサンプルは、次のテンプレートの `★ ここに各章のコード ★` の位置に貼り付ける前提です。
