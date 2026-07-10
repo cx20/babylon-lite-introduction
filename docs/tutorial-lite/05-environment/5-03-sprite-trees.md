@@ -83,7 +83,6 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/7
 >
 > 本家の `Sprite` は既定サイズ 1 相当ですが、そのままだと村に対して大きいので `sizeWorld = [1, 2]` に縮めています。
-> フル機能の `SpriteManager` API（アニメーションフレーム等）は未対応です。
 
 ## Y 軸ロックにする
 
@@ -110,6 +109,73 @@ addAxisLockedBillboardSystem(scene, trees);
 > `addBillboardSprite` はハンドルを返し、`addBillboardSpriteIndex` はインデックスを返します。あとから
 > 個別に動かす／消すなら前者、追加しっぱなしなら後者で十分です。
 > この Y 軸ロック版は [ゴール完成版](../99-goal-final.md) で使っています。
+
+## スプライトのアニメーション
+
+スプライトシートのフレームを順に送るアニメーションもできます。村の上空に `ufo.png` を浮かべます。
+
+本家は `SpriteManager` にセルサイズを渡し、`Sprite` に対して `playAnimation(from, to, loop, delayMs)` を呼びます。
+
+```javascript
+const mgr = new SpriteManager("UFO", "...ufo.png", 1, { width: 128, height: 76 });
+const ufo = new Sprite("ufo", mgr);
+ufo.playAnimation(0, 16, true, 125);   // from, to, loop, delayMs
+```
+
+Lite では、ビルボードシステムに**スプライトアニメーションマネージャ**を組み合わせます。
+
+1. `loadSpriteAtlas(engine, url, { gridSize: [128, 76] })` — `ufo.png` は 640×304 なので 5 列 × 4 行 = 20 フレーム
+2. `addBillboardSprite(...)` の**戻り値（ハンドル）を保持**する
+3. `createSpriteAnimationManager()` を作り、`playBillboardSpriteAnimation(mgr, handle, 0, 16, true, 125)` で再生
+4. `createAnimationManager({ engine })` に `addSpriteAnimationManager` で結び、`onBeforeRender` で `updateAnimationManager` を呼ぶ
+
+追加 import：`createSpriteAnimationManager, playBillboardSpriteAnimation, createAnimationManager, addSpriteAnimationManager, updateAnimationManager, onBeforeRender`
+
+```typescript
+const UFO_URL = "https://assets.babylonjs.com/environments/ufo.png";
+
+const ufoAtlas = await loadSpriteAtlas(engine, UFO_URL, { gridSize: [128, 76] });   // 5 列 × 4 行 = 20 フレーム
+
+const ufoSystem = createFacingBillboardSystem(ufoAtlas, {
+  capacity: 1,
+  blendMode: billboardBlendCutout,
+  alphaCutoff: 0.5,
+});
+
+// 本家: position.y = 5, z = 0 / width = 2, height = 1 / 先頭フレーム 0
+const ufoHandle = addBillboardSprite(ufoSystem, {
+  position: [0, 5, 0],
+  sizeWorld: [2, 1],
+  frame: 0,
+});
+addFacingBillboardSystem(scene, ufoSystem);
+
+// 本家 playAnimation(0, 16, true, 125) 相当
+const spriteAnim = createSpriteAnimationManager();
+playBillboardSpriteAnimation(spriteAnim, ufoHandle, 0, 16, true, 125);
+
+// AnimationManager は自動では進まないので、毎フレーム更新する（→ 3-05 と同じ）
+const animationManager = createAnimationManager({ engine });
+addSpriteAnimationManager(animationManager, spriteAnim);
+onBeforeRender(scene, (deltaMs: number) => {
+  updateAnimationManager(animationManager, deltaMs);
+});
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/8?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-03 木のスプライト / スプライトのアニメーション"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/8
+>
+> `gridSize` は木のときと同じく**セルのピクセルサイズ**です。`[128, 76]` はシート 1 コマの大きさで、
+> 画像全体（640×304）が自動的に 20 フレームへ分割されます。20 フレームのうち `0`〜`16` を使います。
+>
+> ハンドル版の `addBillboardSprite` を使うのは、`playBillboardSpriteAnimation` にそのハンドルを渡すためです。
+> インデックス版なら `playBillboardSpriteIndexAnimation` を使います。
+>
+> `AnimationManager` が自動では進まない点は 3-05 と同じで、`onBeforeRender` から `updateAnimationManager(manager, deltaMs)` を呼びます。
 
 ---
 
