@@ -1,8 +1,8 @@
 # Babylon.js チュートリアル × Babylon Lite 対応可否検証
 
-Babylon.js の公式日本語チュートリアル本
-[「Babylon.js チュートリアル日本語版」（chomado）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)
-の全 33 章を、**Babylon Lite（WebGPU 専用の軽量 3D エンジン）** で再現できるか記事単位で検証した結果です。
+Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（全 8 章）
+を、**Babylon Lite（WebGPU 専用の軽量 3D エンジン）** で再現できるか節単位で検証した結果です
+（1〜6 章は [chomado 氏の日本語訳](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)に対応）。
 
 判定は Babylon Lite の一次情報に基づきます。
 
@@ -22,7 +22,7 @@ Babylon.js の公式日本語チュートリアル本
 
 ---
 
-## 全 33 章 対応可否テーブル
+## 全 8 章 対応可否テーブル
 
 ### 第1部：基礎
 
@@ -43,7 +43,7 @@ Babylon.js の公式日本語チュートリアル本
 | 2-02 | サウンドを追加 | ○ | **AudioV2 ポートのオーディオエンジン搭載**✅。`createAudioEngineAsync`＋`createSoundAsync`（`loop` / `autoplay` オプション、`playSound` / `pauseSound` ほか）。ストリーミング音源・3D 空間定位（`SpatialSoundOptions`）まで対応 |
 | 2-03 | メッシュを設置 | ○ | `position`／`scaling`（ObservableVec3）✅ |
 | 2-04 | 基本的な家 | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
-| 2-05 | テクスチャを貼る | ○ | 2D テクスチャ✅、UV スケール/オフセット✅ |
+| 2-05 | テクスチャを貼る | ○ | 2D テクスチャ✅。UV タイリングは **`material.uvScale`**（既定 `[1,1]`）。本家の per-texture `uScale/vScale/uOffset/vOffset` とは流儀が違い、**オフセット相当のフィールドは無い** |
 | 2-06 | マテリアル（面ごと/faceUV） | △ | **box の faceUV/wrap/width は `createBox` 非対応**（`size` 数値のみ）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
 | 2-07 | リファクタリング（関数化） | ○ | 純粋な JS 設計、エンジン非依存 |
 | 2-08 | メッシュを結合 | △ | **`Mesh.MergeMeshes` 相当は無し**（コード検索 0 件）。`CSG2` union／thin instances／手動頂点結合で代替 |
@@ -84,20 +84,42 @@ Babylon.js の公式日本語チュートリアル本
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 6-00 | パーティクル噴水 | ✕ | **Particle System は—（未対応）** |
-| 6-01 | 旋盤で回された噴水 | ✕ | Particle System 未対応のため噴水（主目的）は—。**`CreateLathe` も無い**が、器の回転体は `createRibbon`（`pathArray`＋`closeArray`）で忠実に再現可（本家 Lathe は内部で Ribbon 実装）。`DOUBLESIDE` は `backFaceCulling=false` |
+| 6-00 | パーティクル噴水 | — | 導入（器 6-01 ＋ スプレー 6-02 ＋ スイッチ 6-03） |
+| 6-01 | 旋盤で回された噴水 | △ | `createLathe` メソッドで器を作る章。Lite に `createLathe` は無く **`createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`） |
+| 6-02 | パーティクルのスプレー | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
+| 6-03 | スイッチ オン イベント | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋ピッキング（`pickBillboardSprite`／Ray Cast）。土台は 6-02 の NPE パーティクル |
+
+### 第7部：光と影（骨組み・サンプル準備中）
+
+| 章 | タイトル | 判定 | 根拠・代替手段 |
+|---|---|:--:|---|
+| 7-00 | 光と影（導入） | — | 導入 |
+| 7-01 | ライトを灯す | ○ | `createPointLight`／`createDirectionalLight`／`createSpotLight`✅ |
+| 7-02 | 影を追加 | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
+| 7-03 | 昼から夜へ | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
+
+### 第8部：世界の見方（骨組み・サンプル準備中）
+
+| 章 | タイトル | 判定 | 根拠・代替手段 |
+|---|---|:--:|---|
+| 8-00 | 世界の見方（導入） | — | 導入 |
+| 8-01 | 見回す | ○ | `createFreeCamera`＋`attachFreeControl`✅（本家 `UniversalCamera` 相当）。周回は `ArcRotateCamera` |
+| 8-02 | キャラを追う | △ | **`FollowCamera` は無い**→ `camera.parent`（3-07 で確立）＋`setCameraLimits` |
+| 8-03 | VR の世界へ | ✕ | **WebXR/XR の export が0件**。`createDefaultXRExperienceAsync` 相当なし |
 
 ---
 
-## 集計（導入章 5 を除く 28 章）
+## 集計（導入章 8 を除く 35 章）
 
 | 判定 | 章数 | 割合 |
 |---|:--:|---|
-| ○ 対応可 | 20 | 71% |
-| △ 条件付き | 6 | 21% |
-| ✕ 未対応 | 2 | 7% |
+| ○ 対応可 | 23 | 66% |
+| △ 条件付き | 11 | 31% |
+| ✕ 未対応 | 1 | 3% |
 
-**総括:** 造形・変換・マテリアル・テクスチャ・ライト・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL・**オーディオ（AudioV2）**まで、村チュートリアルの中核はほぼ再現可能。詰まる 2 章は **パーティクル (6-00 / 6-01)** に集約される。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）と ②部分対応機能（Sprites ⚡）。①は自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
+> 純粋に未対応（✕）は **8-03（WebXR / VR）** の 1 章のみ。パーティクル（第6部）は NPE 経由、音声（2-02）は AudioV2 で対応します。
+
+**総括:** 造形・変換・マテリアル・テクスチャ・ライト・**影**・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL・**オーディオ（AudioV2）**・**パーティクル（NPE）**まで、チュートリアルの中核はほぼ再現可能。純粋に詰まるのは **WebXR (8-03)** のみ。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）、②作り方が異なる機能（パーティクルは NPE、GUI は HTML 側）、③部分対応機能（Sprites ⚡）。いずれも自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
 
 ---
 
@@ -112,7 +134,7 @@ Babylon.js の公式日本語チュートリアル本
 | `mesh.createInstance()` | Thin Instances（`InstancedMesh` は🚫） |
 | `Mesh.MergeMeshes([...])` | 非対応 → `CSG2` union ／ 手動結合 |
 | `new BABYLON.Sound(...)` | `createAudioEngineAsync` ＋ `createSoundAsync`（AudioV2 ポート） |
-| `new ParticleSystem(...)` | 非対応 |
+| `new ParticleSystem(...)` | Node Particles（NPE）：`parseNodeParticleSetFromSnippet` ＋ `registerNodeParticleSet` |
 
 ---
 

@@ -1,8 +1,8 @@
 # Babylon Lite 入門 — Babylon.js チュートリアル移植集
 
-[Babylon.js チュートリアル日本語版（chomado）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja) の全 33 章を、
+Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（全 8 章）を
 **[Babylon Lite](https://doc.babylonjs.com/lite/)（WebGPU 専用の軽量 3D エンジン）** で再現できるか検証し、
-再現できたものを章別のサンプル集としてまとめたものです。
+章別のサンプル集としてまとめたものです（1〜6 章は [chomado 氏の日本語訳](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)に対応）。
 
 最終的に「**Xbot が村の道を歩く三人称シーン**」に到達します。
 
@@ -14,7 +14,7 @@
 プレビューが表示されるのは Pages 版だけです — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、
 併記したスニペットのリンクから Playground を開いてください。
 
-全 33 章を**章ごとのファイル**に分けています。各パートの索引から章を選んでください。
+本家 Getting Started 全 8 章を**章ごとのファイル**に分けています。各パートの索引から章を選んでください（第7部・第8部は骨組みを用意し、サンプルを順次追加中）。
 
 | パート | 章 | 内容 | GitHub で読む | プレビュー付き |
 |---|:--:|---|---|---|
@@ -23,22 +23,24 @@
 | 第3部 | 3-00〜3-07 | アニメーション（親子 / 車 / キャラ歩行） | [03-animation/](./docs/tutorial-lite/03-animation/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation/) |
 | 第4部 | 4-00〜4-01 | 衝突回避 | [04-collisions/](./docs/tutorial-lite/04-collisions/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions/) |
 | 第5部 | 5-00〜5-03 | 環境（丘 / 空 / スプライトの木） | [05-environment/](./docs/tutorial-lite/05-environment/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment/) |
-| 第6部 | 6-00〜6-01 | パーティクル効果 | [06-particles/](./docs/tutorial-lite/06-particles/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles/) |
+| 第6部 | 6-00〜6-03 | パーティクル効果（器 / スプレー / スイッチ） | [06-particles/](./docs/tutorial-lite/06-particles/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles/) |
+| 第7部 | 7-00〜7-03 | 光と影（ライト / 影 / 昼夜） | [07-lights/](./docs/tutorial-lite/07-lights/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/07-lights/) |
+| 第8部 | 8-00〜8-03 | 世界の見方（カメラ / 追従 / VR） | [08-cameras/](./docs/tutorial-lite/08-cameras/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/08-cameras/) |
 
 対応可否の全体像は **[tutorial-compatibility.md](./docs/tutorial-compatibility.md)**
 （[プレビュー付き](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-compatibility.html)）にまとめています。
 
 ## 対応可否のまとめ
 
-導入章 5 つを除く 28 章の内訳です。
+導入章 7 つを除く 34 章の内訳です（本家 Getting Started 全 8 章基準。第7部・第8部は骨組み）。
 
 | 判定 | 章数 | 割合 | 主な内容 |
 |---|:--:|:--:|---|
-| ○ 対応可 | 20 | 71% | 造形・変換・マテリアル・ライト・カメラ・親子関係・スケルタルアニメ・地形・スカイボックス・オーディオ |
-| △ 条件付き | 6 | 21% | `MergeMeshes` / `FollowCamera` / `movePOV` / box の `faceUV` などのヘルパー欠如を自作で回避 |
-| ✕ 未対応 | 2 | 7% | パーティクル（6-00 / 6-01） |
+| ○ 対応可 | 23 | 68% | 造形・変換・マテリアル・ライト・影・カメラ・親子関係・スケルタルアニメ・地形・スカイボックス・オーディオ |
+| △ 条件付き | 10 | 29% | `MergeMeshes` / `FollowCamera` / `movePOV` / box の `faceUV` の欠如、パーティクル（NPE）・GUI（HTML 側）など作り方が異なるもの |
+| ✕ 未対応 | 1 | 3% | WebXR / VR（8-03） |
 
-村チュートリアルの中核はほぼ再現できます。詰まる 2 章はパーティクルに集約されます。
+チュートリアルの中核はほぼ再現できます。純粋に詰まるのは WebXR（8-03）のみで、パーティクルは NPE、音声は AudioV2 で対応します。
 
 ## 動作環境
 

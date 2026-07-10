@@ -1,14 +1,15 @@
-# 6-00 パーティクル噴水 (Build a Particle Fountain) — ✕
+# 6-00 パーティクル噴水 (Build a Particle Fountain) — 導入
 
 > [第6部：パーティクル効果](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
-**Lite に Particle System はありません**（機能比較表：Particle System —）。CPU/GPU パーティクル、`ParticleSystem` 相当が未実装のため、噴水の粒子表現は再現できません。
+**—** 噴水を題材に、器のメッシュとパーティクルの水しぶきを組み合わせます。
 
-代替の方向性（近似）：
-- 少数の球メッシュ＋ thin instances を `onBeforeRender` で放物運動させる自前の簡易パーティクル
-- ただし本格的なエミッタ/寿命/ブレンド制御は無く、労力に見合いません
+- [6-01 旋盤で回された噴水](./6-01-lathe-fountain.md) — `createLathe` 相当で噴水の**器**を作る
+- [6-02 パーティクルのスプレー](./6-02-particle-spray.md) — 基本的な**パーティクルシステム**の作り方
+- [6-03 スイッチ オン イベント](./6-03-switch-on-event.md) — **クリックで**パーティクルを開始/停止する
 
-> パーティクルが必須のシーンは、現状 Babylon.js 側が適しています。
+Lite でも噴水は作れますが、パーティクルの作り方が本家（命令的な `new ParticleSystem`）と異なり、
+**Node Particle Editor (NPE)** でグラフを組んで読み込む形になります。詳しくは 6-02 を参照してください。
 
 ---
 
