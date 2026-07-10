@@ -7,7 +7,7 @@
 |---|---|:--:|
 | 2-00 | [村を作る](./2-00-build-village.md) | 導入 |
 | 2-01 | [地面 (Grounding)](./2-01-grounding.md) | ○ |
-| 2-02 | [サウンドを追加](./2-02-add-sound.md) | ✕ |
+| 2-02 | [サウンドを追加](./2-02-add-sound.md) | ○ |
 | 2-03 | [メッシュを設置 (Place and Scale)](./2-03-place-and-scale.md) | ○ |
 | 2-04 | [基本的な家 (A Basic House)](./2-04-basic-house.md) | ○ |
 | 2-05 | [テクスチャを貼る (Add Texture)](./2-05-add-texture.md) | ○ |
