@@ -85,7 +85,7 @@ Babylon.js の公式日本語チュートリアル本
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
 | 6-00 | パーティクル噴水 | ✕ | **Particle System は—（未対応）** |
-| 6-01 | 旋盤で回された噴水 | ✕ | Particle System 未対応＋**`CreateLathe` も無し**（回転体は ribbon/tube で近似可だが噴水が主目的） |
+| 6-01 | 旋盤で回された噴水 | ✕ | Particle System 未対応のため噴水（主目的）は—。**`CreateLathe` も無い**が、器の回転体は `createRibbon`（`pathArray`＋`closeArray`）で忠実に再現可（本家 Lathe は内部で Ribbon 実装）。`DOUBLESIDE` は `backFaceCulling=false` |
 
 ---
 
