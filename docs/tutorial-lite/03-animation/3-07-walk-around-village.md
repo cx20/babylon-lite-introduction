@@ -310,15 +310,15 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 3, { x: 0, y: 1, z: 0 });
 scene.camera = camera;
 attachControl(camera, canvas, scene);
-camera.parent = root;                                             // FollowCamera 代替
+camera.parent = root;                                    // FollowCamera 代替
 
-onBeforeRender(scene, () => {
-  if (camera.beta > Math.PI / 2.2) camera.beta = Math.PI / 2.2;   // upperBetaLimit 代替
-});
+setCameraLimits(camera, { upperBetaLimit: Math.PI / 2.2 });   // 地面より下へ回り込まない
 ```
 
 > RH→LH 変換の影響で前後が反転するので、カメラ角は `alpha = -Math.PI/2`（背後）にします。
-> `upperBetaLimit` フィールドは無いので、毎フレーム `camera.beta` を clamp します。
+> `upperBetaLimit` は Lite の `ArcRotateCamera` にもあり、`attachControl` の毎フレーム処理で制限が効きます。
+> **`setCameraLimits` 経由が本来の作法**で、現在の姿勢が即座にクランプされるため、慣性による行き過ぎ→スナップのブレを避けられます
+> （`camera.upperBetaLimit = …` の直接代入でも制限自体は効きます）。
 > 追従カメラ＋ウェイポイント歩行を組み込んだ完全版は [ゴール完成版](../99-goal-final.md) を参照してください。
 
 ---

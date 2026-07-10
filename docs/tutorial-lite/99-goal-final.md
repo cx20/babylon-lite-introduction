@@ -23,7 +23,7 @@
 | 木が地面から下にぶら下がる | `pivot` の縦が上端基準 | `pivot: [0.5, 1]`（下端＝根元） |
 | カメラの前後が逆 | glTF の RH→LH 変換で向きが 180° ズレ | `alpha = -Math.PI/2`（背後） |
 | キャラが巨大 | Xbot は等身大、村スケールと差 | `root.scaling = 0.25` |
-| `upperBetaLimit` が無い | Lite にフィールドなし | 毎フレーム `camera.beta` を clamp |
+| カメラが地面より下へ回り込む | 既定でオービット制限なし | `setCameraLimits(camera, { upperBetaLimit })` |
 | `.babylon` の歩行アニメが出ない | `.babylon` はスキン/アニメ非対応 | glTF（`Xbot.glb`）に置換 |
 
 ## 完成コード
@@ -31,7 +31,7 @@
 ```typescript
 import {
   createEngine, createSceneContext,
-  createArcRotateCamera, attachControl,
+  createArcRotateCamera, attachControl, setCameraLimits,
   createHemisphericLight, createDirectionalLight,
   addToScene, onBeforeRender, registerScene, startEngine,
   loadGltf, playAnimation, stopAnimation,
@@ -70,6 +70,7 @@ async function main(): Promise<void> {
   scene.camera = camera;
   attachControl(camera, canvas, scene);
   camera.parent = root;
+  setCameraLimits(camera, { upperBetaLimit: Math.PI / 2.2 });   // 地面より下へ回り込まない
 
   // --- 村（壁の裏抜け対策：両面描画へ）---
   const village = await loadGltf(engine, "https://assets.babylonjs.com/meshes/valleyvillage.glb");
@@ -131,9 +132,6 @@ async function main(): Promise<void> {
       root.position.x += dx * speed;
       root.position.z += dz * speed;
     }
-
-    // upperBetaLimit = π/2.2 の代替
-    if (camera.beta > Math.PI / 2.2) camera.beta = Math.PI / 2.2;
   });
 
   await registerScene(scene);
