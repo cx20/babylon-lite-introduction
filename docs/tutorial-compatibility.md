@@ -40,7 +40,7 @@ Babylon.js の公式日本語チュートリアル本
 |---|---|:--:|---|
 | 2-00 | 村を作る | — | 概要 |
 | 2-01 | 地面 (Grounding) | ○ | `createGround`✅ |
-| 2-02 | サウンドを追加 | ✕ | **音声エンジン非搭載**（`KHR_audio` も—）。Web Audio API を直接叩けば鳴らせるがエンジン機能外 |
+| 2-02 | サウンドを追加 | ○ | **AudioV2 ポートのオーディオエンジン搭載**✅。`createAudioEngineAsync`＋`createSoundAsync`（`loop` / `autoplay` オプション、`playSound` / `pauseSound` ほか）。ストリーミング音源・3D 空間定位（`SpatialSoundOptions`）まで対応 |
 | 2-03 | メッシュを設置 | ○ | `position`／`scaling`（ObservableVec3）✅ |
 | 2-04 | 基本的な家 | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
 | 2-05 | テクスチャを貼る | ○ | 2D テクスチャ✅、UV スケール/オフセット✅ |
@@ -93,11 +93,11 @@ Babylon.js の公式日本語チュートリアル本
 
 | 判定 | 章数 | 割合 |
 |---|:--:|---|
-| ○ 対応可 | 19 | 68% |
+| ○ 対応可 | 20 | 71% |
 | △ 条件付き | 6 | 21% |
-| ✕ 未対応 | 3 | 11% |
+| ✕ 未対応 | 2 | 7% |
 
-**総括:** 造形・変換・マテリアル・テクスチャ・ライト・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL まで、村チュートリアルの中核はほぼ再現可能。詰まる 3 章は **音声 (2-02)・パーティクル (6-00 / 6-01)** に集約される。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）と ②部分対応機能（Sprites ⚡）。①は自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
+**総括:** 造形・変換・マテリアル・テクスチャ・ライト・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL・**オーディオ（AudioV2）**まで、村チュートリアルの中核はほぼ再現可能。詰まる 2 章は **パーティクル (6-00 / 6-01)** に集約される。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）と ②部分対応機能（Sprites ⚡）。①は自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
 
 ---
 
@@ -111,7 +111,7 @@ Babylon.js の公式日本語チュートリアル本
 | `skeleton.beginAnimation("walk")` | `AnimationGroup`（`loadGltf` が自動生成、既定 loop 再生） |
 | `mesh.createInstance()` | Thin Instances（`InstancedMesh` は🚫） |
 | `Mesh.MergeMeshes([...])` | 非対応 → `CSG2` union ／ 手動結合 |
-| `new BABYLON.Sound(...)` | 非対応 → Web Audio API |
+| `new BABYLON.Sound(...)` | `createAudioEngineAsync` ＋ `createSoundAsync`（AudioV2 ポート） |
 | `new ParticleSystem(...)` | 非対応 |
 
 ---
