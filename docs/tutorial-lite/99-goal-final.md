@@ -21,6 +21,7 @@
 |---|---|---|
 | 家が裏返って見える | 単面ポリゴンの壁が片面描画 | ロード後に `material.doubleSided = true` |
 | 木が地面から下にぶら下がる | `pivot` の縦が上端基準 | `pivot: [0.5, 1]`（下端＝根元） |
+| 木が 1 ピクセルにしか見えない | `gridSize` は分割数ではなく**セルのピクセルサイズ** | `gridSize: [512, 1024]`（`palm.png` の実寸） |
 | カメラの前後が逆 | glTF の RH→LH 変換で向きが 180° ズレ | `alpha = -Math.PI/2`（背後） |
 | キャラが巨大 | Xbot は等身大、村スケールと差 | `root.scaling = 0.25` |
 | カメラが地面より下へ回り込む | 既定でオービット制限なし | `setCameraLimits(camera, { upperBetaLimit })` |
@@ -83,7 +84,7 @@ async function main(): Promise<void> {
 
   // --- 木（軸ロック billboard、pivot 下端で接地）---
   const palm = await loadSpriteAtlas(engine, "https://playground.babylonjs.com/textures/palm.png", {
-    gridSize: [1, 1],
+    gridSize: [512, 1024],   // セルのピクセルサイズ。palm.png 全体で 1 フレーム
   });
   const trees = createAxisLockedBillboardSystem(palm, [0, 1, 0], { capacity: 1000 });
   const addTree = (x: number, z: number) =>
