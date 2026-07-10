@@ -78,7 +78,7 @@ Babylon.js の公式日本語チュートリアル本
 | 5-00 | より良い環境に | — | 導入 |
 | 5-01 | 遠くの丘 | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定 |
 | 5-02 | 頭上の空 | ○ | **`loadSkybox(scene, baseUrl, ext, size)`** で本家の `CreateBox`＋`CubeTexture`(SKYBOX_MODE)＋`backFaceCulling=false` を一発置換✅。IBL 環境光まで要るなら `loadEnvironment`（`brdfUrl` 必須）。`camera.upperBetaLimit` も**あり**（`setCameraLimits` 経由が作法） |
-| 5-03 | 木のスプライト | △ | **Sprites は部分対応（⚡）**：`loadSpriteAtlas`＋`createFacingBillboardSystem`／`createAxisLockedBillboardSystem`（cutout）で代替可。完全な `SpriteManager` API（アニメフレーム等）は無し。※`gridSize` は分割数でなく**セルのピクセルサイズ** |
+| 5-03 | 木のスプライト | △ | **Sprites は部分対応（⚡）**：`loadSpriteAtlas`＋`createFacingBillboardSystem`／`createAxisLockedBillboardSystem`（cutout）で代替可。**フレームアニメも `playBillboardSpriteAnimation`＋`SpriteAnimationManager` で対応**。`SpriteManager` / `Sprite` クラスそのものは無し。※`gridSize` は分割数でなく**セルのピクセルサイズ** |
 
 ### 第6部：パーティクル効果
 
