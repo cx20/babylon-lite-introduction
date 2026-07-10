@@ -14,7 +14,7 @@
 プレビューが表示されるのは Pages 版だけです — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、
 併記したスニペットのリンクから Playground を開いてください。
 
-全 33 章を**章ごとのファイル**に分けています。各パートの索引から章を選んでください。
+本家 Getting Started 全 8 章を**章ごとのファイル**に分けています。各パートの索引から章を選んでください（第7部・第8部は骨組みを用意し、サンプルを順次追加中）。
 
 | パート | 章 | 内容 | GitHub で読む | プレビュー付き |
 |---|:--:|---|---|---|
@@ -24,6 +24,8 @@
 | 第4部 | 4-00〜4-01 | 衝突回避 | [04-collisions/](./docs/tutorial-lite/04-collisions/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions/) |
 | 第5部 | 5-00〜5-03 | 環境（丘 / 空 / スプライトの木） | [05-environment/](./docs/tutorial-lite/05-environment/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment/) |
 | 第6部 | 6-00〜6-01 | パーティクル効果 | [06-particles/](./docs/tutorial-lite/06-particles/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles/) |
+| 第7部 | 7-00〜7-03 | 光と影（ライト / 影 / 昼夜） | [07-lights/](./docs/tutorial-lite/07-lights/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/07-lights/) |
+| 第8部 | 8-00〜8-03 | 世界の見方（カメラ / 追従 / VR） | [08-cameras/](./docs/tutorial-lite/08-cameras/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/08-cameras/) |
 
 対応可否の全体像は **[tutorial-compatibility.md](./docs/tutorial-compatibility.md)**
 （[プレビュー付き](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-compatibility.html)）にまとめています。

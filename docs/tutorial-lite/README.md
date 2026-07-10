@@ -70,6 +70,28 @@
 | 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | ✕ |
 | 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | ✕ |
 
+### [第7部：光と影](./07-lights/README.md)
+
+> ⚠️ 骨組み（見出し・対応方針）のみ。動作確認済みサンプルは順次追加予定です。
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 7-00 | [光と影 (Light the Night)](./07-lights/7-00-light-intro.md) | 導入 |
+| 7-01 | [ライトを灯す (Light the Night)](./07-lights/7-01-lights.md) | ○ |
+| 7-02 | [影を追加 (Adding Shadows)](./07-lights/7-02-shadows.md) | ○ |
+| 7-03 | [昼から夜へ (Day to Night)](./07-lights/7-03-day-to-night.md) | △ |
+
+### [第8部：世界の見方](./08-cameras/README.md)
+
+> ⚠️ 骨組み（見出し・対応方針）のみ。動作確認済みサンプルは順次追加予定です。
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 8-00 | [世界の見方 (Ways to See The World)](./08-cameras/8-00-cameras-intro.md) | 導入 |
+| 8-01 | [見回す (Have a Look Around)](./08-cameras/8-01-look-around.md) | ○ |
+| 8-02 | [キャラを追う (Follow That Character)](./08-cameras/8-02-follow-character.md) | △ |
+| 8-03 | [VR の世界へ (Going Virtual)](./08-cameras/8-03-going-virtual.md) | ✕ |
+
 ## 動作環境
 
 - **WebGPU 対応ブラウザ**（Chrome / Edge 113+ など）

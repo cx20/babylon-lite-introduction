@@ -81,4 +81,4 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 
 ---
 
-← [6-00 パーティクル噴水 (Build a Particle Fountain)](./6-00-particle-fountain.md)
+← [6-00 パーティクル噴水 (Build a Particle Fountain)](./6-00-particle-fountain.md) ・ [7-00 光と影 (Light the Night)](../07-lights/7-00-light-intro.md) →
