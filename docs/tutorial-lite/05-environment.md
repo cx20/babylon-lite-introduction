@@ -153,6 +153,77 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > `createStandardMaterial()` に名前引数は要りません（本家の `new StandardMaterial("largeGroundMat", scene)` 相当）。
 > ハイトマップ・テクスチャとも `assets.babylonjs.com` の絶対 URL をそのまま使えます。
 
+### 地面のテクスチャ仕上げ
+
+透過付きの村地面（`villagegreen.png`）を、起伏のある谷の大地面の上へわずかに浮かせて重ねます。
+村地面の透明部分から、下の谷の草地が透けて見えます。
+
+> ⚠️ **Lite の透過モデルは本家と違う** — 本家は `groundMat.diffuseTexture.hasAlpha = true` だけで
+> diffuse テクスチャのアルファが滑らかにアルファブレンドされます。
+> **Lite の diffuse テクスチャのアルファは discard 専用**（`alphaCutOff` によるアルファテスト＝カットアウト）で、
+> 出力アルファには混ざりません（シェーダのコメントいわく *"matching BJS ALPHATEST without ALPHAFROMDIFFUSE"*）。
+>
+> 滑らかなアルファブレンドを得るには、**同じテクスチャを `opacityTexture` にも割り当て**ます。
+> opacity のフラグメントが `alpha *= texAlpha` を行い、これで `_alphaBlend` が有効になって透明部分が実際に透過します。
+> つまり **`diffuseTexture` と `opacityTexture` の両方に同じテクスチャを割り当てるのが `hasAlpha = true` 相当**です。
+
+追加 import：`createGround`
+
+```typescript
+const VILLAGE_GREEN_URL = "https://assets.babylonjs.com/environments/villagegreen.png";
+const VALLEY_GRASS_URL = "https://assets.babylonjs.com/environments/valleygrass.png";
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 15, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  const [largeGround, villageGreenTex, valleyGrassTex] = await Promise.all([
+    createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+      width: 150,
+      height: 150,
+      subdivisions: 20,
+      minHeight: 0,
+      maxHeight: 10,
+    }),
+    loadTexture2D(engine, VILLAGE_GREEN_URL),
+    loadTexture2D(engine, VALLEY_GRASS_URL),
+  ]);
+
+  // 村の地面（24×24）。hasAlpha = true 相当：diffuse と opacity の両方に同じテクスチャを割り当てる
+  const groundMat = createStandardMaterial();
+  groundMat.diffuseTexture = villageGreenTex;
+  groundMat.opacityTexture = villageGreenTex;   // ★ これが無いと透明部分が抜けない
+  const ground = createGround(engine, { width: 24, height: 24 });
+  ground.material = groundMat;
+  addToScene(scene, ground);
+
+  // 谷の大地面（起伏＋草）。村地面のわずかに下へ置いて Z-fighting を避ける
+  const largeGroundMat = createStandardMaterial();
+  largeGroundMat.diffuseTexture = valleyGrassTex;
+  largeGround.material = largeGroundMat;
+  largeGround.position.y = -0.01;               // 本家どおり
+  addToScene(scene, largeGround);
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/3?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 地面のテクスチャ仕上げ"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/3
+>
+> `largeGround.position.y = -0.01` は本家どおりで、2 枚の地面が同一平面で重なる Z-fighting を避けるためのものです。
+> `opacityTexture` を割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
+> 境界がギザギザになったり（`alphaCutOff` 次第では）まったく抜けなかったりします。
+
 ---
 
 ## 5-02 頭上の空 (Skies Above) — ○（要アセット）
