@@ -224,7 +224,124 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > `opacityTexture` を割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
 > 境界がギザギザになったり（`alphaCutOff` 次第では）まったく抜けなかったりします。
 
----
+### 家を追加
+
+ここまで手作業で組み立ててきた地形・地面・家 16 棟・ライトが 1 つにまとまった `valleyvillage.glb` を読み込みます。
+テクスチャも透過も起伏も glTF 側に入っているので、**読み込んで `addToScene` するだけ**です。
+
+追加 import：`loadGltf`
+
+```typescript
+const VALLEY_VILLAGE_URL = "https://assets.babylonjs.com/meshes/valleyvillage.glb";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 15, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  // 完成済みの村を読み込み、コンテナ丸ごとシーンへ追加
+  const village = await loadGltf(engine, VALLEY_VILLAGE_URL);
+  addToScene(scene, village);
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/4?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 家を追加"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/4
+>
+> 本家 `SceneLoader.ImportMeshAsync` は `loadGltf`（async）に置き換えます。
+> glTF は 3-07 と同じく **コンテナ丸ごと** `addToScene` してください。配下のノード階層が再帰的に追加されます
+> （アニメがあれば自動 tick もされますが、このモデルにアニメはありません）。
+>
+> 4-01 で問題になった **glTF ルートの x 軸反転**は、ここでは表面化しません。座標を自分で与える箇所が無く、
+> 自作メッシュと glTF を混在させないためです。
+>
+> なお、カメラを村の内側へ入れると家の壁が裏返って見えることがあります（単面ポリゴンの片面描画）。
+> その対処は [ゴール完成版](./99-goal-final.md) の「既知の落とし穴」を参照してください。
+
+### 車を追加
+
+完成した村を背景に、`car.glb` を Z 方向へ走らせます。
+
+> 💡 **glTF 同士なら x 軸反転の補正は要らない** — 4-01 では「`loadGltf` が glTF ルートに x スケール `-1` を入れる」ことに悩まされましたが、
+> ここでは **車も村も同じ x 軸 `-1` のルート配下**にいるので、両者は同じだけ反転します。
+> つまり道路（村ローカル `x = -3`）に車を合わせるには、**本家の値 `-3` をそのまま `car` のローカル x に入れれば一致**します。
+>
+> 負号の補正が要るのは、4-01 の当たり判定箱のように **反転しない world 空間の自作メッシュ**と突き合わせるときだけです。
+> なお z は元々反転しません。
+
+車輪アニメは `car.glb` に入っていないので、3-05 と同じくコード側で回します。車体の前進も、本家の
+`Animation("position.z")`（frame 0 → `z = 10`、frame 200 → `z = -15`、30fps、ループ）を時間から解析的に求めます。
+
+追加 import：`onBeforeRender`（＋型 `AssetContainer, SceneNode`）
+
+```typescript
+const VALLEY_VILLAGE_URL = "https://assets.babylonjs.com/meshes/valleyvillage.glb";
+const CAR_URL = "https://assets.babylonjs.com/meshes/car.glb";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 15, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  const [village, carContainer] = await Promise.all([
+    loadGltf(engine, VALLEY_VILLAGE_URL),
+    loadGltf(engine, CAR_URL),
+  ]);
+  addToScene(scene, village);
+  addToScene(scene, carContainer);
+
+  const car = findNodeByName(carContainer, "car");   // 3-05 と同じヘルパー
+  car.rotation.set(Math.PI / 2, 0, -Math.PI / 2);
+  car.position.set(-3, 0.16, 8);                     // 村と同じ反転を受けるので本家の値のまま
+
+  // car.glb に車輪アニメは無いのでコード側で回す
+  const wheels = ["wheelRB", "wheelRF", "wheelLB", "wheelLF"].map((n) => findNodeByName(carContainer, n));
+
+  // 本家キー（frame 0 → z=10、frame 200 → z=-15、30fps、ループ）を時間から解析的に
+  const CAR_PERIOD = 200 / 30;                       // 秒
+  const Z_START = 10;
+  const Z_END = -15;
+  const carZAt = (t: number): number => {
+    const tt = t % CAR_PERIOD;
+    return Z_START + (Z_END - Z_START) * (tt / CAR_PERIOD);
+  };
+
+  const WHEEL_RATE = -2 * Math.PI;                   // rad/秒（1 回転/秒）
+  let elapsed = 0;
+
+  onBeforeRender(scene, (deltaMs: number) => {
+    const dt = deltaMs / 1000;
+    elapsed += dt;
+    car.position.z = carZAt(elapsed);
+    for (const w of wheels) w.rotation.y += WHEEL_RATE * dt;
+  });
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/5?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 車を追加"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/5
+>
+> `findNodeByName` は 3-05 / 3-07 / 4-01 と同じものです（完全版は Playground 参照）。
+> このモデル群に glTF 内蔵アニメは無いため、車の動きは `onBeforeRender` で駆動します。
+> 内蔵アニメがある場合は、コンテナ丸ごと `addToScene` するだけで自動 tick されます（→ 3-07）。
 
 ## 5-02 頭上の空 (Skies Above) — ○（要アセット）
 
