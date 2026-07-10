@@ -37,8 +37,13 @@ house.material = houseMat;
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/5
 >
-> Lite は「UV Scaling / Offset」「Bump / Normal」「Emissive」など主要テクスチャに対応しています
-> （フィールド名は IntelliSense で確認：要確認）。
+> Lite の `StandardMaterial` は各種テクスチャに対応します（フィールド名は Lite v1.8 のソースで確認）：
+> `diffuseTexture` / `emissiveTexture` / `bumpTexture`（法線マップ、`bumpLevel`）/ `specularTexture` /
+> `ambientTexture` / `opacityTexture`（→ 5-01 の透過）/ `reflectionTexture` / `reflectionCubeTexture`。
+> 色は `diffuseColor` / `emissiveColor` / `specularColor` / `ambientColor`（いずれも `[r, g, b]`）。
+>
+> **UV タイリングは本家と流儀が違います**。本家は `Texture` 側の `uScale` / `vScale` / `uOffset` / `vOffset` ですが、
+> Lite は**マテリアル側の `material.uvScale: [u, v]`**（既定 `[1, 1]`）です。オフセット相当のフィールドはありません。
 
 ---
 

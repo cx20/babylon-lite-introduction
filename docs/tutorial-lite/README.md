@@ -152,6 +152,5 @@ main().catch((err) => console.error(err));
 | `AnimationGroup.play()` / `.stop()` | `playAnimation(group)` / `stopAnimation(group)` |
 | `mesh.dispose()` | `removeFromScene(scene, mesh)` |
 
-> ⚠️ 注記：一部の API（ハイトマップ生成の引数、faceUV、スプライトのフィールド名など）は
-> Lite のバージョンで差異が出る可能性があります。「要確認」と付いた箇所は、
-> 型エラーが出たら IntelliSense（Playground）で正しい名称に合わせてください。
+> 注記：各章の API 名・シグネチャは Babylon Lite v1.8 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースで確認済みです。
+> Lite は機能追加が続いているため、バージョンが上がって差異が出た場合は Playground の IntelliSense で正しい名称に合わせてください。

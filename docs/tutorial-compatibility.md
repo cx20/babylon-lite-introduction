@@ -57,7 +57,7 @@ Babylon.js の公式日本語チュートリアル本
 |---|---|:--:|---|
 | 3-00 | 村のアニメーション | — | 導入 |
 | 3-01 | メッシュの親子関係 | ○ | 任意エンティティ間の親子化✅、`setParent`（ワールド変換保持）✅ |
-| 3-02 | 車を組み立てる | ○ | `createCylinder`／`createBox`／extrude✅。※車体の `ExtrudePolygon`（多角形フィル）は要確認、箱/カスタムメッシュで代替可 |
+| 3-02 | 車を組み立てる | ○ | `createCylinder`／`createBox`✅。**`ExtrudePolygon`（多角形フィル）は無い**（`createExtrudeShape` はパス押し出しで別物、earcut 相当も無し）→ 凸輪郭を `createMeshFromData` で直接組み立てて代替 |
 | 3-03 | 車のマテリアル | ○ | Standard/PBR＋テクスチャ✅。**車輪ロゴの cylinder faceUV は対応**（`create-cylinder.ts` に faceUV あり） |
 | 3-04 | 車輪のアニメーション | ○ | `createPropertyAnimationClip`（rotation キーフレーム）✅、またはレンダーループで回転 |
 | 3-05 | 車のアニメーション | ○ | プロパティアニメ（position キーフレーム、LINEAR/STEP/CUBICSPLINE）✅ |
@@ -136,6 +136,7 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は 2026-07-06 時点の Babylon Lite ドキュメントに基づく。Lite は機能追加が続いているため、
-> 最新の対応状況は [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) を参照のこと。
-> ※印および「未確認」は、機能比較表・アーキテクチャ docs・リポジトリのコード検索から推定した項目。
+> 本表は Babylon Lite v1.8 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく。各章の API 名・シグネチャは
+> 実際のソースで確認済み。Lite は機能追加が続いているため、最新の対応状況は上記を参照のこと。
+> ※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
