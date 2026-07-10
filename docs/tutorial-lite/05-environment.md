@@ -13,23 +13,216 @@
 
 ## 5-01 遠くの丘 (Distant Hills) — ○
 
-**目的**：ハイトマップから起伏のある地形を作る。
+**目的**：グレースケール画像（`heightMap.png`）の輝度を高さに変換して、起伏のある地面を作る。
 
-追加 import：`createGroundFromHeightMap`（引数は要確認：`engine` 要否／アップロード手順）
+**Lite 移植時の注意点**：
+
+- **`createGroundFromHeightMap` は Lite にもあり**、本家とほぼ同じオプション（`width` / `height` / `subdivisions` / `maxHeight` / `minHeight`）を取ります。
+  ただし **第 1 引数に `engine` が要る**のと、**戻り値が `Promise<Mesh>` の async** である点が違います（画像を fetch して輝度から頂点を変位させるため）。**`await` を忘れないでください。**
+- **マテリアル必須** — Lite にデフォルトマテリアルは無いので `createStandardMaterial()` を明示的に割り当てます。
+- **画像は絶対 URL で** — 本家の `"textures/heightMap.png"` は Playground 相対パスなので Lite では解決できません。公式アセットの絶対 URL に差し替えます。
+- **async ロードは `registerScene` / `startEngine` より前に終わらせる** — 起動後にリソースを後入れするとレンダーループのクラッシュ要因になります。
+
+追加 import：`createGroundFromHeightMap, createStandardMaterial`
 
 ```typescript
-// ハイトマップ画像の輝度で頂点を上下させる（GPU テクスチャ → 頂点変位）
-const hills = await createGroundFromHeightMap(
-  "https://playground.babylonjs.com/textures/heightMap.png",
-  { width: 100, height: 100, subdivisions: 100, minHeight: 0, maxHeight: 10 }
-);
-hills.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
-addToScene(scene, hills);
+const HEIGHTMAP_URL = "https://playground.babylonjs.com/textures/heightMap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 4, 10, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  // 高さマップから地形を生成（async。registerScene の前に await 完了させる）
+  const ground = await createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+    width: 5,
+    height: 5,
+    subdivisions: 10,
+    maxHeight: 1,
+  });
+  ground.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
+  addToScene(scene, ground);
+
+  return scene;
+}
 ```
 
-> 追加 import に `createStandardMaterial` も必要です。
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
-> 機能比較表では「Ground from Heightmap ✅」。ただし関数シグネチャ（`engine` 引数の有無、返り値のアップロード手順）は Lite のバージョンで差異が出ることがあるため、Playground の IntelliSense で確認してください。
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/0
+>
+> `subdivisions` を上げるほど輝度を細かく拾えます。`maxHeight` / `minHeight` は変位の上下限です。
+
+### 村の場合
+
+村の谷を作るときは、専用のハイトマップ `villageheightmap.png` を使い、`150 × 150` の大地面にします。
+カメラを引く（`radius = 200`）と全景が見えます。注意点は上と同じで、**`engine` 引数・`await`・マテリアル明示**の 3 点です。
+
+```typescript
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  // 谷の環境用の大地面（async。registerScene の前に await 完了させる）
+  const largeGround = await createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+    width: 150,
+    height: 150,
+    subdivisions: 20,
+    minHeight: 0,
+    maxHeight: 10,
+  });
+  largeGround.material = createStandardMaterial();
+  addToScene(scene, largeGround);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 200, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([4, 1, 0], 1));
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 村の場合"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/1
+>
+> `villageheightmap.png` は `assets.babylonjs.com` の絶対 URL をそのまま使えます。
+> `150 × 150` に対して `subdivisions` は `20` と粗めですが、遠景の丘としてはこれで十分です。
+
+### テクスチャ
+
+大地面に `valleygrass.png` の草テクスチャを貼ります。
+
+ここでは **async が 2 つ**（`createGroundFromHeightMap` と `loadTexture2D`）出てきます。互いに独立なので
+`Promise.all` で並列に待つのが素直です。本家の `new BABYLON.Texture(url)` は同期的な書き味ですが、
+Lite では 2-05 と同じく `await loadTexture2D(engine, url)` に置き換えます。
+
+追加 import：`loadTexture2D`
+
+```typescript
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+const GRASS_URL = "https://assets.babylonjs.com/environments/valleygrass.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  // 地形メッシュと草テクスチャを並列に用意（registerScene の前に await 完了）
+  const [largeGround, grassTex] = await Promise.all([
+    createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+      width: 150,
+      height: 150,
+      subdivisions: 20,
+      minHeight: 0,
+      maxHeight: 10,
+    }),
+    loadTexture2D(engine, GRASS_URL),
+  ]);
+
+  const largeGroundMat = createStandardMaterial();
+  largeGroundMat.diffuseTexture = grassTex;
+  largeGround.material = largeGroundMat;
+  addToScene(scene, largeGround);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 200, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([2, 1, 0], 1));
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/2?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / テクスチャ"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/2
+>
+> `createStandardMaterial()` に名前引数は要りません（本家の `new StandardMaterial("largeGroundMat", scene)` 相当）。
+> ハイトマップ・テクスチャとも `assets.babylonjs.com` の絶対 URL をそのまま使えます。
+
+### 地面のテクスチャ仕上げ
+
+透過付きの村地面（`villagegreen.png`）を、起伏のある谷の大地面の上へわずかに浮かせて重ねます。
+村地面の透明部分から、下の谷の草地が透けて見えます。
+
+> ⚠️ **Lite の透過モデルは本家と違う** — 本家は `groundMat.diffuseTexture.hasAlpha = true` だけで
+> diffuse テクスチャのアルファが滑らかにアルファブレンドされます。
+> **Lite の diffuse テクスチャのアルファは discard 専用**（`alphaCutOff` によるアルファテスト＝カットアウト）で、
+> 出力アルファには混ざりません（シェーダのコメントいわく *"matching BJS ALPHATEST without ALPHAFROMDIFFUSE"*）。
+>
+> 滑らかなアルファブレンドを得るには、**同じテクスチャを `opacityTexture` にも割り当て**ます。
+> opacity のフラグメントが `alpha *= texAlpha` を行い、これで `_alphaBlend` が有効になって透明部分が実際に透過します。
+> つまり **`diffuseTexture` と `opacityTexture` の両方に同じテクスチャを割り当てるのが `hasAlpha = true` 相当**です。
+
+追加 import：`createGround`
+
+```typescript
+const VILLAGE_GREEN_URL = "https://assets.babylonjs.com/environments/villagegreen.png";
+const VALLEY_GRASS_URL = "https://assets.babylonjs.com/environments/valleygrass.png";
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 15, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  const [largeGround, villageGreenTex, valleyGrassTex] = await Promise.all([
+    createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+      width: 150,
+      height: 150,
+      subdivisions: 20,
+      minHeight: 0,
+      maxHeight: 10,
+    }),
+    loadTexture2D(engine, VILLAGE_GREEN_URL),
+    loadTexture2D(engine, VALLEY_GRASS_URL),
+  ]);
+
+  // 村の地面（24×24）。hasAlpha = true 相当：diffuse と opacity の両方に同じテクスチャを割り当てる
+  const groundMat = createStandardMaterial();
+  groundMat.diffuseTexture = villageGreenTex;
+  groundMat.opacityTexture = villageGreenTex;   // ★ これが無いと透明部分が抜けない
+  const ground = createGround(engine, { width: 24, height: 24 });
+  ground.material = groundMat;
+  addToScene(scene, ground);
+
+  // 谷の大地面（起伏＋草）。村地面のわずかに下へ置いて Z-fighting を避ける
+  const largeGroundMat = createStandardMaterial();
+  largeGroundMat.diffuseTexture = valleyGrassTex;
+  largeGround.material = largeGroundMat;
+  largeGround.position.y = -0.01;               // 本家どおり
+  addToScene(scene, largeGround);
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/3?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 地面のテクスチャ仕上げ"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/3
+>
+> `largeGround.position.y = -0.01` は本家どおりで、2 枚の地面が同一平面で重なる Z-fighting を避けるためのものです。
+> `opacityTexture` を割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
+> 境界がギザギザになったり（`alphaCutOff` 次第では）まったく抜けなかったりします。
 
 ---
 
