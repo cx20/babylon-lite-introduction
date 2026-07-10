@@ -13,23 +13,52 @@
 
 ## 5-01 遠くの丘 (Distant Hills) — ○
 
-**目的**：ハイトマップから起伏のある地形を作る。
+**目的**：グレースケール画像（`heightMap.png`）の輝度を高さに変換して、起伏のある地面を作る。
 
-追加 import：`createGroundFromHeightMap`（引数は要確認：`engine` 要否／アップロード手順）
+**Lite 移植時の注意点**：
+
+- **`createGroundFromHeightMap` は Lite にもあり**、本家とほぼ同じオプション（`width` / `height` / `subdivisions` / `maxHeight` / `minHeight`）を取ります。
+  ただし **第 1 引数に `engine` が要る**のと、**戻り値が `Promise<Mesh>` の async** である点が違います（画像を fetch して輝度から頂点を変位させるため）。**`await` を忘れないでください。**
+- **マテリアル必須** — Lite にデフォルトマテリアルは無いので `createStandardMaterial()` を明示的に割り当てます。
+- **画像は絶対 URL で** — 本家の `"textures/heightMap.png"` は Playground 相対パスなので Lite では解決できません。公式アセットの絶対 URL に差し替えます。
+- **async ロードは `registerScene` / `startEngine` より前に終わらせる** — 起動後にリソースを後入れするとレンダーループのクラッシュ要因になります。
+
+追加 import：`createGroundFromHeightMap, createStandardMaterial`
 
 ```typescript
-// ハイトマップ画像の輝度で頂点を上下させる（GPU テクスチャ → 頂点変位）
-const hills = await createGroundFromHeightMap(
-  "https://playground.babylonjs.com/textures/heightMap.png",
-  { width: 100, height: 100, subdivisions: 100, minHeight: 0, maxHeight: 10 }
-);
-hills.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
-addToScene(scene, hills);
+const HEIGHTMAP_URL = "https://playground.babylonjs.com/textures/heightMap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 4, 10, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  // 高さマップから地形を生成（async。registerScene の前に await 完了させる）
+  const ground = await createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+    width: 5,
+    height: 5,
+    subdivisions: 10,
+    maxHeight: 1,
+  });
+  ground.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
+  addToScene(scene, ground);
+
+  return scene;
+}
 ```
 
-> 追加 import に `createStandardMaterial` も必要です。
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
 
-> 機能比較表では「Ground from Heightmap ✅」。ただし関数シグネチャ（`engine` 引数の有無、返り値のアップロード手順）は Lite のバージョンで差異が出ることがあるため、Playground の IntelliSense で確認してください。
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/0
+>
+> `subdivisions` を上げるほど輝度を細かく拾えます。`maxHeight` / `minHeight` は変位の上下限で、
+> 村の遠景として使うなら `width` / `height` / `subdivisions` を大きく（例：`100 / 100 / 100`）取ります。
 
 ---
 

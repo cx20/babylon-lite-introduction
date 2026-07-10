@@ -76,7 +76,7 @@ Babylon.js の公式日本語チュートリアル本
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
 | 5-00 | より良い環境に | — | 導入 |
-| 5-01 | 遠くの丘 | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位） |
+| 5-01 | 遠くの丘 | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定 |
 | 5-02 | 頭上の空 | ○ | Skybox（solid/Cubemap/DDS/HDR）✅、IBL／`.env`／SH✅ |
 | 5-03 | 木のスプライト | △ | **Sprites は部分対応（⚡）**：2D レイヤー/ビルボード（facing/axis-locked/cutout）は可だが、完全な `SpriteManager` API は無し |
 
