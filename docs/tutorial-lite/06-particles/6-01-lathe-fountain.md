@@ -1,16 +1,83 @@
-# 6-01 旋盤で回された噴水 (A Lathe Turned Fountain) — ✕
+# 6-01 旋盤で回された噴水 (A Lathe Turned Fountain) — ✕（器の形状のみ ○）
 
 > [第6部：パーティクル効果](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
-Particle System 未対応に加え、**`CreateLathe`（回転体生成）も未実装**です。
+本章の主目的である**噴水の水（パーティクル）は Lite では作れません**（→ [6-00](./6-00-particle-fountain.md)）。
+一方、水を噴き上げる**器の回転体は再現できます**。ここではその器を作って村に置くところまでを示します。
 
-- 回転体の**形状のみ**なら `ribbon` / `tube`（parallel-transport frames）で近似可能
-- ただし本章の主目的（噴水パーティクル）は達成できないため ✕
+**Lite 移植時の注意点**：
+
+- **`CreateLathe` は無い** — ただし本家の `CreateLathe` は内部で「輪郭を回転角ごとに複製した複数パスを `CreateRibbon` で張る」実装です。
+  Lite には **`createRibbon`（`pathArray` を面で張る）があるので忠実に再現**できます。輪郭を Y 軸まわりに `tessellation` 分割して各断面パスを作り、
+  `createRibbon(engine, { pathArray, closeArray: true })` で張ります（`closeArray: true` で一周を閉じて筒状に。法線は内部で自動計算されます）。
+- **`sideOrientation: DOUBLESIDE` の相当は `material.backFaceCulling = false`** — Lite の `createRibbon` は `sideOrientation` を取りません。
+  両面描画（回転体の内側も見える）にはマテリアル側で `backFaceCulling = false` にします。
+
+追加 import：`createRibbon, createStandardMaterial`（＋型 `Mesh`）
 
 ```typescript
-// 参考：回転体の“形状”だけなら tube 等で近似（噴水の水そのものは不可）
-// 追加 import: createTube 等（引数は要確認）
+type Vec3 = { x: number; y: number; z: number };
+
+// 本家 MeshBuilder.CreateLathe 相当。輪郭を Y 軸まわりに tessellation 分割で回し、createRibbon で張る
+function createLathe(engine: EngineContext, shape: readonly Vec3[], tessellation = 24): Mesh {
+  const pathArray: Vec3[][] = [];
+  for (let s = 0; s <= tessellation; s++) {
+    const ang = (2 * Math.PI * s) / tessellation;
+    const c = Math.cos(ang);
+    const si = Math.sin(ang);
+    const path = shape.map((p) => ({ x: p.x * c - p.z * si, y: p.y, z: p.x * si + p.z * c }));
+    pathArray.push(path);
+  }
+  return createRibbon(engine, { pathArray, closeArray: true });   // closeArray: true で筒状に閉じる
+}
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 1.5, Math.PI / 2.2, 15, { x: 0, y: 0, z: 0 });
+  camera.upperBetaLimit = Math.PI / 2.2;
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  await loadSkybox(scene, "https://playground.babylonjs.com/textures/skybox", ".jpg", 150);
+
+  // 噴水の輪郭（本家と同一の 8 点）
+  const fountainOutline: Vec3[] = [
+    { x: 0, y: 0, z: 0 },
+    { x: 0.5, y: 0, z: 0 },
+    { x: 0.5, y: 0.2, z: 0 },
+    { x: 0.4, y: 0.2, z: 0 },
+    { x: 0.4, y: 0.05, z: 0 },
+    { x: 0.05, y: 0.1, z: 0 },
+    { x: 0.05, y: 0.8, z: 0 },
+    { x: 0.15, y: 0.9, z: 0 },
+  ];
+
+  const fountain = createLathe(engine, fountainOutline, 24);
+  const fountainMat = createStandardMaterial();
+  fountainMat.backFaceCulling = false;   // DOUBLESIDE 相当。回転体の内側も見える
+  fountain.material = fountainMat;
+  fountain.position.x = -4;
+  fountain.position.z = -6;
+  addToScene(scene, fountain);
+
+  const village = await loadGltf(engine, "https://assets.babylonjs.com/meshes/valleyvillage.glb");
+  addToScene(scene, village);
+
+  return scene;
+}
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/9?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 6-01 旋盤で回された噴水（器の形状）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/9
+>
+> ここで作れるのは**器まで**です。水そのものはパーティクルなので、[6-00](./6-00-particle-fountain.md) と同じく Lite では表現できません。
+> したがって章全体の判定は ✕ ですが、`createRibbon` による回転体は他の造形（柱・壺・レンズ形状など）にそのまま応用できます。
 
 ---
 
