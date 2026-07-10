@@ -14,15 +14,17 @@
 プレビューが表示されるのは Pages 版だけです — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、
 併記したスニペットのリンクから Playground を開いてください。
 
-| パート | 内容 | GitHub で読む | プレビュー付き |
-|---|---|---|---|
-| 第1部 | 基礎（Hello World / モデル読込 / セットアップ） | [01-basics.md](./docs/tutorial-lite/01-basics.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/01-basics.html) |
-| 第2部 | 村の構築（地面 / メッシュ / テクスチャ / コピー） | [02-village.md](./docs/tutorial-lite/02-village.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/02-village.html) |
-| 第3部 | アニメーション（親子 / 車 / キャラ歩行） | [03-animation.md](./docs/tutorial-lite/03-animation.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation.html) |
-| 第4部 | 衝突回避 | [04-collisions.md](./docs/tutorial-lite/04-collisions.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions.html) |
-| 第5部 | 環境（丘 / 空 / スプライトの木） | [05-environment.md](./docs/tutorial-lite/05-environment.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment.html) |
-| 第6部 | パーティクル効果 | [06-particles.md](./docs/tutorial-lite/06-particles.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles.html) |
-| ゴール | 完成版（村を歩く Xbot） | [99-goal-final.md](./docs/tutorial-lite/99-goal-final.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/99-goal-final.html) |
+全 33 章を**章ごとのファイル**に分けています。各パートの索引から章を選んでください。
+
+| パート | 章 | 内容 | GitHub で読む | プレビュー付き |
+|---|:--:|---|---|---|
+| 第1部 | 1-00〜1-04 | 基礎（Hello World / モデル読込 / セットアップ） | [01-basics/](./docs/tutorial-lite/01-basics/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/01-basics/) |
+| 第2部 | 2-00〜2-11 | 村の構築（地面 / メッシュ / テクスチャ / コピー） | [02-village/](./docs/tutorial-lite/02-village/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/02-village/) |
+| 第3部 | 3-00〜3-07 | アニメーション（親子 / 車 / キャラ歩行） | [03-animation/](./docs/tutorial-lite/03-animation/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/03-animation/) |
+| 第4部 | 4-00〜4-01 | 衝突回避 | [04-collisions/](./docs/tutorial-lite/04-collisions/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions/) |
+| 第5部 | 5-00〜5-03 | 環境（丘 / 空 / スプライトの木） | [05-environment/](./docs/tutorial-lite/05-environment/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment/) |
+| 第6部 | 6-00〜6-01 | パーティクル効果 | [06-particles/](./docs/tutorial-lite/06-particles/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles/) |
+| ゴール | — | 完成版（村を歩く Xbot） | [99-goal-final.md](./docs/tutorial-lite/99-goal-final.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/99-goal-final.html) |
 
 対応可否の全体像は **[tutorial-compatibility.md](./docs/tutorial-compatibility.md)**
 （[プレビュー付き](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-compatibility.html)）にまとめています。
