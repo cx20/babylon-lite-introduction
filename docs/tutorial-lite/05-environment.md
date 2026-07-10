@@ -224,7 +224,48 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > `opacityTexture` を割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
 > 境界がギザギザになったり（`alphaCutOff` 次第では）まったく抜けなかったりします。
 
----
+### 家を追加
+
+ここまで手作業で組み立ててきた地形・地面・家 16 棟・ライトが 1 つにまとまった `valleyvillage.glb` を読み込みます。
+テクスチャも透過も起伏も glTF 側に入っているので、**読み込んで `addToScene` するだけ**です。
+
+追加 import：`loadGltf`
+
+```typescript
+const VALLEY_VILLAGE_URL = "https://assets.babylonjs.com/meshes/valleyvillage.glb";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 15, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+  // 完成済みの村を読み込み、コンテナ丸ごとシーンへ追加
+  const village = await loadGltf(engine, VALLEY_VILLAGE_URL);
+  addToScene(scene, village);
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/4?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 家を追加"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/4
+>
+> 本家 `SceneLoader.ImportMeshAsync` は `loadGltf`（async）に置き換えます。
+> glTF は 3-07 と同じく **コンテナ丸ごと** `addToScene` してください。配下のノード階層が再帰的に追加されます
+> （アニメがあれば自動 tick もされますが、このモデルにアニメはありません）。
+>
+> 4-01 で問題になった **glTF ルートの x 軸反転**は、ここでは表面化しません。座標を自分で与える箇所が無く、
+> 自作メッシュと glTF を混在させないためです。
+>
+> なお、カメラを村の内側へ入れると家の壁が裏返って見えることがあります（単面ポリゴンの片面描画）。
+> その対処は [ゴール完成版](./99-goal-final.md) の「既知の落とし穴」を参照してください。
 
 ## 5-02 頭上の空 (Skies Above) — ○（要アセット）
 
