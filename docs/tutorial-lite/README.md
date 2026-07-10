@@ -78,7 +78,7 @@
 
 > 各章のサンプルには、[Lite Playground の embed 機能](https://doc.babylonjs.com/lite/04-playground)（`?embed=runner`）による
 > **実行プレビューを埋め込んでいます**。プレビューが見えるのは
-> [GitHub Pages 版](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/README.html) だけです
+> [GitHub Pages 版](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/) だけです
 > — GitHub のリポジトリ画面では `<iframe>` がサニタイズされて消えるため、併記したスニペットのリンクから開いてください。
 
 ## 共通テンプレート
