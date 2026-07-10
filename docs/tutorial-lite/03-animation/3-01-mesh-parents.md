@@ -47,7 +47,8 @@ onBeforeRender(scene, () => {
   細円柱でワイヤーを構成しているため、本移植も **区間ごとの細い `createCylinder`＋無照明マテリアル**（`createAxisLine`）で軸線を引きます。
 - **`CreateBox` に `faceColors` が無い**、かつ **Standard パスは頂点カラーを参照しない**（参照するのは Node/PBR 系）。
   そこで **6×1 ピクセルのパレットテクスチャ**を `createTexture2DFromPixels` で作り、各面の UV 4 頂点をパレット画素の中心へ固定して面ごとに色分けします（既定サンプラが nearest なのでパレット用途にそのまま合う）。
-- **`DynamicTexture`（`drawText`）が無い** — canvas 2D に文字を描いて `getImageData` → `createTexture2DFromPixels({ srgb: true })` で代替。
+- **`DynamicTexture`（`drawText`）クラスは無い** — 本サンプルは canvas 2D に文字を描いて `getImageData` → `createTexture2DFromPixels({ srgb: true })` で代替します（軸ラベルをビルボードのアトラスへ流し込む都合上この経路が簡単なため）。
+  なお **文字描画そのものには Lite ネイティブの Text API** も使えます（`loadFont` → `createTextData` → `createTextRenderer` / `createTextLayer`）。
 - **`mesh.billboardMode` が無い** — カメラ正対表示は専用の **`FacingBillboardSystem`**（`BILLBOARDMODE_ALL` 相当）を使います
   （`createGridSpriteAtlas` → `createFacingBillboardSystem` → `addFacingBillboardSystem` → `addBillboardSprite`）。
   文字が上下反転する環境では `BillboardSpriteInit.flipY = true` で調整。
