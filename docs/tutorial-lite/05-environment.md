@@ -57,8 +57,48 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/0
 >
-> `subdivisions` を上げるほど輝度を細かく拾えます。`maxHeight` / `minHeight` は変位の上下限で、
-> 村の遠景として使うなら `width` / `height` / `subdivisions` を大きく（例：`100 / 100 / 100`）取ります。
+> `subdivisions` を上げるほど輝度を細かく拾えます。`maxHeight` / `minHeight` は変位の上下限です。
+
+### 村の場合
+
+村の谷を作るときは、専用のハイトマップ `villageheightmap.png` を使い、`150 × 150` の大地面にします。
+カメラを引く（`radius = 200`）と全景が見えます。注意点は上と同じで、**`engine` 引数・`await`・マテリアル明示**の 3 点です。
+
+```typescript
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  // 谷の環境用の大地面（async。registerScene の前に await 完了させる）
+  const largeGround = await createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+    width: 150,
+    height: 150,
+    subdivisions: 20,
+    minHeight: 0,
+    maxHeight: 10,
+  });
+  largeGround.material = createStandardMaterial();
+  addToScene(scene, largeGround);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 200, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([4, 1, 0], 1));
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / 村の場合"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/1
+>
+> `villageheightmap.png` は `assets.babylonjs.com` の絶対 URL をそのまま使えます。
+> `150 × 150` に対して `subdivisions` は `20` と粗めですが、遠景の丘としてはこれで十分です。
 
 ---
 
