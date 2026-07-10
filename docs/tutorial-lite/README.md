@@ -67,8 +67,10 @@
 
 | 章 | タイトル | 判定 |
 |---|---|:--:|
-| 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | △ |
+| 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | 導入 |
 | 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | △ |
+| 6-02 | [パーティクルのスプレー (Particle Spray)](./06-particles/6-02-particle-spray.md) | △ |
+| 6-03 | [スイッチ オン イベント (The Switch On Event)](./06-particles/6-03-switch-on-event.md) | △ |
 
 ### [第7部：光と影](./07-lights/README.md)
 

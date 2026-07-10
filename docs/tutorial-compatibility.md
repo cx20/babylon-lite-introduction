@@ -1,8 +1,8 @@
 # Babylon.js チュートリアル × Babylon Lite 対応可否検証
 
-Babylon.js の公式日本語チュートリアル本
-[「Babylon.js チュートリアル日本語版」（chomado）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)
-の全 33 章を、**Babylon Lite（WebGPU 専用の軽量 3D エンジン）** で再現できるか記事単位で検証した結果です。
+Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（全 8 章）
+を、**Babylon Lite（WebGPU 専用の軽量 3D エンジン）** で再現できるか節単位で検証した結果です
+（1〜6 章は [chomado 氏の日本語訳](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)に対応）。
 
 判定は Babylon Lite の一次情報に基づきます。
 
@@ -22,7 +22,7 @@ Babylon.js の公式日本語チュートリアル本
 
 ---
 
-## 全 33 章 対応可否テーブル
+## 全 8 章 対応可否テーブル
 
 ### 第1部：基礎
 
@@ -84,8 +84,10 @@ Babylon.js の公式日本語チュートリアル本
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 6-00 | パーティクル噴水 | △ | **パーティクルは実装あり**だが本家の命令的 `new ParticleSystem`（emitter/gravity 等）とは流儀が違い、**Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet` で読み込む。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
-| 6-01 | 旋盤で回された噴水 | △ | 器の回転体は **`createLathe` 相当を `createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`）。水は 6-00 の NPE パーティクルを器の口へ重ねる |
+| 6-00 | パーティクル噴水 | — | 導入（器 6-01 ＋ スプレー 6-02 ＋ スイッチ 6-03） |
+| 6-01 | 旋盤で回された噴水 | △ | `createLathe` メソッドで器を作る章。Lite に `createLathe` は無く **`createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`） |
+| 6-02 | パーティクルのスプレー | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
+| 6-03 | スイッチ オン イベント | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋ピッキング（`pickBillboardSprite`／Ray Cast）。土台は 6-02 の NPE パーティクル |
 
 ### 第7部：光と影（骨組み・サンプル準備中）
 
@@ -107,12 +109,12 @@ Babylon.js の公式日本語チュートリアル本
 
 ---
 
-## 集計（導入章 7 を除く 34 章）
+## 集計（導入章 8 を除く 35 章）
 
 | 判定 | 章数 | 割合 |
 |---|:--:|---|
-| ○ 対応可 | 23 | 68% |
-| △ 条件付き | 10 | 29% |
+| ○ 対応可 | 23 | 66% |
+| △ 条件付き | 11 | 31% |
 | ✕ 未対応 | 1 | 3% |
 
 > 純粋に未対応（✕）は **8-03（WebXR / VR）** の 1 章のみ。パーティクル（第6部）は NPE 経由、音声（2-02）は AudioV2 で対応します。

@@ -2,9 +2,10 @@
 
 > [第6部：パーティクル効果](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
-本章は、水を噴き上げる**器の回転体**（`CreateLathe` 相当）と、**噴水の水（パーティクル）**の組み合わせです。
-Lite では、器は `createRibbon` で忠実に再現でき、水は [6-00](./6-00-particle-fountain.md) の **NPE パーティクル**で表現します。
-ここではまず器を作って村に置くところまでを示し、水は 6-00 の NPE パーティクルを器の口の位置に重ねます。判定は △ です。
+**目的**：`createLathe` メソッドで、水を噴き上げる**器の回転体メッシュ**を作る。
+
+本家は `MeshBuilder.CreateLathe` で輪郭を回転させて器を作ります。Lite に `createLathe` は無いので `createRibbon` で自作します（このため判定は △）。
+水しぶき（パーティクル）は [6-02 パーティクルのスプレー](./6-02-particle-spray.md) で扱い、この器の口へ重ねます。
 
 **Lite 移植時の注意点**：
 
@@ -77,9 +78,9 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/9
 >
-> ここで作れるのは**器まで**です。水は [6-00](./6-00-particle-fountain.md) の NPE パーティクルを、器の口（この輪郭では最上部あたり）に `emitter` 位置を合わせて重ねます。
+> ここで作るのは**器のメッシュ**です。水は [6-02 パーティクルのスプレー](./6-02-particle-spray.md) の NPE パーティクルを、器の口（この輪郭では最上部あたり）に `emitter` 位置を合わせて重ねます。
 > `createRibbon` による回転体は、噴水の器に限らず柱・壺・レンズ形状などにもそのまま応用できます。
 
 ---
 
-← [6-00 パーティクル噴水 (Build a Particle Fountain)](./6-00-particle-fountain.md) ・ [7-00 光と影 (Light the Night)](../07-lights/7-00-light-intro.md) →
+← [6-00 パーティクル噴水 (Build a Particle Fountain)](./6-00-particle-fountain.md) ・ [6-02 パーティクルのスプレー (Particle Spray)](./6-02-particle-spray.md) →
