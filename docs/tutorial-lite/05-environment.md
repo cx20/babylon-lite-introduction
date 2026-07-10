@@ -100,6 +100,59 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > `villageheightmap.png` は `assets.babylonjs.com` の絶対 URL をそのまま使えます。
 > `150 × 150` に対して `subdivisions` は `20` と粗めですが、遠景の丘としてはこれで十分です。
 
+### テクスチャ
+
+大地面に `valleygrass.png` の草テクスチャを貼ります。
+
+ここでは **async が 2 つ**（`createGroundFromHeightMap` と `loadTexture2D`）出てきます。互いに独立なので
+`Promise.all` で並列に待つのが素直です。本家の `new BABYLON.Texture(url)` は同期的な書き味ですが、
+Lite では 2-05 と同じく `await loadTexture2D(engine, url)` に置き換えます。
+
+追加 import：`loadTexture2D`
+
+```typescript
+const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
+const GRASS_URL = "https://assets.babylonjs.com/environments/valleygrass.png";
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+  const scene = createSceneContext(engine);
+
+  // 地形メッシュと草テクスチャを並列に用意（registerScene の前に await 完了）
+  const [largeGround, grassTex] = await Promise.all([
+    createGroundFromHeightMap(engine, HEIGHTMAP_URL, {
+      width: 150,
+      height: 150,
+      subdivisions: 20,
+      minHeight: 0,
+      maxHeight: 10,
+    }),
+    loadTexture2D(engine, GRASS_URL),
+  ]);
+
+  const largeGroundMat = createStandardMaterial();
+  largeGroundMat.diffuseTexture = grassTex;
+  largeGround.material = largeGroundMat;
+  addToScene(scene, largeGround);
+
+  const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 200, { x: 0, y: 0, z: 0 });
+  scene.camera = camera;
+  attachControl(camera, canvas, scene);
+  addToScene(scene, createHemisphericLight([2, 1, 0], 1));
+
+  return scene;
+}
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/DQXJD5/v/2?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 5-01 遠くの丘 / テクスチャ"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/2
+>
+> `createStandardMaterial()` に名前引数は要りません（本家の `new StandardMaterial("largeGroundMat", scene)` 相当）。
+> ハイトマップ・テクスチャとも `assets.babylonjs.com` の絶対 URL をそのまま使えます。
+
 ---
 
 ## 5-02 頭上の空 (Skies Above) — ○（要アセット）
