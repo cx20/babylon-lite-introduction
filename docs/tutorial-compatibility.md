@@ -84,10 +84,8 @@ Babylon.js の公式日本語チュートリアル本
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 6-00 | パーティクル噴水 | ✕ | **Particle System は—（未対応）** |
-| 6-01 | 旋盤で回された噴水 | ✕ | Particle System 未対応のため噴水（主目的）は—。**`CreateLathe` も無い**が、器の回転体は `createRibbon`（`pathArray`＋`closeArray`）で忠実に再現可（本家 Lathe は内部で Ribbon 実装）。`DOUBLESIDE` は `backFaceCulling=false` |
-
-> ⚠️ 第6部は再検証待ち：Lite ソースに `createParticleSystem`／`startParticleSystem`／Node Particles が存在するため、6-00 / 6-01 は ✕ → ○ に改定予定（別途サンプルを反映）。
+| 6-00 | パーティクル噴水 | △ | **パーティクルは実装あり**だが本家の命令的 `new ParticleSystem`（emitter/gravity 等）とは流儀が違い、**Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet` で読み込む。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
+| 6-01 | 旋盤で回された噴水 | △ | 器の回転体は **`createLathe` 相当を `createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`）。水は 6-00 の NPE パーティクルを器の口へ重ねる |
 
 ### 第7部：光と影（骨組み・サンプル準備中）
 
@@ -114,12 +112,12 @@ Babylon.js の公式日本語チュートリアル本
 | 判定 | 章数 | 割合 |
 |---|:--:|---|
 | ○ 対応可 | 23 | 68% |
-| △ 条件付き | 8 | 24% |
-| ✕ 未対応 | 3 | 9% |
+| △ 条件付き | 10 | 29% |
+| ✕ 未対応 | 1 | 3% |
 
-> 第6部のパーティクル再検証（✕2 → ○）を反映すると、✕ は 8-03（WebXR）1 章のみになる見込み。
+> 純粋に未対応（✕）は **8-03（WebXR / VR）** の 1 章のみ。パーティクル（第6部）は NPE 経由、音声（2-02）は AudioV2 で対応します。
 
-**総括:** 造形・変換・マテリアル・テクスチャ・ライト・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL・**オーディオ（AudioV2）**まで、村チュートリアルの中核はほぼ再現可能。詰まる 2 章は **パーティクル (6-00 / 6-01)** に集約される。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）と ②部分対応機能（Sprites ⚡）。①は自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
+**総括:** 造形・変換・マテリアル・テクスチャ・ライト・**影**・カメラ・親子関係・**スケルタルアニメ（glTF 経由）**・ハイトマップ地形・スカイボックス/IBL・**オーディオ（AudioV2）**・**パーティクル（NPE）**まで、チュートリアルの中核はほぼ再現可能。純粋に詰まるのは **WebXR (8-03)** のみ。△ の主因は、①Babylon.js の便利ヘルパー欠如（`MergeMeshes`・`FollowCamera`・box `faceUV`・`intersectsMesh`）、②作り方が異なる機能（パーティクルは NPE、GUI は HTML 側）、③部分対応機能（Sprites ⚡）。いずれも自前実装や別 API で回避でき、まさに「小さいコードで同等の見た目」という Lite の性格に沿う。
 
 ---
 
@@ -134,7 +132,7 @@ Babylon.js の公式日本語チュートリアル本
 | `mesh.createInstance()` | Thin Instances（`InstancedMesh` は🚫） |
 | `Mesh.MergeMeshes([...])` | 非対応 → `CSG2` union ／ 手動結合 |
 | `new BABYLON.Sound(...)` | `createAudioEngineAsync` ＋ `createSoundAsync`（AudioV2 ポート） |
-| `new ParticleSystem(...)` | 非対応 |
+| `new ParticleSystem(...)` | Node Particles（NPE）：`parseNodeParticleSetFromSnippet` ＋ `registerNodeParticleSet` |
 
 ---
 

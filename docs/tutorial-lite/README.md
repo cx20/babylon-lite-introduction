@@ -67,8 +67,8 @@
 
 | 章 | タイトル | 判定 |
 |---|---|:--:|
-| 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | ✕ |
-| 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | ✕ |
+| 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | △ |
+| 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | △ |
 
 ### [第7部：光と影](./07-lights/README.md)
 
