@@ -1,16 +1,6 @@
-# 第4部：衝突回避
+# 4-01 車の衝突事故を回避する (Avoiding a Car Crash) — △
 
-> 共通テンプレート・凡例は [README](./README.md) を参照。
-
----
-
-## 4-00 コリジョン回避 (Avoiding Collisions) — 導入
-
-**—** Babylon.js チュートリアルは `mesh.intersectsMesh()` / `moveWithCollisions()` を使いますが、**Lite にこれらの組み込みヘルパーはありません**。代わりに **境界ボックス（AABB）や距離判定を自前**で行うか、**Ray Casting / Picking**（✅）を使います。物理は Havok V2 のサブセット（⚡）。
-
----
-
-## 4-01 車の衝突事故を回避する (Avoiding a Car Crash) — △
+> [第4部：衝突回避](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
 **目的**：歩行者（キャラ）が横断ラインを行き来し、車が横断ゾーン（`hitBox`）を通過中は歩行を止めて待つ。交差判定でぶつからないようにする。
 
@@ -33,7 +23,7 @@
 
 衝突判定は **actor の local 位置と local の箱**で統一して比較します。
 
-`movePOV` 相当（正面 = `-Z`）、Xbot の bake クォータニオン合成・`FRONT_OFFSET`・身長 1/3、コンテナ丸ごと `addToScene` による自動 tick、車輪回転の自作は、いずれも [第3部](./03-animation.md) の 3-05 / 3-07 と同じです。
+`movePOV` 相当（正面 = `-Z`）、Xbot の bake クォータニオン合成・`FRONT_OFFSET`・身長 1/3、コンテナ丸ごと `addToScene` による自動 tick、車輪回転の自作は、いずれも [第3部](../03-animation/README.md) の 3-05 / 3-07 と同じです。
 
 追加 import：`createCylinder, createStandardMaterial, loadGltf, playAnimation, stopAnimation, onBeforeRender`（＋型 `AssetContainer, EngineContext, SceneContext, SceneNode, StandardMaterialProps`）
 
@@ -213,7 +203,7 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 >
 > 待機中も `walk` アニメは自動 tick で回り続けるため、その場で足踏みします。本家と同じ挙動です。
 
-### より簡単な判定
+## より簡単な判定
 
 厳密な箱判定が要らないなら、距離（円）判定で十分なことも多いです。
 
@@ -238,3 +228,7 @@ onBeforeRender(scene, () => {
 読み込んだメッシュは `boundMin` / `boundMax`（ワールド AABB）を持つので、上の `overlapAABB` をそれに対して直接適用することもできます。ただし本サンプルでは、glTF ローカル座標のノード位置と比較したいため、AABB を中心と半径から解析的に構築しています。
 
 > より厳密な当たり判定が必要なら Ray Casting / Picking（GPU ID パス＋ CPU レイ/三角形、thin-instance・変形メッシュ対応）が使えます。
+
+---
+
+← [4-00 コリジョン回避 (Avoiding Collisions)](./4-00-avoiding-collisions.md) ・ [5-00 より良い環境に (A Better Environment)](../05-environment/5-00-better-environment.md) →

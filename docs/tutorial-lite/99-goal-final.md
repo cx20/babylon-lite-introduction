@@ -1,6 +1,6 @@
 # ゴール完成版：村の道を歩く Xbot（三人称追従カメラ）
 
-> 各章（[第1部](./01-basics.md)〜[第5部](./05-environment.md)）の集大成。
+> 各章（[第1部](./01-basics/README.md)〜[第5部](./05-environment/README.md)）の集大成。
 > [Babylon Lite Playground](https://liteplayground.babylonjs.com) にそのまま貼り付けて Run できます。
 
 このシーンが含む章の要素：
@@ -149,4 +149,4 @@ main().catch((err) => console.error(err));
 - **明るさ**：`createHemisphericLight([1,1,0], 2.0)` の `2.0`、`sun.intensity`。
 - **身長**：`SCALE`。カメラの寄りは半径 `3` と注視 `y: 1`。
 - **向き**：後ろ向きに歩くなら `MODEL_YAW_OFFSET = Math.PI`。
-- **任意の空**：[5-02](./05-environment.md) の `loadEnvironment`（`brdfUrl` 必須）を `registerScene` の前に追加。
+- **任意の空**：[5-02](./05-environment/5-02-skies-above.md) の `loadEnvironment`（`brdfUrl` 必須）を `registerScene` の前に追加。

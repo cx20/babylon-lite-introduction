@@ -7,15 +7,70 @@
 
 ## 目次
 
-| パート | 内容 | ファイル |
-|---|---|---|
-| 第1部 | 基礎（Hello World / モデル読込 / セットアップ） | [01-basics.md](./01-basics.md) |
-| 第2部 | 村の構築（地面 / メッシュ / テクスチャ / コピー） | [02-village.md](./02-village.md) |
-| 第3部 | アニメーション（親子 / 車 / キャラ歩行） | [03-animation.md](./03-animation.md) |
-| 第4部 | 衝突回避 | [04-collisions.md](./04-collisions.md) |
-| 第5部 | 環境（丘 / 空 / スプライトの木） | [05-environment.md](./05-environment.md) |
-| 第6部 | パーティクル効果 | [06-particles.md](./06-particles.md) |
-| ゴール | 完成版（村を歩く Xbot） | [99-goal-final.md](./99-goal-final.md) |
+### [第1部：基礎](./01-basics/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 1-00 | [最初 (Firsts)](./01-basics/1-00-firsts.md) | 導入 |
+| 1-01 | [ハローワールド！最初のシーンとモデル](./01-basics/1-01-hello-world.md) | ○ |
+| 1-02 | [あなたの web サイトをかっこよくしよう](./01-basics/1-02-website.md) | △ |
+| 1-03 | [モデルを扱う](./01-basics/1-03-models.md) | ○ |
+| 1-04 | [最初の web アプリのセットアップ](./01-basics/1-04-webapp-setup.md) | ○ |
+
+### [第2部：村の構築](./02-village/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 2-00 | [村を作る](./02-village/2-00-build-village.md) | 導入 |
+| 2-01 | [地面 (Grounding)](./02-village/2-01-grounding.md) | ○ |
+| 2-02 | [サウンドを追加](./02-village/2-02-add-sound.md) | ✕ |
+| 2-03 | [メッシュを設置 (Place and Scale)](./02-village/2-03-place-and-scale.md) | ○ |
+| 2-04 | [基本的な家 (A Basic House)](./02-village/2-04-basic-house.md) | ○ |
+| 2-05 | [テクスチャを貼る (Add Texture)](./02-village/2-05-add-texture.md) | ○ |
+| 2-06 | [マテリアル（面ごと/faceUV）](./02-village/2-06-materials-faceuv.md) | △ |
+| 2-07 | [リファクタリング（関数化）](./02-village/2-07-refactoring.md) | ○ |
+| 2-08 | [メッシュを結合 (Combining Meshes)](./02-village/2-08-combining-meshes.md) | △ |
+| 2-09 | [メッシュをコピー (Copying Meshes)](./02-village/2-09-copying-meshes.md) | ○ |
+| 2-10 | [Viewer のカメラ変更](./02-village/2-10-viewer-camera.md) | ○ |
+| 2-11 | [Web アプリ レイアウト](./02-village/2-11-webapp-layout.md) | ○ |
+
+### [第3部：アニメーション](./03-animation/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 3-00 | [村のアニメーション](./03-animation/3-00-village-animation.md) | 導入 |
+| 3-01 | [メッシュの親子関係 (Mesh Parents)](./03-animation/3-01-mesh-parents.md) | ○ |
+| 3-02 | [車を組み立てる (Building the Car)](./03-animation/3-02-building-the-car.md) | ○ |
+| 3-03 | [車のマテリアル (Car Material)](./03-animation/3-03-car-material.md) | ○ |
+| 3-04 | [車輪のアニメーション (Wheel Animation)](./03-animation/3-04-wheel-animation.md) | ○ |
+| 3-05 | [車のアニメーション (Car Animation)](./03-animation/3-05-car-animation.md) | ○ |
+| 3-06 | [キャラクターのアニメーション (Character Animation)](./03-animation/3-06-character-animation.md) | ○（アセットは glTF） |
+| 3-07 | [村を歩き回る (A Walk Around The Village)](./03-animation/3-07-walk-around-village.md) | △ |
+
+### [第4部：衝突回避](./04-collisions/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 4-00 | [コリジョン回避 (Avoiding Collisions)](./04-collisions/4-00-avoiding-collisions.md) | 導入 |
+| 4-01 | [車の衝突事故を回避する (Avoiding a Car Crash)](./04-collisions/4-01-car-crash.md) | △ |
+
+### [第5部：環境改善](./05-environment/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 5-00 | [より良い環境に (A Better Environment)](./05-environment/5-00-better-environment.md) | 導入 |
+| 5-01 | [遠くの丘 (Distant Hills)](./05-environment/5-01-distant-hills.md) | ○ |
+| 5-02 | [頭上の空 (Skies Above)](./05-environment/5-02-skies-above.md) | ○（要アセット） |
+| 5-03 | [木のスプライト (Sprite Trees)](./05-environment/5-03-sprite-trees.md) | △（部分対応） |
+
+### [第6部：パーティクル効果](./06-particles/README.md)
+
+| 章 | タイトル | 判定 |
+|---|---|:--:|
+| 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | ✕ |
+| 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | ✕ |
+
+### [ゴール完成版：村の道を歩く Xbot](./99-goal-final.md)
 
 ## 動作環境
 
