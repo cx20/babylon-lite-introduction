@@ -1,7 +1,7 @@
 # Babylon.js チュートリアル → Babylon Lite 章別サンプル集
 
 [Babylon.js チュートリアル日本語版（chomado）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja) の各章を **Babylon Lite（WebGPU 専用エンジン）** で再現するサンプル集です。
-最終的に「**Xbot が村の道を歩く三人称シーン**」（[ゴール完成版](./99-goal-final.md)）へ到達します。
+村の地面・家・車・歩くキャラクター（Xbot）まで、章を追って組み上げていきます。
 
 対応可否の全体像は [tutorial-compatibility.md](../tutorial-compatibility.md) を参照してください。
 
@@ -69,8 +69,6 @@
 |---|---|:--:|
 | 6-00 | [パーティクル噴水 (Build a Particle Fountain)](./06-particles/6-00-particle-fountain.md) | ✕ |
 | 6-01 | [旋盤で回された噴水 (A Lathe Turned Fountain)](./06-particles/6-01-lathe-fountain.md) | ✕ |
-
-### [ゴール完成版：村の道を歩く Xbot](./99-goal-final.md)
 
 ## 動作環境
 

@@ -254,7 +254,15 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > 自作メッシュと glTF を混在させないためです。
 >
 > なお、カメラを村の内側へ入れると家の壁が裏返って見えることがあります（単面ポリゴンの片面描画）。
-> その対処は [ゴール完成版](../99-goal-final.md) の「既知の落とし穴」を参照してください。
+> ロード後に各マテリアルの `doubleSided = true` を立てると両面描画になり、内側からでも壁が見えます。
+>
+> ```typescript
+> const forceDoubleSided = (node: any) => {
+>   if (node?.material && "doubleSided" in node.material) node.material.doubleSided = true;
+>   for (const child of node?.children ?? []) forceDoubleSided(child);
+> };
+> for (const e of village.entities) forceDoubleSided(e);
+> ```
 
 ## 車を追加
 

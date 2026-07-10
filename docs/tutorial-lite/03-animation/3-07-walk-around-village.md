@@ -319,7 +319,6 @@ setCameraLimits(camera, { upperBetaLimit: Math.PI / 2.2 });   // 地面より下
 > `upperBetaLimit` は Lite の `ArcRotateCamera` にもあり、`attachControl` の毎フレーム処理で制限が効きます。
 > **`setCameraLimits` 経由が本来の作法**で、現在の姿勢が即座にクランプされるため、慣性による行き過ぎ→スナップのブレを避けられます
 > （`camera.upperBetaLimit = …` の直接代入でも制限自体は効きます）。
-> 追従カメラ＋ウェイポイント歩行を組み込んだ完全版は [ゴール完成版](../99-goal-final.md) を参照してください。
 
 ---
 

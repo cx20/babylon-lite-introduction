@@ -108,7 +108,6 @@ addAxisLockedBillboardSystem(scene, trees);
 
 > `addBillboardSprite` はハンドルを返し、`addBillboardSpriteIndex` はインデックスを返します。あとから
 > 個別に動かす／消すなら前者、追加しっぱなしなら後者で十分です。
-> この Y 軸ロック版は [ゴール完成版](../99-goal-final.md) で使っています。
 
 ## スプライトのアニメーション
 

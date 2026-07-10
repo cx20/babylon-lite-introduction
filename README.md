@@ -24,7 +24,6 @@
 | 第4部 | 4-00〜4-01 | 衝突回避 | [04-collisions/](./docs/tutorial-lite/04-collisions/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/04-collisions/) |
 | 第5部 | 5-00〜5-03 | 環境（丘 / 空 / スプライトの木） | [05-environment/](./docs/tutorial-lite/05-environment/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/05-environment/) |
 | 第6部 | 6-00〜6-01 | パーティクル効果 | [06-particles/](./docs/tutorial-lite/06-particles/README.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/06-particles/) |
-| ゴール | — | 完成版（村を歩く Xbot） | [99-goal-final.md](./docs/tutorial-lite/99-goal-final.md) | [▶](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-lite/99-goal-final.html) |
 
 対応可否の全体像は **[tutorial-compatibility.md](./docs/tutorial-compatibility.md)**
 （[プレビュー付き](https://cx20.github.io/babylon-lite-introduction/docs/tutorial-compatibility.html)）にまとめています。
