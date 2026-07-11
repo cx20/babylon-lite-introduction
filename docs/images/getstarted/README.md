@@ -18,5 +18,8 @@
 | `carmodel.webp` | 第3部で作る車（＝マテリアル適用後の完成イメージ） | [3-01 メッシュの親子関係](../../tutorial-lite/03-animation/3-01-mesh-parents.md) / [3-03 車のマテリアル](../../tutorial-lite/03-animation/3-03-car-material.md) |
 | `car.webp` | 車体テクスチャアトラス `car.png` | [3-03 車のマテリアル](../../tutorial-lite/03-animation/3-03-car-material.md) |
 | `wheel.webp` | 車輪テクスチャ `wheel.png` | [3-03 車のマテリアル](../../tutorial-lite/03-animation/3-03-car-material.md) |
+| `villageheightmap.webp` | 村の谷のハイトマップ `villageheightmap.png` | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
+| `valley1.webp` | 無テクスチャの谷地形の完成イメージ | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
+| `valley2.webp` | 草テクスチャの谷地形の完成イメージ | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
 
 > 出典ページ：Babylon.js [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（各画像の対応記事は上表の使用箇所、または各記事内の出典リンクを参照）
