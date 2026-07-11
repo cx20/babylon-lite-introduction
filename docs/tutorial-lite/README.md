@@ -80,8 +80,8 @@
 |---|---|:--:|
 | 7-00 | [光と影 (Light the Night)](./07-lights/7-00-light-intro.md) | 導入 |
 | 7-01 | [ライトを灯す (Light the Night)](./07-lights/7-01-lights.md) | ○ |
-| 7-02 | [影を追加 (Adding Shadows)](./07-lights/7-02-shadows.md) | ○ |
-| 7-03 | [昼から夜へ (Day to Night)](./07-lights/7-03-day-to-night.md) | △ |
+| 7-02 | [昼から夜へ (Day to Night)](./07-lights/7-02-day-to-night.md) | △ |
+| 7-03 | [影を追加 (Adding Shadows)](./07-lights/7-03-shadows.md) | ○ |
 
 ### [第8部：世界の見方](./08-cameras/README.md)
 

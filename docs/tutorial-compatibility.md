@@ -95,8 +95,8 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 |---|---|:--:|---|
 | 7-00 | 光と影（導入） | — | 導入 |
 | 7-01 | ライトを灯す | ○ | `createPointLight`／`createDirectionalLight`／`createSpotLight`✅ |
-| 7-02 | 影を追加 | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
-| 7-03 | 昼から夜へ | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
+| 7-02 | 昼から夜へ | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
+| 7-03 | 影を追加 | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
 
 ### 第8部：世界の見方（骨組み・サンプル準備中）
 

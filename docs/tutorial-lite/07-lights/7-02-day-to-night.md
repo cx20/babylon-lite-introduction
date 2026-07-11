@@ -1,4 +1,4 @@
-# 7-03 昼から夜へ (Day to Night) — △
+# 7-02 昼から夜へ (Day to Night) — △
 
 > [第7部：光と影](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
@@ -13,4 +13,4 @@
 
 ---
 
-← [7-02 影を追加 (Adding Shadows)](./7-02-shadows.md) ・ [8-00 世界の見方 (Ways to See The World)](../08-cameras/8-00-cameras-intro.md) →
+← [7-01 ライトを灯す (Light the Night)](./7-01-lights.md) ・ [7-03 影を追加 (Adding Shadows)](./7-03-shadows.md) →
