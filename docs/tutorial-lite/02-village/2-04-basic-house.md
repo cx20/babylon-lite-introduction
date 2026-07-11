@@ -36,6 +36,12 @@ addToScene(scene, ground);
         loading="lazy" allow="fullscreen"
         style="width: 100%; height: 480px; border: 0"></iframe>
 
+本家 Getting Started の完成イメージ（テクスチャ無しの box ＋三角柱の屋根）:
+
+<img src="../../images/getstarted/house1.webp" alt="基本的な家（box＋屋根）の完成イメージ" width="240">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap2/variation)（CC BY 4.0）
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/4
 >
 > `createCylinder` はオプションオブジェクト（`{ diameter, height, tessellation }`）をそのまま渡せます（`tessellation` は最小 3 にクランプ）。
