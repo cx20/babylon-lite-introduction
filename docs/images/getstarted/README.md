@@ -24,5 +24,6 @@
 | `skybox_px/nx/py/ny/pz/nz.webp` | スカイボックスのキューブ 6 面テクスチャ | [5-02 頭上の空](../../tutorial-lite/05-environment/5-02-skies-above.md) |
 | `palmtree.webp` | ヤシの木スプライト `palm.png` | [5-03 木のスプライト](../../tutorial-lite/05-environment/5-03-sprite-trees.md) |
 | `ufo.webp` | UFO スプライトシート `ufo.png`（20 コマ） | [5-03 木のスプライト](../../tutorial-lite/05-environment/5-03-sprite-trees.md) |
+| `profile.webp` | 噴水の器の断面プロファイル（旋盤で回す輪郭） | [6-01 旋盤で回された噴水](../../tutorial-lite/06-particles/6-01-lathe-fountain.md) |
 
 > 出典ページ：Babylon.js [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（各画像の対応記事は上表の使用箇所、または各記事内の出典リンクを参照）
