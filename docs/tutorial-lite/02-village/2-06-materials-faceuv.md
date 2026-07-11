@@ -19,6 +19,8 @@ Lite は公開 API に **`createMeshFromData(engine, name, positions, normals, i
 
 これにより、Lite 組み込み box と同一の UV・巻き順規約を保ったまま、本家と見た目が一致する faceUV box を再現できます。
 
+> 補足（v1.9 以降）：v1.9 で **`createBoxData` が公開エクスポート**されました。標準 box の頂点データを取得して UV だけ差し替える簡素化も可能になっていますが、本章の `createWrappedBox`（`createMeshFromData` に本家 boxBuilder の `wrap:true` ロジックを逐語移植）は面番号・巻き順の対応が明示的で分かりやすいため、そのまま採用します。
+
 追加 import：`createCylinder, createGround, createStandardMaterial, createMeshFromData, loadTexture2D`
 
 ## A. 一軒家 (Detached House) — `cubehouse.png`

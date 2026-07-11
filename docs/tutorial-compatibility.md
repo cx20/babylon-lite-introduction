@@ -87,7 +87,7 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 6-00 | パーティクル噴水 | — | 導入（器 6-01 ＋ スプレー 6-02 ＋ スイッチ 6-03） |
 | 6-01 | 旋盤で回された噴水 | △ | `createLathe` メソッドで器を作る章。Lite に `createLathe` は無く **`createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`） |
 | 6-02 | パーティクルのスプレー | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
-| 6-03 | スイッチ オン イベント | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋ピッキング（`pickBillboardSprite`／Ray Cast）。土台は 6-02 の NPE パーティクル |
+| 6-03 | スイッチ オン イベント | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋GPU ピッキング（`createGpuPicker`／`pickAsync`）。※スプライト向けの `pickBillboardSprite` は v1.10 でシグネチャ変更。土台は 6-02 の NPE パーティクル |
 
 ### 第7部：光と影（骨組み・サンプル準備中）
 
@@ -158,7 +158,14 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は Babylon Lite v1.8 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
-> [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく。各章の API 名・シグネチャは
-> 実際のソースで確認済み。Lite は機能追加が続いているため、最新の対応状況は上記を参照のこと。
-> ※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
+> 本表は Babylon Lite v1.10 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく（初版は v1.8 で作成。各章冒頭の
+> 「vX.Y ソースで確認」は当時の確認記録）。各章の API 名・シグネチャは実際のソースで確認済み。Lite は機能追加が続いており、
+> 最新の対応状況は上記を参照のこと。※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
+>
+> **v1.8 → v1.10 の主な変化（本表への影響）**：破壊的変更でサンプルが動かなくなる箇所はない。
+> ①パーティクルは **Node Particle Editor (NPE) が v1.9 で正式化**、v1.10 でグラデーション/指向性・半球エミッター/`isLocal`
+> を追加（第6部の対応を補強）。②スプライトは v1.10 でパイプラインキャッシュ＋`disposeSpriteAtlas` を追加、ピッキング API
+> （`pickSprite2D` / `pickBillboardSprite`）のシグネチャが変更されたが、本チュートリアルのスプライト章（5-03 / 8-01 / 8-02）は
+> ピッキングを使わないため影響なし。③`createBoxData`（v1.9 公開）・`playSound` の per-instance pitch/playbackRate（v1.9）・
+> トーンマッピングのプラグイン化と Khronos PBR Neutral（v1.9）は追加/内部改善で、既存記述の API は不変。
