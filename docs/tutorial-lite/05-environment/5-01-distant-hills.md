@@ -53,6 +53,12 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 村の谷を作るときは、専用のハイトマップ `villageheightmap.png` を使い、`150 × 150` の大地面にします。
 カメラを引く（`radius = 200`）と全景が見えます。注意点は上と同じで、**`engine` 引数・`await`・マテリアル明示**の 3 点です。
 
+高さの入力になるハイトマップ `villageheightmap.png`（黒＝低地の谷、白＝高い尾根）:
+
+<img src="../../images/getstarted/villageheightmap.webp" alt="villageheightmap.png ハイトマップ" width="200">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills)（CC BY 4.0）
+
 ```typescript
 const HEIGHTMAP_URL = "https://assets.babylonjs.com/environments/villageheightmap.png";
 
@@ -88,6 +94,12 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 >
 > `villageheightmap.png` は `assets.babylonjs.com` の絶対 URL をそのまま使えます。
 > `150 × 150` に対して `subdivisions` は `20` と粗めですが、遠景の丘としてはこれで十分です。
+
+本家 Getting Started の完成イメージ（テクスチャ無しの起伏地形）:
+
+<img src="../../images/getstarted/valley1.webp" alt="無テクスチャの谷地形の完成イメージ" width="360">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills)（CC BY 4.0）
 
 ## テクスチャ
 
@@ -141,6 +153,12 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 >
 > `createStandardMaterial()` に名前引数は要りません（本家の `new StandardMaterial("largeGroundMat", scene)` 相当）。
 > ハイトマップ・テクスチャとも `assets.babylonjs.com` の絶対 URL をそのまま使えます。
+
+本家 Getting Started の完成イメージ（`valleygrass.png` の草テクスチャを貼った起伏地形）:
+
+<img src="../../images/getstarted/valley2.webp" alt="草テクスチャを貼った谷地形の完成イメージ" width="360">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills)（CC BY 4.0）
 
 ## 地面のテクスチャ仕上げ
 

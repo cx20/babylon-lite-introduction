@@ -12,6 +12,14 @@
 - **画像は絶対 URL で** — 本家の `"textures/skybox"` は Playground 相対パスなので Lite では解決できません。
 - **`camera.upperBetaLimit` はある** — Lite の `ArcRotateCamera` にもフィールドがあり、そのまま代入できます（地面より下へ回り込まないための制限）。
 
+スカイボックスに使う 6 枚のキューブ面テクスチャ（`_px` / `_nx` / `_py` / `_ny` / `_pz` / `_nz` ＝ +X / -X / +Y / -Y / +Z / -Z の各面）:
+
+| +X | -X | +Y | -Y | +Z | -Z |
+|:--:|:--:|:--:|:--:|:--:|:--:|
+| <img src="../../images/getstarted/skybox_px.webp" alt="skybox +X（雲）" width="100"> | <img src="../../images/getstarted/skybox_nx.webp" alt="skybox -X（雲）" width="100"> | <img src="../../images/getstarted/skybox_py.webp" alt="skybox +Y（天頂・太陽）" width="100"> | <img src="../../images/getstarted/skybox_ny.webp" alt="skybox -Y（地面側・灰色）" width="100"> | <img src="../../images/getstarted/skybox_pz.webp" alt="skybox +Z（雲）" width="100"> | <img src="../../images/getstarted/skybox_nz.webp" alt="skybox -Z（雲）" width="100"> |
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/sky)（CC BY 4.0）
+
 追加 import：`loadSkybox`
 
 ```typescript
