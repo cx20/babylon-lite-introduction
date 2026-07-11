@@ -15,5 +15,6 @@
 | `house3.webp` | 一軒家（Detached House）の完成イメージ | [2-06 マテリアル（面ごと/faceUV）](../../tutorial-lite/02-village/2-06-materials-faceuv.md) A. 一軒家 |
 | `semihouse.webp` | `semihouse.png` テクスチャアトラス（横長） | [2-06](../../tutorial-lite/02-village/2-06-materials-faceuv.md) B. Semi Detached House |
 | `house4.webp` | Semi Detached House（2 戸 1 棟）の完成イメージ | [2-06](../../tutorial-lite/02-village/2-06-materials-faceuv.md) B. Semi Detached House |
+| `carmodel.webp` | 第3部で作る車（車体に車輪を親子付け）の完成イメージ | [3-01 メッシュの親子関係](../../tutorial-lite/03-animation/3-01-mesh-parents.md) |
 
-> 出典ページ：[Getting Started / Face Materials](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material)
+> 出典ページ：Babylon.js [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（各画像の対応記事は上表の使用箇所、または各記事内の出典リンクを参照）
