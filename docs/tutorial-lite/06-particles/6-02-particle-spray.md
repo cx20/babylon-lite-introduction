@@ -167,17 +167,123 @@ export function createFountainNpe() {
 }
 ```
 
+## スニペット参照版（NPE スニペット ID を直接読み込む）
+
+Node Particle Editor で作成・保存したグラフには**スニペット ID**が付きます。上の `json:` 直接渡し版と同じ噴水を、スニペット ID（`UPEOT4`）を指定して読み込む版がこちらです。ローカルの `fountain-npe.js`（約 1,500 行）が不要になります。
+
+- NPE で保存すると `npe.babylonjs.com/#UPEOT4` のように ID が発行されます（この場合 ID は `UPEOT4`）。
+- `parseNodeParticleSetFromSnippet(engine, scene, "UPEOT4", { emitter, ... })` が `snippet.babylonjs.com/UPEOT4` から取得して読み込みます。
+
+**スニペット ID の渡し方の注意**：内部は `snippetId.replace(/#/g, "/")` で URL を組み立てます。先頭に `#` を付けて `"#UPEOT4"` と渡すと `snippet.babylonjs.com//UPEOT4`（`//` が 2 つ）になり失敗するため、`#` は付けず `"UPEOT4"` と渡します（複数リビジョンは `"UPEOT4/2"` のように `/` 区切り）。
+
+`json:` 直接渡し版との違いは、パーティクル読み込みの一行だけです。追加 import から `createFountainNpe` が消え、`fountain-npe.js` も不要になります。
+
+```typescript
+import {
+    addToScene,
+    attachControl,
+    createArcRotateCamera,
+    createEngine,
+    createHemisphericLight,
+    createRibbon,
+    createSceneContext,
+    createStandardMaterial,
+    parseNodeParticleSetFromSnippet,
+    registerNodeParticleSet,
+    registerScene,
+    startEngine,
+    type EngineContext,
+    type Mesh,
+    type SceneContext,
+} from "@babylonjs/lite";
+
+// Node Particle Editor のスニペット ID（先頭 "#" は付けない）
+const NPE_SNIPPET_ID = "UPEOT4";
+
+type Vec3 = { x: number; y: number; z: number };
+
+/** 本家 CreateLathe 相当: 輪郭を Y 軸まわりに回して createRibbon で張る */
+function createLathe(engine: EngineContext, shape: readonly Vec3[], tessellation = 24): Mesh {
+    const pathArray: Vec3[][] = [];
+    for (let s = 0; s <= tessellation; s++) {
+        const ang = (2 * Math.PI * s) / tessellation;
+        const c = Math.cos(ang);
+        const si = Math.sin(ang);
+        pathArray.push(shape.map((p) => ({ x: p.x * c - p.z * si, y: p.y, z: p.x * si + p.z * c })));
+    }
+    return createRibbon(engine, { pathArray, closeArray: true });
+}
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+    const scene = createSceneContext(engine);
+
+    // カメラ（本家と同一: alpha = 3π/2, beta = π/2, radius 70）
+    const camera = createArcRotateCamera((3 * Math.PI) / 2, Math.PI / 2, 70, { x: 0, y: 0, z: 0 });
+    scene.camera = camera;
+    attachControl(camera, canvas, scene);
+
+    // ライト（本家と同じ上方向 (0, 1, 0)）
+    addToScene(scene, createHemisphericLight([0, 1, 0], 1));
+
+    // 噴水プロファイル（本家と同一の 8 点）
+    const fountainProfile: Vec3[] = [
+        { x: 0, y: 0, z: 0 },
+        { x: 10, y: 0, z: 0 },
+        { x: 10, y: 4, z: 0 },
+        { x: 8, y: 4, z: 0 },
+        { x: 8, y: 1, z: 0 },
+        { x: 1, y: 2, z: 0 },
+        { x: 1, y: 15, z: 0 },
+        { x: 3, y: 17, z: 0 },
+    ];
+
+    // 回転体で噴水を生成（DOUBLESIDE 相当は backFaceCulling=false）
+    const fountain = createLathe(engine, fountainProfile, 24);
+    const fountainMat = createStandardMaterial();
+    fountainMat.backFaceCulling = false;
+    fountainMat.diffuseColor = [0.6, 0.6, 0.7];
+    fountain.material = fountainMat;
+    fountain.position.y = -5;
+    addToScene(scene, fountain);
+
+    // パーティクル: NPE スニペットを読み込み、噴水の上 (0,10,0) から噴かせる
+    const particleSet = await parseNodeParticleSetFromSnippet(engine, scene, NPE_SNIPPET_ID, {
+        emitter: { x: 0, y: 10, z: 0 },                       // 本家 particleSystem.emitter = (0,10,0)
+        textureBaseUrl: "https://playground.babylonjs.com/",  // 相対テクスチャ URL の解決先
+    });
+    registerNodeParticleSet(scene, particleSet, { autoStart: true });
+
+    return scene;
+}
+
+async function main(): Promise<void> {
+    const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement | null;
+    if (!canvas) {
+        throw new Error('Canvas要素 "#renderCanvas" が見つかりません。');
+    }
+    const engine = await createEngine(canvas);
+    const scene = await createScene(engine, canvas);
+    await registerScene(scene);
+    await startEngine(engine);
+}
+
+main().catch((error: unknown) => {
+    console.error("シーンの構築に失敗しました:", error);
+});
+```
+
 ## 動作サンプル
 
-<iframe src="https://liteplayground.babylonjs.com/snippet/OBNULB/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+<iframe src="https://liteplayground.babylonjs.com/snippet/OBNULB/v/1?embed=runner&embedOrigin=https://cx20.github.io"
         title="Babylon Lite Playground: 6-02 パーティクルのスプレー（噴水）"
         loading="lazy" allow="fullscreen"
         style="width: 100%; height: 480px; border: 0"></iframe>
 
-> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/OBNULB/v/0
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/OBNULB/v/1 （スニペット参照版）
+>
+> NPE スニペット（`npe.babylonjs.com/#UPEOT4`）を `parseNodeParticleSetFromSnippet(engine, scene, "UPEOT4")` で直接読み込む版です。以前の `json:` 直接渡し版は [v/0](https://liteplayground.babylonjs.com/snippet/OBNULB/v/0) に残しています。
 >
 > 本家のように「エミッタ・方向・重力をコードで直接設定する」書き味ではなく、**NPE でグラフを組む**のが Lite の流儀です。この差があるため ○ ではなく △ としています。
-> 現在はグラフ本体を `json:` で直接渡していますが、**NPE スニペット ID が用意できたら、`parseNodeParticleSetFromSnippet(engine, scene, "<スニペット ID>")` で読み込む別バージョン**として反映します。
 
 ---
 
