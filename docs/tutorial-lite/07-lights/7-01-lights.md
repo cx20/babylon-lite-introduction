@@ -343,4 +343,4 @@ main().catch((error: unknown) => {
 
 ---
 
-← [7-00 光と影 (Light the Night)](./7-00-light-intro.md) ・ [7-02 影を追加 (Adding Shadows)](./7-02-shadows.md) →
+← [7-00 光と影 (Light the Night)](./7-00-light-intro.md) ・ [7-02 昼から夜へ (Day to Night)](./7-02-day-to-night.md) →
