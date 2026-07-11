@@ -24,88 +24,92 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 
 ## 全 8 章 対応可否テーブル
 
+> 各章の**タイトルは本家（Babylon.js 公式）Getting Started の該当記事**にリンクしています（英語・比較用）。
+> Lite 版の各章記事は [tutorial-lite の目次](./tutorial-lite/README.md) から辿れます。
+> ※ 2-07 リファクタリングは公式に対応記事が無く、[ちょまど氏の日本語版](https://zenn.dev/chomado/books/babylonjs-tutorial-ja)のオリジナル章のため、そちらへリンクしています。
+
 ### 第1部：基礎
 
 | 章 | タイトル | 判定 | 根拠・代替手段（Lite の API / 機能比較表） |
 |---|---|:--:|---|
-| 1-00 | 最初 (Firsts) | — | 導入 |
-| 1-01 | ハローワールド！最初のシーンとモデル | ○ | `createEngine`／`createSceneContext`／`createArcRotateCamera`／`createHemisphericLight`／`createSphere`／`createGround` すべて✅ |
-| 1-02 | Web サイトをかっこよくしよう | △ | Babylon Viewer の `<babylon-viewer>` Web コンポーネントは無し。canvas＋`loadGltf`＋`createDefaultCamera`（auto-framing✅）で同等の見せ方は可 |
-| 1-03 | モデルを扱う | ○ | `loadGltf`（glTF/GLB✅）／`loadBabylon`（.babylon△）。素直な `.babylon` は可だが、絶対URLテクスチャ・`geometries` 参照型は前処理要、アニメ付きは glTF 変換要 |
-| 1-04 | 最初の Web アプリのセットアップ | ○ | TypeScript／Vite ネイティブ✅。`@babylonjs/lite` でアプリ構築可（手順は異なる） |
+| 1-00 | [最初 (Firsts)](https://doc.babylonjs.com/features/introductionToFeatures/chap1) | — | 導入 |
+| 1-01 | [ハローワールド！最初のシーンとモデル](https://doc.babylonjs.com/features/introductionToFeatures/chap1/first_scene) | ○ | `createEngine`／`createSceneContext`／`createArcRotateCamera`／`createHemisphericLight`／`createSphere`／`createGround` すべて✅ |
+| 1-02 | [Web サイトをかっこよくしよう](https://doc.babylonjs.com/features/introductionToFeatures/chap1/first_viewer) | △ | Babylon Viewer の `<babylon-viewer>` Web コンポーネントは無し。canvas＋`loadGltf`＋`createDefaultCamera`（auto-framing✅）で同等の見せ方は可 |
+| 1-03 | [モデルを扱う](https://doc.babylonjs.com/features/introductionToFeatures/chap1/first_import) | ○ | `loadGltf`（glTF/GLB✅）／`loadBabylon`（.babylon△）。素直な `.babylon` は可だが、絶対URLテクスチャ・`geometries` 参照型は前処理要、アニメ付きは glTF 変換要 |
+| 1-04 | [最初の Web アプリのセットアップ](https://doc.babylonjs.com/features/introductionToFeatures/chap1/first_app) | ○ | TypeScript／Vite ネイティブ✅。`@babylonjs/lite` でアプリ構築可（手順は異なる） |
 
 ### 第2部：村の構築
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 2-00 | 村を作る | — | 概要 |
-| 2-01 | 地面 (Grounding) | ○ | `createGround`✅ |
-| 2-02 | サウンドを追加 | ○ | **AudioV2 ポートのオーディオエンジン搭載**✅。`createAudioEngineAsync`＋`createSoundAsync`（`loop` / `autoplay` オプション、`playSound` / `pauseSound` ほか）。ストリーミング音源・3D 空間定位（`SpatialSoundOptions`）まで対応 |
-| 2-03 | メッシュを設置 | ○ | `position`／`scaling`（ObservableVec3）✅ |
-| 2-04 | 基本的な家 | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
-| 2-05 | テクスチャを貼る | ○ | 2D テクスチャ✅。UV タイリングは **`material.uvScale`**（既定 `[1,1]`）。本家の per-texture `uScale/vScale/uOffset/vOffset` とは流儀が違い、**オフセット相当のフィールドは無い** |
-| 2-06 | マテリアル（面ごと/faceUV） | △ | **box の faceUV/wrap/width は `createBox` 非対応**（`size` 数値のみ）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
-| 2-07 | リファクタリング（関数化） | ○ | 純粋な JS 設計、エンジン非依存 |
-| 2-08 | メッシュを結合 | △ | **`Mesh.MergeMeshes` 相当は無し**（コード検索 0 件）。`CSG2` union／thin instances／手動頂点結合で代替 |
-| 2-09 | メッシュをコピー | ○ | Thin Instances✅／`cloneTransformNode`✅。※BJS `InstancedMesh` API は🚫→thin instance で代替 |
-| 2-10 | Viewer のカメラ変更 | ○ | `ArcRotateCamera`（orbit/zoom/pan/inertia）✅ |
-| 2-11 | Web アプリ レイアウト | ○ | HTML/CSS 層。canvas 埋め込みのみでエンジン制約なし |
+| 2-00 | [村を作る](https://doc.babylonjs.com/features/introductionToFeatures/chap2) | — | 概要 |
+| 2-01 | [地面 (Grounding)](https://doc.babylonjs.com/features/introductionToFeatures/chap2/ground) | ○ | `createGround`✅ |
+| 2-02 | [サウンドを追加](https://doc.babylonjs.com/features/introductionToFeatures/chap2/sound) | ○ | **AudioV2 ポートのオーディオエンジン搭載**✅。`createAudioEngineAsync`＋`createSoundAsync`（`loop` / `autoplay` オプション、`playSound` / `pauseSound` ほか）。ストリーミング音源・3D 空間定位（`SpatialSoundOptions`）まで対応 |
+| 2-03 | [メッシュを設置](https://doc.babylonjs.com/features/introductionToFeatures/chap2/placement) | ○ | `position`／`scaling`（ObservableVec3）✅ |
+| 2-04 | [基本的な家](https://doc.babylonjs.com/features/introductionToFeatures/chap2/variation) | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
+| 2-05 | [テクスチャを貼る](https://doc.babylonjs.com/features/introductionToFeatures/chap2/material) | ○ | 2D テクスチャ✅。UV タイリングは **`material.uvScale`**（既定 `[1,1]`）。本家の per-texture `uScale/vScale/uOffset/vOffset` とは流儀が違い、**オフセット相当のフィールドは無い** |
+| 2-06 | [マテリアル（面ごと/faceUV）](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material) | △ | **box の faceUV/wrap/width は `createBox` 非対応**（`size` 数値のみ）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
+| 2-07 | [リファクタリング（関数化）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja/viewer/2-07) | ○ | 純粋な JS 設計、エンジン非依存 |
+| 2-08 | [メッシュを結合](https://doc.babylonjs.com/features/introductionToFeatures/chap2/combine) | △ | **`Mesh.MergeMeshes` 相当は無し**（コード検索 0 件）。`CSG2` union／thin instances／手動頂点結合で代替 |
+| 2-09 | [メッシュをコピー](https://doc.babylonjs.com/features/introductionToFeatures/chap2/copies) | ○ | Thin Instances✅／`cloneTransformNode`✅。※BJS `InstancedMesh` API は🚫→thin instance で代替 |
+| 2-10 | [Viewer のカメラ変更](https://doc.babylonjs.com/features/introductionToFeatures/chap2/viewer2) | ○ | `ArcRotateCamera`（orbit/zoom/pan/inertia）✅ |
+| 2-11 | [Web アプリ レイアウト](https://doc.babylonjs.com/features/introductionToFeatures/chap2/app2) | ○ | HTML/CSS 層。canvas 埋め込みのみでエンジン制約なし |
 
 ### 第3部：アニメーション
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 3-00 | 村のアニメーション | — | 導入 |
-| 3-01 | メッシュの親子関係 | ○ | 任意エンティティ間の親子化✅、`setParent`（ワールド変換保持）✅ |
-| 3-02 | 車を組み立てる | ○ | `createCylinder`／`createBox`✅。**`ExtrudePolygon`（多角形フィル）は無い**（`createExtrudeShape` はパス押し出しで別物、earcut 相当も無し）→ 凸輪郭を `createMeshFromData` で直接組み立てて代替 |
-| 3-03 | 車のマテリアル | ○ | Standard/PBR＋テクスチャ✅。**車輪ロゴの cylinder faceUV は対応**（`create-cylinder.ts` に faceUV あり） |
-| 3-04 | 車輪のアニメーション | ○ | `createPropertyAnimationClip`（rotation キーフレーム）✅、またはレンダーループで回転 |
-| 3-05 | 車のアニメーション | ○ | プロパティアニメ（position キーフレーム、LINEAR/STEP/CUBICSPLINE）✅ |
-| 3-06 | キャラクターのアニメーション | ○※ | **Skeletal Animation✅＋Animation Groups✅**。ただし **Dude.babylon そのままは不可**（`.babylon` はスキン/アニメ非対応）→ **glTF（例：Xbot.glb）に置換で歩行/走行まで検証済み対応** |
-| 3-07 | 村を歩き回る | △ | **`mesh.movePOV`／`mesh.rotate` は—**（ヨー角スカラーを保持して `position`／`rotationQuaternion` を自前更新）。**`FollowCamera` も—**（`ArcRotateCamera`＋毎フレーム target 追従、または `camera.parent` で自作）。線の軌道は `CreateLines` が無いため細円柱＋無照明マテリアルで代替。歩行キャラは 3-06 と同じく **`Dude.babylon` 不可 → `Xbot.glb` に置換** |
+| 3-00 | [村のアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3) | — | 導入 |
+| 3-01 | [メッシュの親子関係](https://doc.babylonjs.com/features/introductionToFeatures/chap3/parent) | ○ | 任意エンティティ間の親子化✅、`setParent`（ワールド変換保持）✅ |
+| 3-02 | [車を組み立てる](https://doc.babylonjs.com/features/introductionToFeatures/chap3/polycar) | ○ | `createCylinder`／`createBox`✅。**`ExtrudePolygon`（多角形フィル）は無い**（`createExtrudeShape` はパス押し出しで別物、earcut 相当も無し）→ 凸輪郭を `createMeshFromData` で直接組み立てて代替 |
+| 3-03 | [車のマテリアル](https://doc.babylonjs.com/features/introductionToFeatures/chap3/carmat) | ○ | Standard/PBR＋テクスチャ✅。**車輪ロゴの cylinder faceUV は対応**（`create-cylinder.ts` に faceUV あり） |
+| 3-04 | [車輪のアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/animation) | ○ | `createPropertyAnimationClip`（rotation キーフレーム）✅、またはレンダーループで回転 |
+| 3-05 | [車のアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/caranimation) | ○ | プロパティアニメ（position キーフレーム、LINEAR/STEP/CUBICSPLINE）✅ |
+| 3-06 | [キャラクターのアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/import_character) | ○※ | **Skeletal Animation✅＋Animation Groups✅**。ただし **Dude.babylon そのままは不可**（`.babylon` はスキン/アニメ非対応）→ **glTF（例：Xbot.glb）に置換で歩行/走行まで検証済み対応** |
+| 3-07 | [村を歩き回る](https://doc.babylonjs.com/features/introductionToFeatures/chap3/walkpath) | △ | **`mesh.movePOV`／`mesh.rotate` は—**（ヨー角スカラーを保持して `position`／`rotationQuaternion` を自前更新）。**`FollowCamera` も—**（`ArcRotateCamera`＋毎フレーム target 追従、または `camera.parent` で自作）。線の軌道は `CreateLines` が無いため細円柱＋無照明マテリアルで代替。歩行キャラは 3-06 と同じく **`Dude.babylon` 不可 → `Xbot.glb` に置換** |
 
 ### 第4部：衝突回避
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 4-00 | コリジョン回避 | — | 導入 |
-| 4-01 | 車の衝突事故を回避する | △ | **`intersectsMesh` は—**（AABB の重なり判定を自作）。**`material.wireframe` も—**（line-list 非対応 → 12 辺を細円柱で描画）。歩行キャラは `Xbot.glb` に置換。`loadGltf` は glTF ルートに x スケール `-1` を入れるため、判定はローカル座標へ揃える。Ray Casting/Picking（✅）でより厳密な判定も可。物理は Havok V2 サブセット（⚡） |
+| 4-00 | [コリジョン回避](https://doc.babylonjs.com/features/introductionToFeatures/chap4) | — | 導入 |
+| 4-01 | [車の衝突事故を回避する](https://doc.babylonjs.com/features/introductionToFeatures/chap4/mesh_intersect) | △ | **`intersectsMesh` は—**（AABB の重なり判定を自作）。**`material.wireframe` も—**（line-list 非対応 → 12 辺を細円柱で描画）。歩行キャラは `Xbot.glb` に置換。`loadGltf` は glTF ルートに x スケール `-1` を入れるため、判定はローカル座標へ揃える。Ray Casting/Picking（✅）でより厳密な判定も可。物理は Havok V2 サブセット（⚡） |
 
 ### 第5部：環境改善
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 5-00 | より良い環境に | — | 導入 |
-| 5-01 | 遠くの丘 | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定 |
-| 5-02 | 頭上の空 | ○ | **`loadSkybox(scene, baseUrl, ext, size)`** で本家の `CreateBox`＋`CubeTexture`(SKYBOX_MODE)＋`backFaceCulling=false` を一発置換✅。IBL 環境光まで要るなら `loadEnvironment`（`brdfUrl` 必須）。`camera.upperBetaLimit` も**あり**（`setCameraLimits` 経由が作法） |
-| 5-03 | 木のスプライト | △ | **Sprites は部分対応（⚡）**：`loadSpriteAtlas`＋`createFacingBillboardSystem`／`createAxisLockedBillboardSystem`（cutout）で代替可。**フレームアニメも `playBillboardSpriteAnimation`＋`SpriteAnimationManager` で対応**。`SpriteManager` / `Sprite` クラスそのものは無し。※`gridSize` は分割数でなく**セルのピクセルサイズ** |
+| 5-00 | [より良い環境に](https://doc.babylonjs.com/features/introductionToFeatures/chap5) | — | 導入 |
+| 5-01 | [遠くの丘](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills) | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定 |
+| 5-02 | [頭上の空](https://doc.babylonjs.com/features/introductionToFeatures/chap5/sky) | ○ | **`loadSkybox(scene, baseUrl, ext, size)`** で本家の `CreateBox`＋`CubeTexture`(SKYBOX_MODE)＋`backFaceCulling=false` を一発置換✅。IBL 環境光まで要るなら `loadEnvironment`（`brdfUrl` 必須）。`camera.upperBetaLimit` も**あり**（`setCameraLimits` 経由が作法） |
+| 5-03 | [木のスプライト](https://doc.babylonjs.com/features/introductionToFeatures/chap5/trees) | △ | **Sprites は部分対応（⚡）**：`loadSpriteAtlas`＋`createFacingBillboardSystem`／`createAxisLockedBillboardSystem`（cutout）で代替可。**フレームアニメも `playBillboardSpriteAnimation`＋`SpriteAnimationManager` で対応**。`SpriteManager` / `Sprite` クラスそのものは無し。※`gridSize` は分割数でなく**セルのピクセルサイズ** |
 
 ### 第6部：パーティクル効果
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 6-00 | パーティクル噴水 | — | 導入（器 6-01 ＋ スプレー 6-02 ＋ スイッチ 6-03） |
-| 6-01 | 旋盤で回された噴水 | △ | `createLathe` メソッドで器を作る章。Lite に `createLathe` は無く **`createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`） |
-| 6-02 | パーティクルのスプレー | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
-| 6-03 | スイッチ オン イベント | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋GPU ピッキング（`createGpuPicker`／`pickAsync`）。※スプライト向けの `pickBillboardSprite` は v1.10 でシグネチャ変更。土台は 6-02 の NPE パーティクル |
+| 6-00 | [パーティクル噴水](https://doc.babylonjs.com/features/introductionToFeatures/chap6) | — | 導入（器 6-01 ＋ スプレー 6-02 ＋ スイッチ 6-03） |
+| 6-01 | [旋盤で回された噴水](https://doc.babylonjs.com/features/introductionToFeatures/chap6/fountain) | △ | `createLathe` メソッドで器を作る章。Lite に `createLathe` は無く **`createRibbon`（`pathArray`＋`closeArray`）で自作**（本家 Lathe は内部で Ribbon 実装、`DOUBLESIDE` は `backFaceCulling=false`） |
+| 6-02 | [パーティクルのスプレー](https://doc.babylonjs.com/features/introductionToFeatures/chap6/particlespray) | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
+| 6-03 | [スイッチ オン イベント](https://doc.babylonjs.com/features/introductionToFeatures/chap6/onoff) | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋GPU ピッキング（`createGpuPicker`／`pickAsync`）。※スプライト向けの `pickBillboardSprite` は v1.10 でシグネチャ変更。土台は 6-02 の NPE パーティクル |
 
 ### 第7部：光と影（骨組み・サンプル準備中）
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 7-00 | 光と影（導入） | — | 導入 |
-| 7-01 | ライトを灯す | ○ | `createPointLight`／`createDirectionalLight`／`createSpotLight`✅ |
-| 7-02 | 昼から夜へ | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
-| 7-03 | 影を追加 | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
+| 7-00 | [光と影（導入）](https://doc.babylonjs.com/features/introductionToFeatures/chap7) | — | 導入 |
+| 7-01 | [ライトを灯す](https://doc.babylonjs.com/features/introductionToFeatures/chap7/lights) | ○ | `createPointLight`／`createDirectionalLight`／`createSpotLight`✅ |
+| 7-02 | [昼から夜へ](https://doc.babylonjs.com/features/introductionToFeatures/chap7/light_gui) | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
+| 7-03 | [影を追加](https://doc.babylonjs.com/features/introductionToFeatures/chap7/shadows) | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
 
 ### 第8部：世界の見方（骨組み・サンプル準備中）
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
-| 8-00 | 世界の見方（導入） | — | 導入 |
-| 8-01 | 見回す | ○ | `createFreeCamera`＋`attachFreeControl`✅（本家 `UniversalCamera` 相当）。周回は `ArcRotateCamera` |
-| 8-02 | キャラを追う | △ | **`FollowCamera` は無い**→ `camera.parent`（3-07 で確立）＋`setCameraLimits` |
-| 8-03 | VR の世界へ | ✕ | **WebXR/XR の export が0件**。`createDefaultXRExperienceAsync` 相当なし |
+| 8-00 | [世界の見方（導入）](https://doc.babylonjs.com/features/introductionToFeatures/chap8) | — | 導入 |
+| 8-01 | [見回す](https://doc.babylonjs.com/features/introductionToFeatures/chap8/camera) | ○ | `createFreeCamera`＋`attachFreeControl`✅（本家 `UniversalCamera` 相当）。周回は `ArcRotateCamera` |
+| 8-02 | [キャラを追う](https://doc.babylonjs.com/features/introductionToFeatures/chap8/follow) | △ | **`FollowCamera` は無い**→ `camera.parent`（3-07 で確立）＋`setCameraLimits` |
+| 8-03 | [VR の世界へ](https://doc.babylonjs.com/features/introductionToFeatures/chap8/vr) | ✕ | **WebXR/XR の export が0件**。`createDefaultXRExperienceAsync` 相当なし |
 
 ---
 
