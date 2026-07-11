@@ -8,6 +8,12 @@
 
 上面・側面・下面を `faceUV` で画像の各領域へ割り当て、`wrap: true` で側面テクスチャを車体一周に巻き付けます。
 
+車体に貼るテクスチャ `car.png`（左上のほぼ 1/4 が天井/床、下半分の帯が車体を一周する側面）:
+
+<img src="../../images/getstarted/car.webp" alt="car.png 車体テクスチャアトラス" width="480">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap3/carmat)（CC BY 4.0）
+
 本家サンプルの要点はこの 3 行です。
 
 ```typescript
@@ -173,6 +179,12 @@ addToScene(scene, car);
 
 本家 `CreateCylinder` の `faceUV` は、`[0]=下面キャップ, [1]=円柱側面, [2]=上面キャップ` です。`wheel.png` は上下キャップへ全体を貼り、側面は同じ UV 点を参照させて外周を単色にします。
 
+車輪に貼るテクスチャ `wheel.png`（中央のホイール＋外周の黒。側面は端の黒画素を参照して単色化）:
+
+<img src="../../images/getstarted/wheel.webp" alt="wheel.png 車輪テクスチャ" width="160">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap3/carmat)（CC BY 4.0）
+
 ```typescript
 const wheelFaceUV: FaceUV[] = [
   [0, 0, 1, 1],     // 下面キャップ：wheel.png 全体
@@ -332,6 +344,12 @@ car.rotation.x = -Math.PI / 2; // 押し出し方向を車幅方向へ向ける
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/BY4KF1/v/3
 >
 > `wheelFaceUV[1] = [0, 0.5, 0, 0.5]` は u/v の範囲を持たないため、側面の全頂点が `wheel.png` 上の同一点を参照します。これによりタイヤ外周は画像を引き伸ばさず、黒い帯として見せられます。
+
+車体・車輪のマテリアルを貼り、車を直立させた本家 Getting Started の完成イメージ:
+
+<img src="../../images/getstarted/carmodel.webp" alt="車のマテリアル適用後の完成イメージ" width="300">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap3/carmat)（CC BY 4.0）
 
 ---
 
