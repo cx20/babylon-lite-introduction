@@ -149,6 +149,19 @@ main().catch((error: unknown) => {
 >
 > 噴水メッシュをクリックするとパーティクルが再生/停止します。本家の `scene.onPointerObservable` + `start()` / `stop()` を、Lite では GPU ピッキング（`createGpuPicker` / `pickAsync`）と `startParticleSystem` / `stopParticleSystem` で置き換えています。土台が NPE パーティクルのため判定は △ です。
 
+## 発展サンプル：村の広場に噴水を配置
+
+本家 Getting Started の締めと同じく、これまで組み立ててきた**村のシーン（`valleyvillage.glb`）の広場に噴水を置いた**発展版です。噴水を広場の座標（`FOUNTAIN_X = -3, FOUNTAIN_Z = -4`）へ配置し、スカイボックスを加えたうえで、上と同じ**クリックでのオン/オフ**（GPU ピッキング + `startParticleSystem` / `stopParticleSystem`）を組み込んでいます。
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/OBNULB/v/3?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 6-03 発展サンプル（村の広場の噴水）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/OBNULB/v/3
+>
+> 村シーンとの合成のためコードが長くなるため、ここでは全文は掲載せず**サンプルへのリンクのみ**とします。噴水の作り方（`createLathe`）・クリック判定・パーティクルのトグルは上のメインコードと同じ考え方で、そこへ `valleyvillage.glb` の読み込みとスカイボックスを重ねたものです。
+
 ---
 
 ← [6-02 パーティクルのスプレー (Particle Spray)](./6-02-particle-spray.md) ・ [7-00 光と影 (Light the Night)](../07-lights/7-00-light-intro.md) →
