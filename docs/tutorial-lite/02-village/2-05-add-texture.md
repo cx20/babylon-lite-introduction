@@ -35,6 +35,12 @@ house.material = houseMat;
         loading="lazy" allow="fullscreen"
         style="width: 100%; height: 480px; border: 0"></iframe>
 
+本家 Getting Started の完成イメージ（家体に石壁テクスチャ、屋根に瓦テクスチャを貼った状態）:
+
+<img src="../../images/getstarted/house2.webp" alt="テクスチャを貼った家の完成イメージ" width="240">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap2/materials)（CC BY 4.0）
+
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/5
 >
 > Lite の `StandardMaterial` は各種テクスチャに対応します（フィールド名は Lite v1.8 のソースで確認）：
