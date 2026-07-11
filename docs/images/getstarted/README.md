@@ -10,6 +10,7 @@
 
 | ファイル | 内容 | 使用箇所 |
 |---|---|---|
+| `house2.webp` | テクスチャを貼った家（石壁＋瓦屋根）の完成イメージ | [2-05 テクスチャを貼る](../../tutorial-lite/02-village/2-05-add-texture.md) |
 | `house3.webp` | 一軒家（Detached House）の完成イメージ | [2-06 マテリアル（面ごと/faceUV）](../../tutorial-lite/02-village/2-06-materials-faceuv.md) A. 一軒家 |
 | `semihouse.webp` | `semihouse.png` テクスチャアトラス（横長） | [2-06](../../tutorial-lite/02-village/2-06-materials-faceuv.md) B. Semi Detached House |
 | `house4.webp` | Semi Detached House（2 戸 1 棟）の完成イメージ | [2-06](../../tutorial-lite/02-village/2-06-materials-faceuv.md) B. Semi Detached House |
