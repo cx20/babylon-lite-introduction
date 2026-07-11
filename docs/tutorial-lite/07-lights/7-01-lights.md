@@ -134,6 +134,213 @@ main().catch((error: unknown) => {
 >
 > 押し出したポールの先に電球を親子付けし、その電球にスポットライトを親子付けしています。メッシュ同士は `setParent`、ライトは `parent` 直接代入と使い分けるのがポイントです。
 
+## 街灯を増やす (More Street Lights)
+
+本家の続きでは、街灯モデル（`lamp.babylon`）を読み込んで `clone` で複数に増やし、村（`valleyvillage`）へ並べて夜道を照らします。Lite でも読み込み・複製・ライト配置は可能ですが、**`.babylon` の読み込みとスポットライトの置き方に固有の注意点**があります。
+
+**新要素と Lite での対応**：
+
+- **(A) `.babylon` ファイルの読み込み【重要な制限あり】** — 本家 `SceneLoader.ImportMeshAsync(..., "lamp.babylon")` は `loadBabylon(engine, url)`（`AssetContainer` を返す）。ただし `lamp.babylon` は頂点データを別セクション `geometries`（`geometryId` 参照）に持ち、Lite の `loadBabylon` は**メッシュ直下の `positions` しか読まない**ため、そのままだとメッシュが空になり街灯が表示されません。
+  - **対策** — コード内で `lamp.babylon` を `fetch` し、`geometries` を各メッシュ直下に**インライン化**（`positions` / `normals` / `indices` / `uvs` を移植）してから **Blob URL** 化して `loadBabylon` に渡します（マテリアルは色のみでテクスチャ無しなので `baseUrl` 不問）。
+- **(B) メッシュの `clone`** — 本家 `mesh.clone("name")` は `cloneTransformNode(mesh)`。ジオメトリ（`_gpu`）を共有しつつ transform を独立させ、子（`bulb`）も再帰クローンし、`material` も引き継ぎます。
+- **(C) `maxSimultaneousLights`** — Lite には**ありません**。本家は1メッシュに当たるライト数の上限を 5 に上げますが、Lite は `MAX_LIGHTS=16` でシーンの全ライトが全メッシュに当たるため、この設定は不要です。
+
+**スポットライトはワールド空間に直接置く（親子付けしない）**：ライトを `bulb` に親子付けすると、`bulb` が継承する `lamp` のスケール 0.1 で「方向ベクトル」が縮み、Lite のコーン判定（正規化しない `dot` vs `cosHalfAngle`）が常に失敗して**消灯**します。街灯は静的なので、`bulb` のワールド位置（`worldMatrix` の `w[12], w[13], w[14]`）を読み、そこにワールド空間の下向きスポットライトを置きます。
+
+```typescript
+import {
+    addToScene,
+    attachControl,
+    cloneTransformNode,
+    createArcRotateCamera,
+    createEngine,
+    createHemisphericLight,
+    createSceneContext,
+    createSpotLight,
+    loadBabylon,
+    loadGltf,
+    loadSkybox,
+    registerScene,
+    startEngine,
+    type AssetContainer,
+    type EngineContext,
+    type SceneContext,
+    type SceneNode,
+} from "@babylonjs/lite";
+
+const LAMP_URL = "https://assets.babylonjs.com/meshes/lamp.babylon";
+const VALLEY_VILLAGE_URL = "https://assets.babylonjs.com/meshes/valleyvillage.glb";
+const SKYBOX_BASE_URL = "https://playground.babylonjs.com/textures/skybox";
+const SKYBOX_EXT = ".jpg";
+
+/**
+ * lamp.babylon を読み込む。Lite の loadBabylon は geometries(geometryId 参照)を
+ * 読まないため、fetch して各メッシュ直下に頂点データをインライン化してから
+ * Blob URL 経由で loadBabylon に渡す。
+ */
+async function loadLampInlined(engine: EngineContext, url: string): Promise<AssetContainer> {
+    const res = await fetch(url);
+    const data = (await res.json()) as {
+        meshes?: { geometryId?: string; positions?: number[]; normals?: number[]; indices?: number[]; uvs?: number[] }[];
+        geometries?: { vertexData?: { id: string; positions?: number[]; normals?: number[]; indices?: number[]; uvs?: number[] }[] };
+    };
+    // geometryId → 頂点データ
+    const geo = new Map<string, { positions?: number[]; normals?: number[]; indices?: number[]; uvs?: number[] }>();
+    for (const v of data.geometries?.vertexData ?? []) {
+        geo.set(v.id, v);
+    }
+    // 各メッシュ直下に positions/normals/indices/uvs を移植
+    for (const m of data.meshes ?? []) {
+        const g = m.geometryId ? geo.get(m.geometryId) : undefined;
+        if (g) {
+            m.positions = g.positions;
+            m.normals = g.normals;
+            m.indices = g.indices;
+            if (g.uvs) {
+                m.uvs = g.uvs;
+            }
+        }
+    }
+    delete data.geometries; // インライン化済み
+
+    // Blob URL 化して loadBabylon に渡す（fetch は blob: URL を扱える）
+    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+    const blobUrl = URL.createObjectURL(blob);
+    try {
+        return await loadBabylon(engine, blobUrl);
+    } finally {
+        URL.revokeObjectURL(blobUrl);
+    }
+}
+
+/** ノードの子孫から名前の一部が一致するものを探す（clone で名前に _clone が付くため部分一致） */
+function findDescendant(root: SceneNode, namePart: string): SceneNode | null {
+    if (root.name && root.name.includes(namePart)) {
+        return root;
+    }
+    for (const child of root.children ?? []) {
+        if (child && typeof child === "object" && "name" in child && "children" in child) {
+            const found = findDescendant(child as SceneNode, namePart);
+            if (found) {
+                return found;
+            }
+        }
+    }
+    return null;
+}
+
+/** コンテナ直下のエンティティから名前一致のノードを探す */
+function findInContainer(container: AssetContainer, namePart: string): SceneNode {
+    for (const entity of container.entities) {
+        if (entity && typeof entity === "object" && "name" in entity && "children" in entity) {
+            const found = findDescendant(entity as SceneNode, namePart);
+            if (found) {
+                return found;
+            }
+        }
+    }
+    throw new Error(`ノード "${namePart}" が見つかりません。`);
+}
+
+/**
+ * 指定した街灯(lamp)の bulb のワールド位置を読み、そこに【ワールド空間の】
+ * 下向きスポットライトを置いて点灯する。
+ *
+ * ※ライトを bulb に親子付けしない理由: bulb は lamp のスケール0.1を継承する。
+ *   Lite のスポット方向はワールド行列の列2をそのまま使い（正規化しない）、
+ *   親のスケール0.1で方向長が0.1に縮む→コーン判定 dot が最大0.1にしかならず
+ *   cosHalfAngle(≈0.309)を超えられず常に消灯になる。ワールド空間に直接置けば
+ *   方向(0,-1,0)が正しい長さを保ち、地面が照らされる。街灯は静的なので
+ *   親子付け（追従）は不要。
+ */
+function addLampLight(scene: SceneContext, lamp: SceneNode): void {
+    const bulb = findDescendant(lamp, "bulb");
+    if (!bulb) {
+        return;
+    }
+    // bulb のワールド位置（worldMatrix 列3 = w[12],w[13],w[14]）
+    const w = bulb.worldMatrix;
+    const pos: [number, number, number] = [w[12]!, w[13]!, w[14]!];
+    // 本家: direction=(0,-1,0), angle=0.8π, exponent=0.01
+    const lampLight = createSpotLight(pos, [0, -1, 0], 0.8 * Math.PI, 0.01, 1);
+    lampLight.diffuse = [1, 1, 0]; // Color3.Yellow()
+    addToScene(scene, lampLight);
+}
+
+async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Promise<SceneContext> {
+    const scene = createSceneContext(engine);
+
+    // カメラ（本家と同一: alpha = -π/2.2, beta = π/2.2, radius 15）
+    const camera = createArcRotateCamera(-Math.PI / 2.2, Math.PI / 2.2, 15, { x: 0, y: 0, z: 0 });
+    camera.upperBetaLimit = Math.PI / 2.2;
+    scene.camera = camera;
+    attachControl(camera, canvas, scene);
+
+    // 半球光は夜なので暗めに（intensity 0.1）。方向は本家 (1, 1, 0)
+    addToScene(scene, createHemisphericLight([1, 1, 0], 0.1));
+
+    // 街灯・村・スカイボックスを並列ロード（registerScene の前に await 完了）
+    const [lampContainer, village] = await Promise.all([
+        loadLampInlined(engine, LAMP_URL),
+        loadGltf(engine, VALLEY_VILLAGE_URL),
+        loadSkybox(scene, SKYBOX_BASE_URL, SKYBOX_EXT, 150),
+    ]);
+    addToScene(scene, village);
+
+    // 元の街灯を取得・配置
+    const lamp = findInContainer(lampContainer, "lamp");
+    lamp.position.set(2, 0, 2);
+    lamp.rotation.set(0, -Math.PI / 4, 0);
+    addToScene(scene, lampContainer); // 元の lamp（と bulb）を追加
+    addLampLight(scene, lamp);
+
+    // clone で街灯を増やす（本家 lamp.clone(...) 相当 = cloneTransformNode）
+    const lamp3 = cloneTransformNode(lamp);
+    lamp3.position.set(2, 0, -8);
+    lamp3.rotation.set(0, -Math.PI / 4, 0);
+    addToScene(scene, lamp3);
+    addLampLight(scene, lamp3);
+
+    const lamp1 = cloneTransformNode(lamp);
+    lamp1.position.set(-8, 0, 1.2);
+    lamp1.rotation.set(0, Math.PI / 2, 0);
+    addToScene(scene, lamp1);
+    addLampLight(scene, lamp1);
+
+    const lamp2 = cloneTransformNode(lamp1);
+    lamp2.position.set(-2.7, 0, 0.8);
+    lamp2.rotation.set(0, -Math.PI / 2, 0);
+    addToScene(scene, lamp2);
+    addLampLight(scene, lamp2);
+
+    return scene;
+}
+
+async function main(): Promise<void> {
+    const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement | null;
+    if (!canvas) {
+        throw new Error('Canvas要素 "#renderCanvas" が見つかりません。');
+    }
+    const engine = await createEngine(canvas);
+    const scene = await createScene(engine, canvas);
+    await registerScene(scene);
+    await startEngine(engine);
+}
+
+main().catch((error: unknown) => {
+    console.error("シーンの構築に失敗しました:", error);
+});
+```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/QS4ZRZ/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 7-01 街灯を増やす（More Street Lights）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/QS4ZRZ/v/1
+>
+> `lamp.babylon` を読み込み、`cloneTransformNode` で 4 本に増やして村へ配置し、各街灯にスポットライトを点灯させています。Lite 固有のハマりどころは、**`.babylon` の `geometries` インライン化**と、**スポットライトを親子付けせずワールド空間に置く**ことの 2 点です。
+
 ---
 
 ← [7-00 光と影 (Light the Night)](./7-00-light-intro.md) ・ [7-02 影を追加 (Adding Shadows)](./7-02-shadows.md) →
