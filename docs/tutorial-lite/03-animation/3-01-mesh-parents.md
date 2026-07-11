@@ -2,6 +2,12 @@
 
 > [第3部：アニメーション](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
+第3部では、村を走る簡単な車を作ります。車輪を回せるようにするため、**車体を親・各車輪を子にする「親子付け」**がこの章の主題です（本家 Mesh Parents 節の導入。車の組み立ては [3-02](./3-02-building-the-car.md)・[3-03](./3-03-car-material.md) で行います）。
+
+<img src="../../images/getstarted/carmodel.webp" alt="第3部で作る車（車体に車輪を親子付け）" width="300">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap3/parent)（CC BY 4.0）
+
 ## 基本：親子付けの2種類
 
 Lite の親子付けには**2 系統**あり、本章の要になります。
