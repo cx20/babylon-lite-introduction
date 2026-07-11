@@ -12,6 +12,12 @@
 3. **`addBillboardSprite(system, { position, sizeWorld })`** で 1 本ずつ追加する
 4. **`addFacingBillboardSystem(scene, system)`** でシーンへ登録する
 
+スプライトに使う画像 `palm.png`（透過付き・縦長 512×1024）:
+
+<img src="../../images/getstarted/palmtree.webp" alt="palm.png ヤシの木スプライト" width="90">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/trees)（CC BY 4.0）
+
 **Lite 移植時の注意点**：
 
 - ⚠️ **`gridSize` は「セルのピクセルサイズ」**（グリッドの分割数ではない）。`palm.png` は 512×1024 なので、
@@ -112,6 +118,12 @@ addAxisLockedBillboardSystem(scene, trees);
 ## スプライトのアニメーション
 
 スプライトシートのフレームを順に送るアニメーションもできます。村の上空に `ufo.png` を浮かべます。
+
+アニメーションに使うスプライトシート `ufo.png`（640×304・5 列 × 4 行 = 20 コマ）:
+
+<img src="../../images/getstarted/ufo.webp" alt="ufo.png スプライトシート（20コマ）" width="320">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap5/trees)（CC BY 4.0）
 
 本家は `SpriteManager` にセルサイズを渡し、`Sprite` に対して `playAnimation(from, to, loop, delayMs)` を呼びます。
 
