@@ -7,6 +7,12 @@
 本家は `MeshBuilder.CreateLathe` で輪郭を回転させて器を作ります。Lite に `createLathe` は無いので `createRibbon` で自作します（このため判定は △）。
 水しぶき（パーティクル）は [6-02 パーティクルのスプレー](./6-02-particle-spray.md) で扱い、この器の口へ重ねます。
 
+器の断面プロファイル（この輪郭線を Y 軸まわりに 1 回転させて器にする。下記コードの `fountainOutline` の 8 点に対応）:
+
+<img src="../../images/getstarted/profile.webp" alt="噴水の器の断面プロファイル" width="120">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap6/fountain)（CC BY 4.0）
+
 **Lite 移植時の注意点**：
 
 - **`CreateLathe` は無い** — ただし本家の `CreateLathe` は内部で「輪郭を回転角ごとに複製した複数パスを `CreateRibbon` で張る」実装です。
