@@ -112,10 +112,22 @@ addToScene(scene, roof);
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/6
 
+本家 Getting Started の完成イメージ（各側面に別コマのテクスチャが貼られた一軒家）:
+
+<img src="../../images/getstarted/house3.webp" alt="一軒家（Detached House）の完成イメージ" width="240">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material)（CC BY 4.0）
+
 ## B. Semi Detached House（2 戸 1 棟）— `semihouse.png`
 
 `semihouse.png` は「正面(0〜0.4)・窓なし壁(0.4〜0.6)・背面(0.6〜1.0)」の 3 区画。側面 2 面（右/左）は同じ「窓なし壁」区画を共有します。
 家体は `width: 2`（幅を頂点に直接焼き込み）、屋根は本家同様 `roof.scaling.y = 2` で**長さ**を 2 倍にします。
+
+テクスチャアトラス `semihouse.png`（横長の 1 枚。正面/窓なし壁/背面の各区画が横に並ぶ）:
+
+<img src="../../images/getstarted/semihouse.webp" alt="semihouse.png テクスチャアトラス" width="640">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material)（CC BY 4.0）
 
 ```typescript
 const [houseTex, roofTex] = await Promise.all([
@@ -153,6 +165,12 @@ addToScene(scene, roof);
         style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/7
+
+本家 Getting Started の完成イメージ（横幅 2 倍の 2 戸 1 棟）:
+
+<img src="../../images/getstarted/house4.webp" alt="Semi Detached House（2 戸 1 棟）の完成イメージ" width="240">
+
+> 画像出典：[Babylon.js Documentation](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material)（CC BY 4.0）
 
 > **まとめ**：box の `faceUV`/`wrap`/非一様 `width` は `createBox` 単体では非対応ですが、公開 API の
 > `createMeshFromData` に本家 boxBuilder のロジックを逐語移植すれば、見た目を完全に一致させて再現できます。
