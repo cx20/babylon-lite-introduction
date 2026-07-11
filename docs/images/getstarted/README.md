@@ -21,5 +21,6 @@
 | `villageheightmap.webp` | 村の谷のハイトマップ `villageheightmap.png` | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
 | `valley1.webp` | 無テクスチャの谷地形の完成イメージ | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
 | `valley2.webp` | 草テクスチャの谷地形の完成イメージ | [5-01 遠くの丘](../../tutorial-lite/05-environment/5-01-distant-hills.md) |
+| `skybox_px/nx/py/ny/pz/nz.webp` | スカイボックスのキューブ 6 面テクスチャ | [5-02 頭上の空](../../tutorial-lite/05-environment/5-02-skies-above.md) |
 
 > 出典ページ：Babylon.js [Getting Started](https://doc.babylonjs.com/features/introductionToFeatures/)（各画像の対応記事は上表の使用箇所、または各記事内の出典リンクを参照）
