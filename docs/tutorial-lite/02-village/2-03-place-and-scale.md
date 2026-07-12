@@ -2,74 +2,74 @@
 
 > [第2部：村の構築](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
-**目的**：メッシュの位置を調整して地面の上に載せる。`createBox` は既定で**中心が原点**に生成されるため、
-`position.y` を指定しないと**半分が地面にめり込みます**。
+**目的**：メッシュの**サイズ・位置・向き**を変え、建物としてのバリエーションを出す。
+地面に載せる（`position.y` で半分持ち上げる）話は [2-01 地面](./2-01-grounding.md) で扱っています。
 
 追加 import：`createArcRotateCamera, attachControl, createHemisphericLight, createBox, createGround, createStandardMaterial`
 
-> ⚠️ **`createBox` の第 2 引数は数値**（一辺の長さ）です。Babylon.js の `MeshBuilder.CreateBox("box", {})` に
-> 引きずられて `createBox(engine, { size: 1 })` のようにオプションオブジェクトを渡すと、
-> 頂点が `NaN` 化して**無言で描画されなくなります**。既定値（1）でよければ `createBox(engine)` でも構いません。
+## A. サイズ（`scaling`）
 
-## A. 位置を指定しない場合（めり込む）
+本家は生成時にオプションで寸法を指定できます。
+
+```javascript
+// Babylon.js
+const box = BABYLON.MeshBuilder.CreateBox("box", { width: 2, height: 1.5, depth: 3 });
+```
+
+> ⚠️ **Lite の `createBox` は第 2 引数が数値**（一辺の長さ）で、`width` / `height` / `depth` を受け付けません。
+> オプションオブジェクトを渡すと頂点が `NaN` 化して**無言で描画されなくなります**。
+> 寸法違いの box は、単位立方体を作って **`scaling` で伸縮**させて作ります（本家も同じ結果になる書き方を併記しています）。
 
 ```typescript
-const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 3, { x: 0, y: 0, z: 0 });
+const box = createBox(engine, 1);        // 単位立方体
+box.scaling.x = 2;
+box.scaling.y = 1.5;
+box.scaling.z = 3;
+```
+
+`scaling` は `position` と同じく x / y / z を持つベクトル（`ObservableVec3`）で、成分に直接代入できます。
+
+## B. 位置（`position`）
+
+`position` はメッシュの**中心**を置く座標です。高さ 1.5 の box を地面に載せるには `position.y = 0.75`（高さの半分）にします。
+
+```typescript
+const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 10, { x: 0, y: 0, z: 0 });
 scene.camera = camera;
 attachControl(camera, canvas, scene);
 addToScene(scene, createHemisphericLight([1, 1, 0], 1.0));
 
-// box の原点は中心。position.y を指定しないと高さ1の半分（0.5）が地面に埋まる
-const box = createBox(engine, 1);
-box.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
-addToScene(scene, box);
-
 const ground = createGround(engine, { width: 10, height: 10 });
 ground.material = createStandardMaterial();
 addToScene(scene, ground);
+
+// 高さ 1.5 の box を 3 つ、間隔をあけて地面に並べる
+for (const x of [-3, 0, 3]) {
+  const box = createBox(engine, 1);
+  box.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
+  box.scaling.x = 2;
+  box.scaling.y = 1.5;
+  box.scaling.z = 3;
+  box.position.x = x;
+  box.position.y = 0.75;                     // 高さ 1.5 の半分だけ持ち上げて接地
+  addToScene(scene, box);
+}
 ```
 
-<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/2?embed=runner&embedOrigin=https://cx20.github.io"
-        title="Babylon Lite Playground: 2-03 メッシュを設置 / A. 位置を指定しない場合（めり込む）"
-        loading="lazy" allow="fullscreen"
-        style="width: 100%; height: 480px; border: 0"></iframe>
+## C. 向き（`rotation`）
 
-> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/2
-
-## B. 地面の上に載せる（`position.y` を指定）
+回転は**ラジアン**で指定します。本家は全 3 軸の同時回転を避け、1 軸だけ扱う方針なので、ここでも y 軸まわりだけにします。
 
 ```typescript
-const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 3, { x: 0, y: 0, z: 0 });
-scene.camera = camera;
-attachControl(camera, canvas, scene);
-addToScene(scene, createHemisphericLight([1, 1, 0], 1.0));
-
-const box = createBox(engine, 1);
-box.material = createStandardMaterial();
-box.position.y = 0.5;   // 高さの半分だけ上げて地面に載せる
-addToScene(scene, box);
-
-const ground = createGround(engine, { width: 10, height: 10 });
-ground.material = createStandardMaterial();
-addToScene(scene, ground);
+box.rotation.y = Math.PI / 4;   // 45 度
 ```
 
-<iframe src="https://liteplayground.babylonjs.com/snippet/X79RM0/v/3?embed=runner&embedOrigin=https://cx20.github.io"
-        title="Babylon Lite Playground: 2-03 メッシュを設置 / B. 地面の上に載せる（position.y を指定）"
-        loading="lazy" allow="fullscreen"
-        style="width: 100%; height: 480px; border: 0"></iframe>
+> Lite の内部姿勢は `rotationQuaternion` ですが、`rotation`（オイラー角）は
+> そこへの代入プロキシとして使えます（[2-04](./2-04-basic-house.md) の屋根も `rotation.z` で倒しています）。
+> 本家の `BABYLON.Tools.ToRadians(45)` に相当するヘルパーは無いので、`度 * Math.PI / 180` で変換してください。
 
-> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/3
->
-> Babylon.js と同じく **原点はメッシュの中心**。`position` は `ObservableVec3` ですが、
-> `box.position.y = 0.5` のように成分へ直接代入できます（[README の落とし穴](../README.md#重要な落とし穴共通)）。
-
-## C. 横に伸ばす（スケール）
-
-```typescript
-box.position.x = 2;
-box.scaling.x = 2;      // 横に伸ばす
-```
+> ℹ️ この章は Playground の実行プレビュー未添付です（サイズ・位置・回転はいずれも
+> [2-04 基本的な家](./2-04-basic-house.md) 以降のサンプルで実際に使っています）。
 
 ---
 
