@@ -9,52 +9,87 @@
 
 ## A. サイズ（`scaling`）
 
-本家は生成時にオプションで寸法を指定できます。
+本家は「**同じ大きさ (2, 1.5, 3) の箱を 3 通りの書き方で作る**」というサンプルです。
 
 ```javascript
 // Babylon.js
-const box = BABYLON.MeshBuilder.CreateBox("box", { width: 2, height: 1.5, depth: 3 });
+const box1 = BABYLON.MeshBuilder.CreateBox("box", { width: 2, height: 1.5, depth: 3 });  // 生成時にサイズ指定
+
+const box2 = BABYLON.MeshBuilder.CreateBox("box", {});   // 単位キューブ
+box2.scaling.x = 2; box2.scaling.y = 1.5; box2.scaling.z = 3;   // 成分ごとに代入
+
+const box3 = BABYLON.MeshBuilder.CreateBox("box", {});   // 単位キューブ
+box3.scaling = new BABYLON.Vector3(2, 1.5, 3);           // ベクトルを一括代入
 ```
 
-> ⚠️ **Lite の `createBox` は第 2 引数が数値**（一辺の長さ）で、`width` / `height` / `depth` を受け付けません。
-> オプションオブジェクトを渡すと頂点が `NaN` 化して**無言で描画されなくなります**。
-> 寸法違いの box は、単位立方体を作って **`scaling` で伸縮**させて作ります（本家も同じ結果になる書き方を併記しています）。
+> ⚠️ **Lite の `createBox` は第 2 引数が一辺の長さ（数値）**で、`createBox(engine, size = 1)` というシグネチャです。
+> `{ width, height, depth }` のような**非等方サイズは生成時に指定できません**
+> （オプションオブジェクトを渡すと頂点が `NaN` 化し、**無言で描画されなくなります**）。
+> つまり本家 `box1` の書き方は Lite では使えず、**3 通りとも「単位キューブ + スケーリング」に集約**されます。
+> 結果の形状は本家と同じ (2, 1.5, 3) になります。
+>
+> `createGround` / `createSphere` など他のファクトリは**オプションオブジェクトを取る**ので、
+> **`createBox` だけが非対称**である点に注意してください。どうしても生成時にサイズを焼き込みたい場合は、
+> `createMeshFromData` で頂点を自作します（[2-06](./2-06-materials-faceuv.md) の `faceUV` で使った手法）。
+
+Lite では `scaling` / `position` は `ObservableVec3` で、**`.set(x, y, z)` の一括指定と、`.x` / `.y` / `.z` の個別代入**のどちらも使えます。
+本家のように**新しいベクトルオブジェクトを代入する形ではありません**。
 
 ```typescript
-const box = createBox(engine, 1);        // 単位立方体
-box.scaling.x = 2;
-box.scaling.y = 1.5;
-box.scaling.z = 3;
+const box = createBox(engine, 1);   // 単位キューブ
+box.scaling.set(2, 1.5, 3);         // 一括指定
+// box.scaling.x = 2; box.scaling.y = 1.5; box.scaling.z = 3;   // 個別代入でも同じ
 ```
-
-`scaling` は `position` と同じく x / y / z を持つベクトル（`ObservableVec3`）で、成分に直接代入できます。
 
 ## B. 位置（`position`）
 
-`position` はメッシュの**中心**を置く座標です。高さ 1.5 の box を地面に載せるには `position.y = 0.75`（高さの半分）にします。
+`position` はメッシュの**中心**を置く座標です。高さ 1.5 の箱を地面に載せるには `position.y = 0.75`（高さの半分）にします。
+本家と同じく、3 通りの書き方で作った同サイズの箱を並べます。
 
 ```typescript
 const camera = createArcRotateCamera(-Math.PI / 2, Math.PI / 2.5, 10, { x: 0, y: 0, z: 0 });
 scene.camera = camera;
 attachControl(camera, canvas, scene);
-addToScene(scene, createHemisphericLight([1, 1, 0], 1.0));
+addToScene(scene, createHemisphericLight([1, 1, 0], 1));
+
+// box1: 本家は生成時サイズ指定だが、Lite では単位キューブ + スケーリングで同じ (2, 1.5, 3) を作る
+const box1 = createBox(engine, 1);
+box1.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
+box1.scaling.set(2, 1.5, 3);
+box1.position.y = 0.75;                     // 高さ 1.5 の箱を地面に載せる
+addToScene(scene, box1);
+
+// box2: scaling を成分ごとに代入
+const box2 = createBox(engine, 1);
+box2.material = createStandardMaterial();
+box2.scaling.x = 2;
+box2.scaling.y = 1.5;
+box2.scaling.z = 3;
+box2.position.set(-3, 0.75, 0);
+addToScene(scene, box2);
+
+// box3: scaling を一括設定（本家のベクトル代入に相当）
+const box3 = createBox(engine, 1);
+box3.material = createStandardMaterial();
+box3.scaling.set(2, 1.5, 3);
+box3.position.x = 3;
+box3.position.y = 0.75;
+box3.position.z = 0;
+addToScene(scene, box3);
 
 const ground = createGround(engine, { width: 10, height: 10 });
 ground.material = createStandardMaterial();
 addToScene(scene, ground);
-
-// 高さ 1.5 の box を 3 つ、間隔をあけて地面に並べる
-for (const x of [-3, 0, 3]) {
-  const box = createBox(engine, 1);
-  box.material = createStandardMaterial();   // ★マテリアル必須（無いと描画されない）
-  box.scaling.x = 2;
-  box.scaling.y = 1.5;
-  box.scaling.z = 3;
-  box.position.x = x;
-  box.position.y = 0.75;                     // 高さ 1.5 の半分だけ持ち上げて接地
-  addToScene(scene, box);
-}
 ```
+
+<iframe src="https://liteplayground.babylonjs.com/snippet/062TZ6/v/0?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-03 メッシュを設置（サイズ・位置）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/062TZ6/v/0
+>
+> 3 つとも同じ (2, 1.5, 3) の箱になります（本家と同じ結果）。
 
 ## C. 向き（`rotation`）
 
@@ -67,9 +102,6 @@ box.rotation.y = Math.PI / 4;   // 45 度
 > Lite の内部姿勢は `rotationQuaternion` ですが、`rotation`（オイラー角）は
 > そこへの代入プロキシとして使えます（[2-04](./2-04-basic-house.md) の屋根も `rotation.z` で倒しています）。
 > 本家の `BABYLON.Tools.ToRadians(45)` に相当するヘルパーは無いので、`度 * Math.PI / 180` で変換してください。
-
-> ℹ️ この章は Playground の実行プレビュー未添付です（サイズ・位置・回転はいずれも
-> [2-04 基本的な家](./2-04-basic-house.md) 以降のサンプルで実際に使っています）。
 
 ---
 
