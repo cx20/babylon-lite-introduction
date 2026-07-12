@@ -93,15 +93,42 @@ addToScene(scene, ground);
 
 ## C. 向き（`rotation`）
 
-回転は**ラジアン**で指定します。本家は全 3 軸の同時回転を避け、1 軸だけ扱う方針なので、ここでも y 軸まわりだけにします。
+`rotation` も `position` / `scaling` と同じく x / y / z を持つベクトルです。
+回転は**ラジアン**で指定します。本家は「3 軸同時の回転は驚くほど混乱しやすい」として最初の世界では 1 軸だけ扱う方針なので、
+ここでも y 軸まわりだけにします。
+
+本家は度数で書きたい人向けに `BABYLON.Tools.ToRadians(45)` を用意していますが、
+**Lite に `Tools` 名前空間はありません**。度数で書きたい場合は自前で変換してください。
 
 ```typescript
-box.rotation.y = Math.PI / 4;   // 45 度
+/** 本家 BABYLON.Tools.ToRadians 相当（Lite には無いので自前で用意） */
+const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
+
+const box = createBox(engine, 1);
+box.material = createStandardMaterial();
+box.position.y = 0.5;            // 一辺 1 の箱を地面に載せる
+box.rotation.y = Math.PI / 4;    // = toRadians(45) と同じ
+addToScene(scene, box);
+
+const ground = createGround(engine, { width: 10, height: 10 });
+ground.material = createStandardMaterial();
+addToScene(scene, ground);
 ```
 
-> Lite の内部姿勢は `rotationQuaternion` ですが、`rotation`（オイラー角）は
-> そこへの代入プロキシとして使えます（[2-04](./2-04-basic-house.md) の屋根も `rotation.z` で倒しています）。
-> 本家の `BABYLON.Tools.ToRadians(45)` に相当するヘルパーは無いので、`度 * Math.PI / 180` で変換してください。
+<iframe src="https://liteplayground.babylonjs.com/snippet/062TZ6/v/1?embed=runner&embedOrigin=https://cx20.github.io"
+        title="Babylon Lite Playground: 2-03 メッシュを設置（向き / rotation）"
+        loading="lazy" allow="fullscreen"
+        style="width: 100%; height: 480px; border: 0"></iframe>
+
+> 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/062TZ6/v/1
+>
+> **`rotation` の中身はクォータニオンの Euler プロキシ**（順序は XYZ）です。本家と同じ感覚で 1 軸だけ回す分には
+> 問題ありません（[2-04](./2-04-basic-house.md) の屋根も `rotation.z` で倒しています）。
+>
+> ⚠️ ただし **glTF のようにルートへ bake 済みクォータニオンを持つモデル**では、`rotation.y` を直接いじると
+> bake が壊れます。その場合は `rotationQuaternion` を合成して設定してください
+> （[3-07 村を歩き回る](../03-animation/3-07-walk-around-village.md) の Xbot で確立した手法）。
+> 自前で作った box にはこの心配はありません。
 
 ---
 
