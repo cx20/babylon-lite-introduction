@@ -13,6 +13,4 @@
 
 **Lite にパーティクルは実装されています**が、本家の命令的な `new ParticleSystem` とは作り方が違い、
 **Node Particle Editor (NPE)** でグラフを組んでスニペットで読み込む形です（`parseNodeParticleSetFromSnippet` ＋ `registerNodeParticleSet`）。
-噴水の器（回転体）は `createRibbon` で再現できます。この作り方の差があるため、両章とも判定は △ です。
-
-> 動作確認済みサンプルは準備中です（NPE スニペットを用意して反映します）。
+噴水の器（回転体）は `createRibbon` で再現できます。この作り方の差があるため、3 章とも判定は △ です。

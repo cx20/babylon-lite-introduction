@@ -93,7 +93,7 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 6-02 | [パーティクルのスプレー](https://doc.babylonjs.com/features/introductionToFeatures/chap6/particlespray) | △ | 基本のパーティクルシステム。**パーティクルは実装ありだが命令的 `new ParticleSystem` とは流儀が違い、Node Particle Editor (NPE)** でグラフを組む→`parseNodeParticleSetFromSnippet`＋`registerNodeParticleSet`。低レベルは `createParticleSystem`＋`animateParticleSystem`＋`createParticleBillboard` |
 | 6-03 | [スイッチ オン イベント](https://doc.babylonjs.com/features/introductionToFeatures/chap6/onoff) | △ | クリックで開始/停止。`startParticleSystem`／`stopParticleSystem`＋GPU ピッキング（`createGpuPicker`／`pickAsync`）。※スプライト向けの `pickBillboardSprite` は v1.10 でシグネチャ変更。土台は 6-02 の NPE パーティクル |
 
-### 第7部：光と影（骨組み・サンプル準備中）
+### 第7部：光と影
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
@@ -102,7 +102,7 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 7-02 | [昼から夜へ](https://doc.babylonjs.com/features/introductionToFeatures/chap7/light_gui) | △ | ライト強度のアニメ自体は○。**GUI（`AdvancedDynamicTexture`/slider）は無い**→ HTML の `<input type=range>` 等で代替 |
 | 7-03 | [影を追加](https://doc.babylonjs.com/features/introductionToFeatures/chap7/shadows) | ○ | `registerSceneWithShadowSupport`＋`createEsm/Pcf/Csm…ShadowGenerator`✅、`setShadowTaskCasterMeshes` |
 
-### 第8部：世界の見方（骨組み・サンプル準備中）
+### 第8部：世界の見方
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
