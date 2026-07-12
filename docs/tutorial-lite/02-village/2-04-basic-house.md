@@ -45,9 +45,9 @@ addToScene(scene, ground);
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/X79RM0/v/4
 >
 > `createCylinder` はオプションオブジェクト（`{ diameter, height, tessellation }`）をそのまま渡せます（`tessellation` は最小 3 にクランプ）。
-> `createBox` だけは第2引数が数値（→ [2-03 の注記](#2-03-メッシュを設置-place-and-scale--)）。
+> `createBox` だけは第2引数が数値（→ [2-01 の注記](./2-01-grounding.md)）。
 >
-> **面ごとに別画像**（ドア面・窓面など、Babylon.js の `faceUV`）は box 生成器では未対応の可能性があります → [2-06](#2-06-マテリアル面ごと--) 参照。テクスチャを貼る例は次の [2-05](#2-05-テクスチャを貼る-add-texture--) を参照してください。
+> **面ごとに別画像**（ドア面・窓面など、Babylon.js の `faceUV`）は box 生成器では未対応の可能性があります → [2-06](./2-06-materials-faceuv.md) 参照。テクスチャを貼る例は次の [2-05](./2-05-add-texture.md) を参照してください。
 
 ---
 
