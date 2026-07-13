@@ -162,12 +162,23 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は Babylon Lite v1.10 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> 本表は Babylon Lite v2.0.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
 > [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく（初版は v1.8 で作成。各章冒頭の
 > 「vX.Y ソースで確認」は当時の確認記録）。各章の API 名・シグネチャは実際のソースで確認済み。Lite は機能追加が続いており、
 > 最新の対応状況は上記を参照のこと。※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
 >
-> **v1.8 → v1.10 の主な変化（本表への影響）**：破壊的変更でサンプルが動かなくなる箇所はない。
+> **v1.10 → v2.0.0 の主な変化（本表への影響）**：メジャーバージョンだが、**本表の判定・各章のサンプルコードに変更は不要**。
+> ①唯一の破壊的変更は `setShaderStorageBuffer` が生の `GPUBuffer` ではなく `createStorageBuffer` で作った `StorageBuffer` を
+> 要求するようになった点だが、本チュートリアルは `ShaderMaterial`／ストレージバッファ系 API を使っていないため影響なし。
+> ②公開 export は追加のみ（削除・リネームなし）。`updateMeshPositions` などの更新系は末尾に省略可能な引数
+> （`vertexCount` / `sourceVertexOffset`）が増えただけで、`createMeshFromData`・`createRibbon`・`createBox`・thin instances の
+> シグネチャは不変。③追加機能は `updateMeshGeometry`（動的ジオメトリ更新）と CSM の `worldSpaceBias`（任意。従来の `bias` の
+> 挙動は保持されるため 7-03 は不変）。④PBR の両面バックフェース法線と glTF のブロックインターリーブ配置の修正は描画が正しくなる
+> 方向の変更で、コード側の対応は不要。⑤`MergeMeshes` / `FollowCamera` / `intersectsMesh` / `movePOV` / `createLathe` /
+> `ExtrudePolygon` / `CreateLines` / `wireframe` / WebXR / GUI は **v2.0.0 でも未実装のまま**（box の `faceUV` も同様）のため、
+> △・✕ の判定はいずれも据え置き。
+>
+> **v1.8 → v1.10 の主な変化**：破壊的変更でサンプルが動かなくなる箇所はない。
 > ①パーティクルは **Node Particle Editor (NPE) が v1.9 で正式化**、v1.10 でグラデーション/指向性・半球エミッター/`isLocal`
 > を追加（第6部の対応を補強）。②スプライトは v1.10 でパイプラインキャッシュ＋`disposeSpriteAtlas` を追加、ピッキング API
 > （`pickSprite2D` / `pickBillboardSprite`）のシグネチャが変更されたが、本チュートリアルのスプライト章（5-03 / 8-01 / 8-02）は
