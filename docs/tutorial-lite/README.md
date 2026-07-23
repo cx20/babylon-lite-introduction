@@ -174,5 +174,5 @@ main().catch((err) => console.error(err));
 | `AnimationGroup.play()` / `.stop()` | `playAnimation(group)` / `stopAnimation(group)` |
 | `mesh.dispose()` | `removeFromScene(scene, mesh)` |
 
-> 注記：各章の API 名・シグネチャは Babylon Lite v2.0.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースで確認済みです（各章冒頭の「vX.Y ソースで確認」は当時の確認記録。v1.8 → v2.0.0 で既存サンプルが動かなくなる破壊的変更はありません）。
+> 注記：各章の API 名・シグネチャは Babylon Lite v1.13.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースで確認済みです（各章冒頭の「vX.Y ソースで確認」は当時の確認記録。v1.8 → v1.13.0 で既存サンプルが動かなくなる破壊的変更はありません）。
 > Lite は機能追加が続いているため、バージョンが上がって差異が出た場合は Playground の IntelliSense で正しい名称に合わせてください。
