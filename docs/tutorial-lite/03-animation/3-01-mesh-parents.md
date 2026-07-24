@@ -51,10 +51,10 @@ onBeforeRender(scene, () => {
 
 - **`CreateLines`（線分描画）が無い** — line-list トポロジは公開 API から指定できません。Lite 自身のギズモも
   細円柱でワイヤーを構成しているため、本移植も **区間ごとの細い `createCylinder`＋無照明マテリアル**（`createAxisLine`）で軸線を引きます。
-- **`CreateBox` に `faceColors` が無い**、かつ **Standard パスは頂点カラーを参照しない**（参照するのは Node/PBR 系）。
-  そこで **6×1 ピクセルのパレットテクスチャ**を `createTexture2DFromPixels` で作り、各面の UV 4 頂点をパレット画素の中心へ固定して面ごとに色分けします（既定サンプラが nearest なのでパレット用途にそのまま合う）。
+- **`CreateBox` に `faceColors` が無い** — そこで **6×1 ピクセルのパレットテクスチャ**を `createTexture2DFromPixels` で作り、各面の UV 4 頂点をパレット画素の中心へ固定して面ごとに色分けします（既定サンプラが nearest なのでパレット用途にそのまま合う）。
+  なお **Standard パスへの頂点カラーは v1.14 で opt-in 対応**（`enableStandardVertexColors()` を `registerScene` 前に1回）になりましたが、`faceColors` ヘルパー自体は無く RGBA 頂点属性を自前で用意する必要があるため、面ごとの色分けは本パレット方式が引き続き簡潔です。
 - **`DynamicTexture`（`drawText`）クラスは無い** — 本サンプルは canvas 2D に文字を描いて `getImageData` → `createTexture2DFromPixels({ srgb: true })` で代替します（軸ラベルをビルボードのアトラスへ流し込む都合上この経路が簡単なため）。
-  なお **文字描画そのものには Lite ネイティブの Text API** も使えます（`loadFont` → `createTextData` → `createTextRenderer` / `createTextLayer`）。
+  なお **v1.14 で `createDynamicTexture` / `updateDynamicTexture`**（Babylon.js `DynamicTexture` の WebGPU ネイティブ相当）が追加され、`getImageData` を介さず canvas を直接 GPU へコピーできます（canvas と 2D context は呼び出し側が所有）。**文字描画そのものには Lite ネイティブの Text API** も使えます（`loadFont` → `createTextData` → `createTextRenderer` / `createTextLayer`）。
 - **`mesh.billboardMode` が無い** — カメラ正対表示は専用の **`FacingBillboardSystem`**（`BILLBOARDMODE_ALL` 相当）を使います
   （`createGridSpriteAtlas` → `createFacingBillboardSystem` → `addFacingBillboardSystem` → `addBillboardSprite`）。
   文字が上下反転する環境では `BillboardSpriteInit.flipY = true` で調整。

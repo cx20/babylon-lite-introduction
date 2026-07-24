@@ -162,10 +162,22 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は Babylon Lite v1.13.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> 本表は Babylon Lite v1.14.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
 > [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく（初版は v1.8 で作成。各章冒頭の
 > 「vX.Y ソースで確認」は当時の確認記録）。各章の API 名・シグネチャは実際のソースで確認済み。Lite は機能追加が続いており、
 > 最新の対応状況は上記を参照のこと。※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
+>
+> **v1.13.0 → v1.14.0 の主な変化（本表への影響）**：破壊的変更は無く、**本表の判定・各章のサンプルコードに変更は不要**。
+> ただし「Lite に無い」と記していた2機能が opt-in／別 API として実装されたため、3-01・7-02 の注記を訂正した。
+> ①`createDynamicTexture` / `updateDynamicTexture`（Babylon.js `DynamicTexture` の WebGPU ネイティブ相当）が追加。
+> canvas を `getImageData` を介さず直接 GPU コピーできる（canvas と 2D context は呼び出し側が所有するため `drawText` 内蔵の
+> `DynamicTexture` とは設計が異なる）。3-01 の軸ラベル代替・7-02 の「`DynamicTexture` も非公開」記述を更新（**7-02 の GUI 判定は
+> 据え置き**——追加されたのはテクスチャ更新 API であって `AdvancedDynamicTexture`／GUI ライブラリではない）。②`enableStandardVertexColors`
+> で Standard マテリアルの RGBA 頂点カラーが opt-in 対応（`registerScene` 前に1回）。ただし `CreateBox` の `faceColors` ヘルパーは
+> 依然無く、3-01 のパレットテクスチャ方式は据え置き。③その他 export は追加のみ（`createDynamicTexture`・`enableStandardSkeleton`／
+> `enableStandardUvOffset`・dynamic fog・WebGPU device-loss recovery・GPU picking 拡張・`decodeError` など）で削除・リネームなし。
+> ④`FollowCamera` / `MergeMeshes` / `intersectsMesh` / `movePOV` / `createLathe` / `ExtrudePolygon` / `CreateLines` / `wireframe` /
+> WebXR / GUI（box の `faceUV`）は **v1.14.0 でも未実装のまま**のため、△・✕ の判定はいずれも据え置き。
 >
 > **v1.10 → v1.13.0 の主な変化（本表への影響）**：**本表の判定・各章のサンプルコードに変更は不要**。
 > ⓪一時期 **v2.0.0 が公開されていたが、これは誤ってリリースされたもの**で、v1.11.0 の

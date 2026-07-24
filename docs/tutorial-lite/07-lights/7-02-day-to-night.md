@@ -8,7 +8,7 @@
 
 ### GUI は Lite に無い → HTML オーバーレイで代替
 
-本家は `BABYLON.GUI`（`AdvancedDynamicTexture` / `StackPanel` / `Slider`）を使いますが、**Babylon Lite は 3D レンダリング専用の軽量ランタイムで GUI ライブラリを含みません**（`AdvancedDynamicTexture` も `DynamicTexture` も非公開）。本家 GUI の実体は「値を取って `light.intensity` を更新する」だけなので、標準の HTML `<input type="range">` を canvas に重ねて同じことをします。**Lite で 2D UI が要る場合は、HTML/CSS で作って canvas にオーバーレイするのが定石**です（3D シーンと DOM UI は別レイヤーとして共存できます）。
+本家は `BABYLON.GUI`（`AdvancedDynamicTexture` / `StackPanel` / `Slider`）を使いますが、**Babylon Lite は 3D レンダリング専用の軽量ランタイムで GUI ライブラリを含みません**（`AdvancedDynamicTexture` は非公開。なお v1.14 で `createDynamicTexture` は追加されましたが、これはテクスチャ更新 API であって GUI ではありません）。本家 GUI の実体は「値を取って `light.intensity` を更新する」だけなので、標準の HTML `<input type="range">` を canvas に重ねて同じことをします。**Lite で 2D UI が要る場合は、HTML/CSS で作って canvas にオーバーレイするのが定石**です（3D シーンと DOM UI は別レイヤーとして共存できます）。
 
 ### `intensity` を変えても即座に反映されない → `direction.set` で dirty 化
 
