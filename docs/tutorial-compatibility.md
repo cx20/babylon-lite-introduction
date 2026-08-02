@@ -162,10 +162,20 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は Babylon Lite v1.14.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> 本表は Babylon Lite v1.15.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
 > [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく（初版は v1.8 で作成。各章冒頭の
 > 「vX.Y ソースで確認」は当時の確認記録）。各章の API 名・シグネチャは実際のソースで確認済み。Lite は機能追加が続いており、
 > 最新の対応状況は上記を参照のこと。※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
+>
+> **v1.14.0 → v1.15.0 の主な変化（本表への影響）**：**破壊的変更を含むが本表の判定・各章のサンプルコードに変更は不要**。
+> ①BREAKING CHANGE は [#447](https://github.com/BabylonJS/Babylon-Lite/pull/447)「consolidate package exports」で、
+> **サブパス export（`@babylonjs/lite/...`）が廃止され、公開 API は root の `@babylonjs/lite` からのみ import する**契約に統一された。
+> 本チュートリアルの import は全て root の `@babylonjs/lite` からのため影響なし（root barrel の `index.ts` は API 削除・リネーム無し、追加のみ）。
+> ②追加機能は `enableOrthographicCamera` / `disableOrthographicCamera`（[#449](https://github.com/BabylonJS/Babylon-Lite/pull/449)、opt-in の正射投影カメラ）、
+> `navRayBlocked`（[#448](https://github.com/BabylonJS/Babylon-Lite/pull/448)、nav ray 遮蔽クエリ）、`buildDdsSkyboxRenderable` など。
+> いずれも本家 Getting Started に対応章が無く、既存章の記述にも関わらないため章追加・注記変更なし（正射投影カメラ・navmesh を「無い」と
+> 断定している箇所も無い）。③`FollowCamera` / `MergeMeshes` / `intersectsMesh` / `movePOV` / `createLathe` / `ExtrudePolygon` /
+> `CreateLines` / `wireframe` / WebXR / GUI（box の `faceUV`）は **v1.15.0 でも未実装のまま**のため、△・✕ の判定はいずれも据え置き。
 >
 > **v1.13.0 → v1.14.0 の主な変化（本表への影響）**：破壊的変更は無く、**本表の判定・各章のサンプルコードに変更は不要**。
 > ただし「Lite に無い」と記していた2機能が opt-in／別 API として実装されたため、3-01・7-02 の注記を訂正した。
