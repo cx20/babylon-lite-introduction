@@ -47,8 +47,8 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 2-02 | [サウンドを追加](https://doc.babylonjs.com/features/introductionToFeatures/chap2/sound) | ○ | **AudioV2 ポートのオーディオエンジン搭載**✅。`createAudioEngineAsync`＋`createSoundAsync`（`loop` / `autoplay` オプション、`playSound` / `pauseSound` ほか）。ストリーミング音源・3D 空間定位（`SpatialSoundOptions`）まで対応 |
 | 2-03 | [メッシュを設置](https://doc.babylonjs.com/features/introductionToFeatures/chap2/placement) | ○ | `position`／`scaling`（ObservableVec3）✅ |
 | 2-04 | [基本的な家](https://doc.babylonjs.com/features/introductionToFeatures/chap2/variation) | ○ | `createBox`✅、単一 `diffuseTexture`✅ |
-| 2-05 | [テクスチャを貼る](https://doc.babylonjs.com/features/introductionToFeatures/chap2/material) | ○ | 2D テクスチャ✅。UV タイリングは **`material.uvScale`**（既定 `[1,1]`）。本家の per-texture `uScale/vScale/uOffset/vOffset` とは流儀が違い、**オフセット相当のフィールドは無い** |
-| 2-06 | [マテリアル（面ごと/faceUV）](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material) | △ | **box の faceUV/wrap/width は `createBox` 非対応**（`size` 数値のみ）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
+| 2-05 | [テクスチャを貼る](https://doc.babylonjs.com/features/introductionToFeatures/chap2/material) | ○ | 2D テクスチャ✅。UV は **`material.uvScale`**（既定 `[1,1]`）に加え、**v1.21.0 から本家と同じ per-texture `uScale/vScale/uOffset/vOffset/uAng`** も可（手書きマテリアルは `enableMaterialUvTransform` で opt-in）。※**v1.22.0 で `diffuseTexture` 以外の任意テクスチャは代入不可**→ `setStandardEmissiveTexture` などのセッター関数へ |
+| 2-06 | [マテリアル（面ごと/faceUV）](https://doc.babylonjs.com/features/introductionToFeatures/chap2/face_material) | △ | **box の faceUV/wrap は `createBox` 非対応**（**`width`/`height`/`depth` は v1.16.0 で対応**）。公開 API `createMeshFromData` に本家 boxBuilder の wrap:true ロジックを逐語移植した自作 `createWrappedBox` で再現可能（検証済み：一軒家／Semi Detached House） |
 | 2-07 | [リファクタリング（関数化）](https://zenn.dev/chomado/books/babylonjs-tutorial-ja/viewer/2-07) | ○ | 純粋な JS 設計、エンジン非依存 |
 | 2-08 | [メッシュを結合](https://doc.babylonjs.com/features/introductionToFeatures/chap2/combine) | △ | **`Mesh.MergeMeshes` 相当は無し**（コード検索 0 件）。`CSG2` union／thin instances／手動頂点結合で代替 |
 | 2-09 | [メッシュをコピー](https://doc.babylonjs.com/features/introductionToFeatures/chap2/copies) | ○ | Thin Instances✅／`cloneTransformNode`✅。※BJS `InstancedMesh` API は🚫→thin instance で代替 |
@@ -66,21 +66,21 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 3-04 | [車輪のアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/animation) | ○ | `createPropertyAnimationClip`（rotation キーフレーム）✅、またはレンダーループで回転 |
 | 3-05 | [車のアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/caranimation) | ○ | プロパティアニメ（position キーフレーム、LINEAR/STEP/CUBICSPLINE）✅ |
 | 3-06 | [キャラクターのアニメーション](https://doc.babylonjs.com/features/introductionToFeatures/chap3/import_character) | ○※ | **Skeletal Animation✅＋Animation Groups✅**。ただし **Dude.babylon そのままは不可**（`.babylon` はスキン/アニメ非対応）→ **glTF（例：Xbot.glb）に置換で歩行/走行まで検証済み対応** |
-| 3-07 | [村を歩き回る](https://doc.babylonjs.com/features/introductionToFeatures/chap3/walkpath) | △ | **`mesh.movePOV`／`mesh.rotate` は—**（ヨー角スカラーを保持して `position`／`rotationQuaternion` を自前更新）。**`FollowCamera` も—**（`ArcRotateCamera`＋毎フレーム target 追従、または `camera.parent` で自作）。線の軌道は `CreateLines` が無いため細円柱＋無照明マテリアルで代替。歩行キャラは 3-06 と同じく **`Dude.babylon` 不可 → `Xbot.glb` に置換** |
+| 3-07 | [村を歩き回る](https://doc.babylonjs.com/features/introductionToFeatures/chap3/walkpath) | △ | **`mesh.movePOV`／`mesh.rotate` は—**（ヨー角スカラーを保持して `position`／`rotationQuaternion` を自前更新）。**`FollowCamera` も—**（`ArcRotateCamera`＋毎フレーム target 追従、または `camera.parent` で自作）。線の軌道は本サンプル執筆時に `CreateLines` が無く細円柱＋無照明マテリアルで代替（**v1.17.0 で `createLines`／`createLineSystem` が実装**され、以降は本家同様に書ける）。歩行キャラは 3-06 と同じく **`Dude.babylon` 不可 → `Xbot.glb` に置換** |
 
 ### 第4部：衝突回避
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
 | 4-00 | [コリジョン回避](https://doc.babylonjs.com/features/introductionToFeatures/chap4) | — | 導入 |
-| 4-01 | [車の衝突事故を回避する](https://doc.babylonjs.com/features/introductionToFeatures/chap4/mesh_intersect) | △ | **`intersectsMesh` は—**（AABB の重なり判定を自作）。**`material.wireframe` も—**（line-list 非対応 → 12 辺を細円柱で描画）。歩行キャラは `Xbot.glb` に置換。`loadGltf` は glTF ルートに x スケール `-1` を入れるため、判定はローカル座標へ揃える。Ray Casting/Picking（✅）でより厳密な判定も可。物理は Havok V2 サブセット（⚡） |
+| 4-01 | [車の衝突事故を回避する](https://doc.babylonjs.com/features/introductionToFeatures/chap4/mesh_intersect) | △ | **`intersectsMesh` は—**（AABB の重なり判定を自作）。**`material.wireframe` も—**（v1.28.0 でも無し。本サンプルは 12 辺を細円柱で描画。**line-list 自体は v1.17.0 の `createLineSystem` で対応**したため辺の列挙で代替可）。歩行キャラは `Xbot.glb` に置換。`loadGltf` は glTF ルートに x スケール `-1` を入れるため、判定はローカル座標へ揃える。Ray Casting/Picking（✅）でより厳密な判定も可。物理は Havok V2 サブセット（⚡） |
 
 ### 第5部：環境改善
 
 | 章 | タイトル | 判定 | 根拠・代替手段 |
 |---|---|:--:|---|
 | 5-00 | [より良い環境に](https://doc.babylonjs.com/features/introductionToFeatures/chap5) | — | 導入 |
-| 5-01 | [遠くの丘](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills) | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定 |
+| 5-01 | [遠くの丘](https://doc.babylonjs.com/features/introductionToFeatures/chap5/hills) | ○ | `createGroundFromHeightMap`✅（GPU テクスチャ→頂点変位）。※第1引数に `engine` が要り、戻り値は `Promise<Mesh>` の async。画像は絶対 URL で指定。※`hasAlpha` 相当の透過は **v1.22.0 から `setStandardOpacityTexture(mat, tex)`**（旧 `mat.opacityTexture =` は代入不可） |
 | 5-02 | [頭上の空](https://doc.babylonjs.com/features/introductionToFeatures/chap5/sky) | ○ | **`loadSkybox(scene, baseUrl, ext, size)`** で本家の `CreateBox`＋`CubeTexture`(SKYBOX_MODE)＋`backFaceCulling=false` を一発置換✅。IBL 環境光まで要るなら `loadEnvironment`（`brdfUrl` 必須）。`camera.upperBetaLimit` も**あり**（`setCameraLimits` 経由が作法） |
 | 5-03 | [木のスプライト](https://doc.babylonjs.com/features/introductionToFeatures/chap5/trees) | △ | **Sprites は部分対応（⚡）**：`loadSpriteAtlas`＋`createFacingBillboardSystem`／`createAxisLockedBillboardSystem`（cutout）で代替可。**フレームアニメも `playBillboardSpriteAnimation`＋`SpriteAnimationManager` で対応**。`SpriteManager` / `Sprite` クラスそのものは無し。※`gridSize` は分割数でなく**セルのピクセルサイズ** |
 
@@ -109,7 +109,7 @@ Babylon.js 公式の [Getting Started](https://doc.babylonjs.com/features/introd
 | 8-00 | [世界の見方（導入）](https://doc.babylonjs.com/features/introductionToFeatures/chap8) | — | 導入 |
 | 8-01 | [見回す](https://doc.babylonjs.com/features/introductionToFeatures/chap8/camera) | ○ | `createFreeCamera`＋`attachFreeControl`✅（本家 `UniversalCamera` 相当）。周回は `ArcRotateCamera` |
 | 8-02 | [キャラを追う](https://doc.babylonjs.com/features/introductionToFeatures/chap8/follow) | △ | **`FollowCamera` は無い**→ `camera.parent`（3-07 で確立）＋`setCameraLimits` |
-| 8-03 | [VR の世界へ](https://doc.babylonjs.com/features/introductionToFeatures/chap8/vr) | ✕ | **WebXR/XR の export が0件**。`createDefaultXRExperienceAsync` 相当なし |
+| 8-03 | [VR の世界へ](https://doc.babylonjs.com/features/introductionToFeatures/chap8/vr) | ✕ | **v1.25.0 で WebXR API が実装**（`enterXr`／両眼カメラ／入力／ハンド／テレポート）。ただし**ドラフト仕様 `XRGPUBinding` 前提で、実装済みブラウザが存在しない**ため実機では動かず判定は据え置き（`isWebGpuXrSupported()` は常に `false`）。「全部入り」の `createDefaultXRExperienceAsync` 相当は無し |
 
 ---
 
@@ -162,10 +162,70 @@ if (walk) walk.speedRatio = 1.0; // AnimationGroup は既定で自動再生・lo
 
 ---
 
-> 本表は Babylon Lite v1.15.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
+> 本表は Babylon Lite v1.28.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースおよび
 > [Feature Comparison](https://doc.babylonjs.com/lite/02-feature-comparison) に基づく（初版は v1.8 で作成。各章冒頭の
 > 「vX.Y ソースで確認」は当時の確認記録）。各章の API 名・シグネチャは実際のソースで確認済み。Lite は機能追加が続いており、
 > 最新の対応状況は上記を参照のこと。※印は本家との差異に関する補足で、いずれも代替手段を各章に記載している。
+>
+> **v1.15.0 → v1.28.0 の主な変化（本表への影響）**：**判定は全章据え置きだが、破壊的変更により
+> 5-01 のサンプルコードを 1 行差し替え、7 章（2-05 / 2-06 / 3-01 / 3-07 / 4-01 / 7-03 / 8-03）の注記を訂正した**。
+> Lite の最新版は **v1.28.0**（npm の `latest` タグも `1.28.0`。誤リリースされた `2.0.0` は依然として欠番のまま npm の
+> versions 一覧に残っているので注意）。この 13 リリース分で本チュートリアルに関係する変化は次のとおり。
+>
+> ①**Standard マテリアルの任意テクスチャが代入禁止になった**（v1.22.0 /
+> [#554](https://github.com/BabylonJS/Babylon-Lite/pull/554)、BREAKING）。`emissiveTexture` / `bumpTexture` /
+> `specularTexture` / `ambientTexture` / `lightmapTexture` / `opacityTexture` / `reflectionTexture` /
+> `reflectionCubeTexture` は内部フィールド化され、`setStandardOpacityTexture(mat, tex)` などの**セッター関数**経由になった
+> （代入は拡張登録をスキップして無描画になるため、互換シム無しでコンパイルエラーにする設計）。
+> **`diffuseTexture` と各種 `*Color` / `*Level` は従来どおり代入**。本チュートリアルで唯一該当したのが
+> **5-01 の `groundMat.opacityTexture = villageGreenTex`** で、`setStandardOpacityTexture(...)` へ差し替えた（2-05 の一覧も訂正）。
+> なお PBR 側も同様に任意機能が opt-in 化されたが（v1.20.0 /
+> [#543](https://github.com/BabylonJS/Babylon-Lite/pull/543)、`setPbrEmissive` など）、本チュートリアルは PBR の任意機能を使っていない。
+>
+> ②**`CreateLines` 相当が実装された**（v1.17.0 / [#528](https://github.com/BabylonJS/Babylon-Lite/pull/528)）。
+> `createLines(engine, { points, color })` / `createLineSystem` / `createLineSystemData` / `updateLineSystem` /
+> `createLineMaterial`（無照明のライン用 ShaderMaterial）、さらに v1.20.0 で `createDashedLines` / `updateDashedLines`。
+> 3-01・3-07・4-01 が「line-list 非対応のため細円柱で代替」としていた根拠が解消されたため注記を訂正した
+> （**判定は据え置き**——3-07 の △ は `movePOV` / `FollowCamera` 由来、4-01 の △ は `intersectsMesh` と
+> `material.wireframe` 由来で、いずれも v1.28.0 でも未実装）。検証済みサンプル自体は円柱版のまま残している。
+>
+> ③**glTF メッシュの `boundMin`/`boundMax` がオブジェクトローカル保存に変わった**（v1.18.0 /
+> [#532](https://github.com/BabylonJS/Babylon-Lite/pull/532)、BREAKING）。カメラ・環境・影のフィット側が
+> `worldMatrix`（thin instance では各インスタンス行列も）を合成して正確なワールド境界を計算するようになったため、
+> **7-03 の `setLocalBoundsFromWorldAabb()`（二重変換による影切れ回避策）は v1.18.0 以降は不要**。
+> 4-01 の「`boundMin`/`boundMax` はワールド AABB」という記述も訂正した。あわせて、**手組みの thin instance メッシュ**を
+> 自動カメラ／環境サイジングの対象にする場合は `enableThinInstanceWorldBounds(mesh)` が必要になった
+> （本チュートリアルの thin instance 章 2-08・2-09 は自動サイジングを使わないため影響なし）。
+>
+> ④**WebXR が実装された**（v1.25.0 / [#537](https://github.com/BabylonJS/Babylon-Lite/pull/537)）。`enterXr` / `exitXr`、
+> 両眼 `XrCamera`、入力・コントローラーモデル・ハンドトラッキング・ポインタ・テレポートまで公開されたが、
+> **WebXR × WebGPU のドラフト仕様 `XRGPUBinding` を前提**としており、これを実装したブラウザがまだ無い
+> （`isWebGpuXrSupported()` は常に `false`、`enterXr` は例外）。よって **8-03 の判定は ✕ 据え置き**とし、
+> 「export が 0 件」という根拠だけを実態に合わせて書き換えた。
+>
+> ⑤**per-texture の UV 変換が入った**（v1.21.0 / [#548](https://github.com/BabylonJS/Babylon-Lite/pull/548)）。
+> `Texture2D` に本家同意味論の `uScale` / `vScale` / `uOffset` / `vOffset` / `uAng` が付き、手書きマテリアルは
+> 初回ビルド前の `enableMaterialUvTransform(mat)` で opt-in する（glTF の PBR はローダーが自動有効化）。
+> 従来の `material.uvScale` も残るため 2-05 の判定は ○ 据え置きで、「オフセット相当は無い」という記述のみ訂正。
+>
+> ⑥**`createBox` が非一様寸法に対応**（v1.16.0 / [#494](https://github.com/BabylonJS/Babylon-Lite/pull/494)）。
+> `createBox(engine, { width, height, depth })` が可能になった（`size` は各軸指定で上書きされる）。
+> ただし **`faceUV` / `wrap` は v1.28.0 でも無い**ため 2-06 の △ と `createWrappedBox` は据え置き。
+>
+> ⑦その他の破壊的変更は本チュートリアルに無影響。`ObservableVec3` / `ObservableQuat` / `EulerProxy` が readonly 化され
+> 「差し替えではなく変異させる」契約になった（v1.17.0 / [#451](https://github.com/BabylonJS/Babylon-Lite/pull/451)）が、
+> 本チュートリアルは元々 `position.y = …` / `position.set(…)` のみで代入していない。
+> NPE の SoA 化で `Particle` / `Soa*` が root export から外れた（v1.16.0 /
+> [#415](https://github.com/BabylonJS/Babylon-Lite/pull/415)）が、6-02・6-03 が使う
+> `parseNodeParticleSetFromSnippet` / `registerNodeParticleSet` / `startParticleSystem` / `stopParticleSystem` は健在。
+> `SceneContext.envRotationY` の削除（v1.23.0、→ `setEnvironmentRotation`）、`onPhysicsTrigger` の戻り値変更・Havok 拡張（v1.25.0）、
+> 公開 enum の `const enum` → `as const` 化（v1.27.0、`Foo.MEMBER` の使用はそのまま有効）、
+> NPE 移動エミッタの `withNodeParticleEmitterProvider` 化（v1.25.0）はいずれも本チュートリアル未使用の API。
+> root barrel の export は **`Particle` の 1 件を除き削除・リネーム無しで 350 件超の追加のみ**（v1.15.0: 1,094 → v1.28.0: 1,444）。
+>
+> ⑧`MergeMeshes` / `FollowCamera` / `intersectsMesh` / `movePOV` / `createLathe` / `ExtrudePolygon` /
+> `material.wireframe` / GUI（`AdvancedDynamicTexture`）/ box の `faceUV` は **v1.28.0 でも未実装のまま**のため、
+> △・✕ の判定はいずれも据え置き。
 >
 > **v1.14.0 → v1.15.0 の主な変化（本表への影響）**：**破壊的変更を含むが本表の判定・各章のサンプルコードに変更は不要**。
 > ①BREAKING CHANGE は [#447](https://github.com/BabylonJS/Babylon-Lite/pull/447)「consolidate package exports」で、

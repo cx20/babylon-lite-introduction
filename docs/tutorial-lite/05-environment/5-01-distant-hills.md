@@ -170,11 +170,16 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 > **Lite の diffuse テクスチャのアルファは discard 専用**（`alphaCutOff` によるアルファテスト＝カットアウト）で、
 > 出力アルファには混ざりません（シェーダのコメントいわく *"matching BJS ALPHATEST without ALPHAFROMDIFFUSE"*）。
 >
-> 滑らかなアルファブレンドを得るには、**同じテクスチャを `opacityTexture` にも割り当て**ます。
+> 滑らかなアルファブレンドを得るには、**同じテクスチャを opacity テクスチャにも割り当て**ます。
 > opacity のフラグメントが `alpha *= texAlpha` を行い、これで `_alphaBlend` が有効になって透明部分が実際に透過します。
-> つまり **`diffuseTexture` と `opacityTexture` の両方に同じテクスチャを割り当てるのが `hasAlpha = true` 相当**です。
+> つまり **`diffuseTexture` と opacity テクスチャの両方に同じテクスチャを割り当てるのが `hasAlpha = true` 相当**です。
+>
+> ⚠️ **v1.22.0 で代入からセッター関数に変わりました** — `material.opacityTexture = tex` のような
+> 直接代入は**コンパイルエラー**になります（拡張の登録をスキップして「何も描かれない」事態を防ぐため、
+> 任意テクスチャのフィールドは内部化されました）。`setStandardOpacityTexture(mat, tex)` を使ってください
+> （強度は従来どおり `mat.opacityLevel`、RGB 輝度からの導出は `mat.opacityFromRGB`）。
 
-追加 import：`createGround`
+追加 import：`createGround, setStandardOpacityTexture`
 
 ```typescript
 const VILLAGE_GREEN_URL = "https://assets.babylonjs.com/environments/villagegreen.png";
@@ -204,7 +209,7 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
   // 村の地面（24×24）。hasAlpha = true 相当：diffuse と opacity の両方に同じテクスチャを割り当てる
   const groundMat = createStandardMaterial();
   groundMat.diffuseTexture = villageGreenTex;
-  groundMat.opacityTexture = villageGreenTex;   // ★ これが無いと透明部分が抜けない
+  setStandardOpacityTexture(groundMat, villageGreenTex);   // ★ これが無いと透明部分が抜けない（v1.22.0〜。旧: groundMat.opacityTexture =）
   const ground = createGround(engine, { width: 24, height: 24 });
   ground.material = groundMat;
   addToScene(scene, ground);
@@ -226,9 +231,10 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
         style="width: 100%; height: 480px; border: 0"></iframe>
 
 > 動作確認済みサンプル（Lite Playground）: https://liteplayground.babylonjs.com/snippet/DQXJD5/v/3
+> — このスニペットは **v1.21.0 以前の `groundMat.opacityTexture = …` のまま**保存されています（上記コードが最新版に対する正です）。
 >
 > `largeGround.position.y = -0.01` は本家どおりで、2 枚の地面が同一平面で重なる Z-fighting を避けるためのものです。
-> `opacityTexture` を割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
+> opacity テクスチャを割り当て忘れると、村地面の透明部分がアルファテストで抜けるだけになり、
 > 境界がギザギザになったり（`alphaCutOff` 次第では）まったく抜けなかったりします。
 
 ## 家を追加

@@ -44,13 +44,17 @@ onBeforeRender(scene, () => {
 
 **目的**：本家チュートリアルと同じく、`faceColors` 付き box の親子（`boxParent` / `boxChild`）に、
 **子に追従するローカル座標軸**と、**ラベル付きワールド座標軸**を重ねて親子変換を可視化する。
-本家が使う `CreateLines` / `faceColors` / `DynamicTexture` / `billboardMode` はいずれも Lite に無いため、
-公開 API で代替します。
+本家が使う `faceColors` / `billboardMode` は Lite に無いため、公開 API で代替します
+（`CreateLines` / `DynamicTexture` 相当は後述のとおり後のバージョンで実装されました）。
 
-**Lite 移植時の注意点**（v1.8.0 の d.ts / lib ソースで確認）：
+**Lite 移植時の注意点**（v1.8.0 の d.ts / lib ソースで確認。v1.28.0 で再確認し注記を更新）：
 
-- **`CreateLines`（線分描画）が無い** — line-list トポロジは公開 API から指定できません。Lite 自身のギズモも
-  細円柱でワイヤーを構成しているため、本移植も **区間ごとの細い `createCylinder`＋無照明マテリアル**（`createAxisLine`）で軸線を引きます。
+- **`CreateLines`（線分描画）は v1.17.0 で実装されました** — 本サンプルを書いた時点では line-list トポロジを
+  公開 API から指定できなかったため、Lite 自身のギズモにならって **区間ごとの細い `createCylinder`＋無照明マテリアル**
+  （`createAxisLine`）で軸線を引いています。**v1.17.0 の公開ラインシステム API**（`createLines(engine, { points, color })` /
+  複数本の `createLineSystem` / `updateLineSystem` / v1.20.0 の `createDashedLines`）を使えば、本家の
+  `MeshBuilder.CreateLines` と同じ書き味に置き換えられます（内部で無照明の `LineMaterial` が自動で付くため
+  マテリアル指定も不要）。本サンプルは検証済みの円柱版のまま残していますが、新規に書くならライン API が素直です。
 - **`CreateBox` に `faceColors` が無い** — そこで **6×1 ピクセルのパレットテクスチャ**を `createTexture2DFromPixels` で作り、各面の UV 4 頂点をパレット画素の中心へ固定して面ごとに色分けします（既定サンプラが nearest なのでパレット用途にそのまま合う）。
   なお **Standard パスへの頂点カラーは v1.14 で opt-in 対応**（`enableStandardVertexColors()` を `registerScene` 前に1回）になりましたが、`faceColors` ヘルパー自体は無く RGBA 頂点属性を自前で用意する必要があるため、面ごとの色分けは本パレット方式が引き続き簡潔です。
 - **`DynamicTexture`（`drawText`）クラスは無い** — 本サンプルは canvas 2D に文字を描いて `getImageData` → `createTexture2DFromPixels({ srgb: true })` で代替します（軸ラベルをビルボードのアトラスへ流し込む都合上この経路が簡単なため）。
@@ -105,7 +109,7 @@ function createFaceColorMaterial(engine: EngineContext, faceColors: Color4[]): S
   return mat;
 }
 
-// 1本の軸（折れ線）を細い円柱の連結で描く（本家 CreateLines 代替）
+// 1本の軸（折れ線）を細い円柱の連結で描く（v1.16.0 以前の CreateLines 代替。v1.17.0〜は createLines が使える）
 function createAxisLine(engine: EngineContext, name: string, points: Vec3Tuple[],
                         color: readonly [number, number, number], thickness: number): TransformNode {
   const axis = createTransformNode(name);

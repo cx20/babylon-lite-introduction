@@ -8,7 +8,7 @@
 
 **Lite 移植時の注意点**：
 
-- **`StandardMaterial.wireframe` が無い** — Lite は line-list トポロジ非対応です。`hitBox` の 12 辺を**極細円柱**で描く枠線（`createWireBox`）で代用し、`disableLighting` のフラット白でワイヤーフレームの見た目に寄せます（3-07 の線分と同じ手口）。
+- **`StandardMaterial.wireframe` が無い** — マテリアル1つでメッシュをワイヤー表示に切り替えるフラグは v1.28.0 でも未実装です。`hitBox` の 12 辺を**極細円柱**で描く枠線（`createWireBox`）で代用し、`disableLighting` のフラット白でワイヤーフレームの見た目に寄せます（3-07 の線分と同じ手口）。なお **line-list トポロジ自体は v1.17.0 の公開ラインシステム API で対応**したため、12 辺を `createLineSystem(engine, { lines })` の 1 メッシュで引く書き方も可能になりました（`wireframe` フラグの代わりに辺を自前で列挙する点は変わりません）。
 - **`mesh.intersectsMesh` が無い** — ワールド AABB 同士の重なり判定（`overlapAABB`）を自前実装します。本家 `intersectsMesh` の既定（バウンディングボックス判定）に相当します。
 - **glTF ルートの x 軸反転に注意** — Lite の `loadGltf` は RH→LH 変換のため glTF ルート（`__root__`）に **x 軸スケール `-1`** を入れます。したがって glTF 配下のノード（車・Xbot）は **`world x = -(local x)`**。一方、枠線の箱はシーン直下に置くのでワールド座標そのままです。**片方だけ反転を揃えないと、箱は右・人と車は左** のようにズレます。
 
@@ -225,7 +225,9 @@ onBeforeRender(scene, () => {
 });
 ```
 
-読み込んだメッシュは `boundMin` / `boundMax`（ワールド AABB）を持つので、上の `overlapAABB` をそれに対して直接適用することもできます。ただし本サンプルでは、glTF ローカル座標のノード位置と比較したいため、AABB を中心と半径から解析的に構築しています。
+読み込んだメッシュは `boundMin` / `boundMax` を持つので、上の `overlapAABB` をそれに対して適用することもできます。ただし本サンプルでは、glTF ローカル座標のノード位置と比較したいため、AABB を中心と半径から解析的に構築しています。
+
+> ⚠️ **v1.18.0 で `boundMin` / `boundMax` の座標系が変わりました** — 以前は glTF ローダーがロード時のワールド変換を焼き込んだ AABB を保存していましたが、現在は **常にオブジェクトローカル**です（`worldMatrix` が写し出す座標系での箱、という契約に統一）。ワールド AABB が要る場合は `worldMatrix` を自分で合成してください。
 
 > より厳密な当たり判定が必要なら Ray Casting / Picking（GPU ID パス＋ CPU レイ/三角形、thin-instance・変形メッシュ対応）が使えます。
 

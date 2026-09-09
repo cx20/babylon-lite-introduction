@@ -11,7 +11,10 @@
   本章の軌道は XZ 平面・ヨーのみなので、**進行方向のヨー角スカラー `yaw` を自前で保持**し、
   `position += (-sin yaw, 0, -cos yaw) * step` で `movePOV(0, 0, step)` を、`yaw += turn` で `rotate(Axis.Y, turn, LOCAL)` を置き換えます。
   本家 `movePOV` は `definedFacingForward = true` が既定なので **yaw = 0 のときの前方は `-Z`**。Lite の `+Z` 前提から符号を反転して規約を合わせます。
-- **`CreateLines`（線分描画）が無い** — 3-01 と同じく、**細い `createCylinder` ＋無照明マテリアル**で線分を代用します。
+- **`CreateLines`（線分描画）は v1.17.0 で実装済み** — 本サンプルは 3-01 と同じく **細い `createCylinder` ＋無照明マテリアル**で
+  線分を代用していますが、v1.17.0 以降は `createLines(engine, { points, color })` で本家 `MeshBuilder.CreateLines` と
+  同じ書き味にできます（v1.20.0 の `createDashedLines` も追加）。なお **Lite 側にも `createLineMaterial` という
+  同名の公開 export ができた**ため、下記の自作ヘルパーと名前が衝突します（ローカル関数なので import しなければ問題はありません）。
 - **`FollowCamera` が無い** — 後半のキャラ追従は `ArcRotateCamera` を `camera.parent = root` で親子付けして代替します。
 
 ## 移動と回転 (Combining Movements)
@@ -23,7 +26,7 @@
 ```typescript
 type Vec3Tuple = readonly [number, number, number];
 
-/** CreateLines 相当のフラット白線マテリアル（ライト非依存） */
+/** CreateLines 相当のフラット白線マテリアル（ライト非依存）。v1.17.0〜は Lite の createLines / createLineMaterial で代替可 */
 function createLineMaterial(): StandardMaterialProps {
   const mat = createStandardMaterial();
   mat.diffuseColor = [1, 1, 1];
@@ -130,7 +133,7 @@ async function createScene(engine: EngineContext, canvas: HTMLCanvasElement): Pr
 >
 > ポイントは 2 つです。
 > 1. **`movePOV` / `rotate` の代替**は、姿勢をクォータニオンで持たず **ヨー角スカラー `yaw` を単一の真実**として扱い、そこから位置更新と `rotation.y` の両方を導くこと（XZ 平面の軌道なのでこれで十分）
-> 2. **線の質感**は `disableLighting = true` が要。Lite の Standard シェーダは無照明時に `clamp(emissiveColor * diffuseColor, 0, 1) * baseColor` を出力するため、両方を白にすればライト方向に依存しないフラットな白＝`CreateLines` と同じ見た目になる。円柱を十分細く（直径 0.03）すれば極細ハードエッジにも近づく
+> 2. **線の質感**は `disableLighting = true` が要。Lite の Standard シェーダは無照明時に `clamp(emissiveColor * diffuseColor, 0, 1) * baseColor` を出力するため、両方を白にすればライト方向に依存しないフラットな白＝`CreateLines` と同じ見た目になる。円柱を十分細く（直径 0.03）すれば極細ハードエッジにも近づく（v1.17.0 以降は `createLines` がそのまま使えるため、この作り込みは不要）
 >
 > 本家は毎フレーム固定の `step = 0.05` ですが、`onBeforeRender` の `deltaMs` を使って速度をフレームレート非依存にしています（30fps でも 120fps でも同じ速さ）。
 

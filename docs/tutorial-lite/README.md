@@ -174,5 +174,9 @@ main().catch((err) => console.error(err));
 | `AnimationGroup.play()` / `.stop()` | `playAnimation(group)` / `stopAnimation(group)` |
 | `mesh.dispose()` | `removeFromScene(scene, mesh)` |
 
-> 注記：各章の API 名・シグネチャは Babylon Lite v1.15.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースで確認済みです（各章冒頭の「vX.Y ソースで確認」は当時の確認記録。v1.8 → v1.15.0 で既存サンプルが動かなくなる破壊的変更はありません。v1.15.0 の export 統合は root の `@babylonjs/lite` からの import を前提とする本チュートリアルには影響しません）。
+> 注記：各章の API 名・シグネチャは Babylon Lite v1.28.0 の[リポジトリ](https://github.com/BabylonJS/Babylon-Lite)ソースで確認済みです（各章冒頭の「vX.Y ソースで確認」は当時の確認記録）。
+>
+> **v1.22.0 の破壊的変更に 1 か所だけ該当します** — Standard マテリアルの**任意テクスチャは代入からセッター関数に変わりました**（`mat.opacityTexture = tex` → `setStandardOpacityTexture(mat, tex)`。`emissiveTexture` / `bumpTexture` / `specularTexture` / `ambientTexture` / `lightmapTexture` / `reflectionTexture` / `reflectionCubeTexture` も同様）。**`diffuseTexture` と各種 `*Color` は従来どおり代入**です。本チュートリアルでは [5-01](./05-environment/5-01-distant-hills.md) が該当し、コードを差し替えました。
+>
+> このほか **v1.17.0 で `createLines` / `createLineSystem`（本家 `CreateLines` 相当）**、**v1.18.0 で glTF の `boundMin`/`boundMax` がオブジェクトローカル保存に変更**（7-03 の影切れ回避策が不要に）、**v1.21.0 でテクスチャ側 `uScale`/`uOffset` などの UV 変換**、**v1.25.0 で WebXR API**（ただしドラフト仕様 `XRGPUBinding` 未実装のブラウザばかりで実機動作は不可）が入っています。詳細は[対応可否検証の脚注](../tutorial-compatibility.md)を参照してください。
 > Lite は機能追加が続いているため、バージョンが上がって差異が出た場合は Playground の IntelliSense で正しい名称に合わせてください。

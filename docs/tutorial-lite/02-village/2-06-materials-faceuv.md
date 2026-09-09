@@ -3,8 +3,11 @@
 > [第2部：村の構築](./README.md) ・ [全体の目次](../README.md)（共通テンプレート・凡例）
 
 **目的**：1 枚のテクスチャアトラス（横に並んだ正面/右/背面/左の 4 コマ）を、box の各側面に別々に貼る。
-Babylon.js の `MeshBuilder.CreateBox({ faceUV, wrap: true })` に相当する機能は **`createBox` には無い**ことが確認できました
-（`createBox(engine, size)` は数値の一辺長のみ。`faceUV` / `wrap` / `width` オプションは存在しません）。
+Babylon.js の `MeshBuilder.CreateBox({ faceUV, wrap: true })` のうち、**`faceUV` / `wrap` に相当する機能は
+`createBox` には無い**ことが確認できました（v1.28.0 時点）。
+なお **v1.16.0 で非一様な寸法には対応**し、`createBox(engine, options)` は数値の一辺長に加えて
+`{ width, height, depth }`（`size` を各軸が上書き）を受け取れるようになりました。
+面ごとの UV 割り当てだけが引き続き無いため、本章の自作ヘルパーは有効です。
 
 ## 技法：`createMeshFromData` で本家 box ビルダーを逐語移植する
 
@@ -15,7 +18,9 @@ Lite は公開 API に **`createMeshFromData(engine, name, positions, normals, i
 - **面番号**は本家と同じ：`0=+Z`（背面）`1=-Z`（正面）`2=+X`（右）`3=-X`（左）`4=+Y`（上）`5=-Y`（底）
 - **`faceUV`** は本家 `Vector4(x, y, z, w)` の代わりに `[uMin, vMin, uMax, vMax]` の配列で表現
 - 面ごとの UV は本家と同じ式（頂点順に `(z,w) (x,w) (x,y) (z,y)`）で 4 頂点に適用
-- `width` はプリミティブオプションではなく**頂点座標に直接焼き込む**（非一様 scaling に頼らない）
+- `width` / `height` / `depth` は**頂点座標に直接焼き込む**（非一様 scaling に頼らない）。
+  寸法だけなら v1.16.0 以降の `createBox(engine, { width, height, depth })` でも足りるが、
+  本ヘルパーは faceUV と同時に扱うため自前で焼き込む
 
 これにより、Lite 組み込み box と同一の UV・巻き順規約を保ったまま、本家と見た目が一致する faceUV box を再現できます。
 

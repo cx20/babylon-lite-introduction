@@ -4,7 +4,7 @@
 
 **目的**：平行光源で人型モデルの影を地面に落とす。本家 Dude を歩かせて影を確認するサンプルの Lite 移植です。
 
-**Lite 対応方針**（v1.8 ソースで確認）。影の作り方が本家と大きく違うのに加えて、**スキン（ボーンアニメ）モデルを影キャスターにする**特有のハマりどころが複数あります。ここでは要点を 5 つに絞ります。
+**Lite 対応方針**（v1.8 ソースで確認。v1.28.0 で再確認し、下記 (1) の境界対策が v1.18.0 で不要になった旨を追記）。影の作り方が本家と大きく違うのに加えて、**スキン（ボーンアニメ）モデルを影キャスターにする**特有のハマりどころが複数あります。ここでは要点を 5 つに絞ります。
 
 ### モデルは Dude.babylon ではなく Xbot.glb を使う
 
@@ -33,6 +33,7 @@ Xbot の `animationGroups` は idle / agree / run / … の順で、**先頭 `[0
 glTF キャスターには 2 つの対策が要ります。
 
 1. **境界の上書き（影切れ・影消失の対策）**：平行光源影のフラスタム自動フィットは境界を「ローカル境界 × worldMatrix」で評価しますが、**glTF ローダーは境界を「ロード時ワールド空間」で保存**するため二重変換となり、影が直線で切れる／キャスター全体がフラスタム外に出て影が消えます。`setLocalBoundsFromWorldAabb()` で実在ワールド体積からローカル境界を再計算して回避します（スケール・回転を確定させた後に呼ぶこと）。
+   > ✅ **v1.18.0 でこの二重変換は修正されました** — [#532](https://github.com/BabylonJS/Babylon-Lite/pull/532) で **glTF メッシュの `boundMin`/`boundMax` は常にオブジェクトローカル**になり、カメラ・環境・影のフィットは `worldMatrix`（thin instance ではさらに各インスタンス行列）を合成した正確なワールド境界を自前で計算するようになりました。したがって **v1.18.0 以降、本サンプルの `setLocalBoundsFromWorldAabb()` は不要です**（`boundMin`/`boundMax` への代入自体は「`worldMatrix` が写し出す座標系での、より広い手計算の箱」として今も許されるので、残しておいても壊れはしません）。以下のコードは v1.17.0 以前で検証したものをそのまま残しています。新規に書くなら、このヘルパーとその呼び出しは省いてください。なお、**手組みの thin instance メッシュ**をカメラ・環境の自動サイジング対象にする場合は、同じ v1.18.0 で入った `enableThinInstanceWorldBounds(mesh)` の呼び出しが必要です（glTF の `EXT_mesh_gpu_instancing` は自動で有効化）。
 2. **`forceRefreshEveryFrame: true`**：影マップの再描画は `worldMatrixVersion` のダーティ判定で抑制されますが、**スキンアニメはボーンだけが動きノードのワールド行列が変わらない**ため、既定(false)だと影マップが初回の 1 度しか描かれません（初回はアニメ tick 前で骨姿勢が未確定＝影が空になり得る）。毎フレーム強制再描画にすることで、歩行の姿勢に影が毎フレーム追従します。
 
 ## メインコード
@@ -70,7 +71,7 @@ glTF キャスターには 2 つの対策が要ります。
  *      頂点ステージを流用した depth ビュー」で描くので、スキンメッシュも
  *      アニメ姿勢のまま影に反映される（bind ポーズにならない）。
  *
- *  (5) glTF キャスターは境界の上書きが必要（影切れ・影消失の対策）
+ *  (5) glTF キャスターは境界の上書きが必要（影切れ・影消失の対策。v1.18.0 で修正され不要に）
  *      平行光源影のフラスタム自動フィットは boundMin/boundMax を
  *      「ローカル境界 × worldMatrix」で評価する。手続き生成メッシュは
  *      ローカル境界なので正しいが、glTF ローダーは境界を「ロード時
@@ -121,8 +122,11 @@ import {
 const XBOT_URL = "https://playground.babylonjs.com/scenes/Xbot.glb";
 
 /**
- * 【glTF キャスターの影切れ対策】メッシュの boundMin/boundMax を
+ * 【glTF キャスターの影切れ対策 / v1.17.0 以前でのみ必要】
+ * メッシュの boundMin/boundMax を
  * 「指定ワールド空間 AABB に対応するローカル境界」で上書きする。
+ * ※ v1.18.0 で glTF の境界はオブジェクトローカル保存に変わり、フィット側が
+ *   worldMatrix を合成するようになったため、以降このヘルパーは不要。
  *
  * 背景: Lite の平行光源影は、キャスターの boundMin/boundMax を
  * 「ローカル境界」と見なし mesh.worldMatrix で変換してフラスタムを
@@ -310,6 +314,8 @@ main().catch((error: unknown) => {
 
 ### 影フラスタムを移動するキャラに毎フレーム追従させる
 
+> ✅ この節も **v1.18.0 で不要**になりました（上記の注記を参照。境界はオブジェクトローカルのまま、フィット側が毎フレーム正しいワールド境界を計算します）。以下は v1.17.0 以前で検証したコードです。
+
 単体サンプルでは境界のローカル化は初回一度きりでしたが、**キャラが村中を移動する**ため、`setLocalBoundsFromWorldAabb()` を**毎フレーム現在位置の周囲で更新**します。位置は `dude.worldMatrix` の平行移動成分から直接取得すると、`__root__` の x 反転などの符号仮定に依存せず堅牢です。
 
 ### 向きは bake クォータニオンへの合成で与える（`rotation.y` 代入は禁止）
@@ -358,7 +364,7 @@ Xbot ノードの `rotationQuaternion` には**直立用の bake が入ってい
  *  (6) スキンアニメのキャスターには forceRefreshEveryFrame: true が必須
  *      （影マップ再描画のダーティ判定が worldMatrixVersion 基準のため、
  *      ボーンだけ動く歩行では発火しない）。
- *  (7) glTF キャスターは境界の上書きが必須（Lite の既知問題）。
+ *  (7) glTF キャスターは境界の上書きが必須（v1.17.0 以前の既知問題。v1.18.0 で修正済み）。
  *      ローダーは boundMin/boundMax を「ロード時ワールド空間」で保存するが、
  *      フラスタム自動フィットは「ローカル境界 × worldMatrix」を仮定して
  *      おり二重変換になる → 影が切れる/消える。
@@ -463,8 +469,10 @@ function findNodeByName(container: AssetContainer, name: string): SceneNode {
 }
 
 /**
- * 【glTF キャスターの影切れ対策】boundMin/boundMax を「指定ワールド AABB に
+ * 【glTF キャスターの影切れ対策 / v1.17.0 以前でのみ必要】
+ * boundMin/boundMax を「指定ワールド AABB に
  * 対応するローカル境界」で上書きする（詳細はヘッダー (7) 参照）。
+ * ※ v1.18.0 以降は不要（境界はオブジェクトローカル保存になった）。
  * worldMatrix 確定後に呼ぶこと。移動するキャスターには毎フレーム呼ぶ。
  */
 function setLocalBoundsFromWorldAabb(meshes: readonly Mesh[], worldMin: readonly [number, number, number], worldMax: readonly [number, number, number]): void {
